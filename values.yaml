@@ -1,0 +1,35 @@
+environment:
+  - name: ADMIN_PASSWORD
+    value: 'Overlying-Sloping6-Cleft-Unfreeze-Victory-Sturdily'
+  - name: JWT_SECRET
+    value: 'Gruffly-Quotable-Silliness-Shingle2-Visor-Facial'
+  - name: DATABASE_CONNECTIONSTRING
+    value: "postgres://pguser:pgpassword@database-pgvector/postgres?sslmode=disable"
+
+auth:
+  username: pguser
+  password: Treble3-Projector-Overshoot-Exposure-Safeguard-Sanctuary
+  database: postgres
+
+image:
+  repository: postgres
+  tag: "16"
+  pullPolicy: IfNotPresent
+
+primary:
+  persistence:
+    enabled: true
+    size: 5Gi
+    storageClass: standard
+
+service:
+  type: ClusterIP
+  port: 5432
+
+resources:
+  requests:
+    cpu: 100m
+    memory: 256Mi
+  limits:
+    cpu: 500m
+    memory: 512Mi

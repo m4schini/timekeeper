@@ -14,6 +14,19 @@ func AdminPassword() string {
 	return mustEnv("ADMIN_PASSWORD")
 }
 
+func Port() string {
+	return getEnvOr("PORT", "80")
+}
+
+func getEnvOr(envName, defaultValue string) string {
+	value := os.Getenv(envName)
+	if value == "" {
+		return defaultValue
+	} else {
+		return value
+	}
+}
+
 func mustEnv(envName string) string {
 	value := os.Getenv(envName)
 	if value == "" {

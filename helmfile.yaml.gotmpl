@@ -1,0 +1,17 @@
+helmDefaults:
+  kubeContext: auroraborealis-dev
+
+releases:
+  - name: postgresql
+    installed: false
+    namespace: timekeeper
+    chart: postgres/postgresql
+    version: "15.14"  # check for the latest version
+    values:
+      - values.yaml
+
+  - name: warehouse
+    namespace: timekeeper
+    chart: helm
+    values:
+      - values.yaml

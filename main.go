@@ -6,6 +6,7 @@ import (
 	"timekeeper/adapters"
 	"timekeeper/app/auth"
 	"timekeeper/app/database"
+	"timekeeper/config"
 	"timekeeper/ports/www"
 	c "timekeeper/ports/www/components"
 	p "timekeeper/ports/www/pages"
@@ -15,7 +16,7 @@ func main() {
 	logger, _ := zap.NewDevelopment()
 	zap.ReplaceGlobals(logger)
 
-	l, err := net.Listen("tcp", ":8080")
+	l, err := net.Listen("tcp", ":"+config.Port())
 	if err != nil {
 		logger.Fatal("failed to listen", zap.Error(err))
 	}
@@ -51,6 +52,6 @@ func main() {
 		&p.LoginRoute{Auth: authy},
 	}
 
-	logger.Debug("serving timekeeper :8080")
+	logger.Debug("serving timekeeper :" + config.Port())
 	logger.Warn("failed to serve", zap.Error(www.Serve(l, authy, pages, components)))
 }
