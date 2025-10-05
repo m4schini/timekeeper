@@ -1,4 +1,5 @@
 helmfile.yaml.gotmpl
+values.yaml
 
 ### GoLand+all template
 # Covers JetBrains IDEs: IntelliJ, RubyMine, PhpStorm, AppCode, PyCharm, CLion, Android Studio, WebStorm and Rider
