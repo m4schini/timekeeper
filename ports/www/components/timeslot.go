@@ -12,6 +12,7 @@ import (
 	"time"
 	"timekeeper/app/database"
 	"timekeeper/app/database/model"
+	"timekeeper/config"
 	"timekeeper/ports/www/render"
 )
 
@@ -59,7 +60,7 @@ func FullTimeSlot(t model.TimeslotModel, disabled bool) Node {
 func timeslotTime(startDate, timeslot time.Time, day int) Node {
 	date := time.Date(startDate.Year(), startDate.Month(), startDate.Day(),
 		timeslot.Hour(), timeslot.Minute(), timeslot.Second(), timeslot.Nanosecond(),
-		startDate.Location())
+		config.Timezone())
 	offset := time.Duration(day) * 24 * time.Hour
 	return Div(
 		Class("timeslot-time"),

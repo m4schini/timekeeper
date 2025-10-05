@@ -1,7 +1,7 @@
 
--- CREATE SCHEMA timekeeper;
+CREATE SCHEMA timekeeper;
 
--- CREATE TYPE EVENT_ROLE AS ENUM ('Organizer', 'Mentor', 'Participant');
+CREATE TYPE EVENT_ROLE AS ENUM ('Organizer', 'Mentor', 'Participant');
 
 CREATE TABLE timekeeper.events (
     id SERIAL PRIMARY KEY ,

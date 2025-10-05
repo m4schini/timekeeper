@@ -1,6 +1,17 @@
 package config
 
-import "os"
+import (
+	"os"
+	"time"
+)
+
+func Timezone() *time.Location {
+	l, err := time.LoadLocation("Europe/Berlin")
+	if err != nil {
+		panic(err)
+	}
+	return l
+}
 
 func DatabaseConnectionString() string {
 	return mustEnv("DATABASE_CONNECTIONSTRING")

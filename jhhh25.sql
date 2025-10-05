@@ -1,21 +1,21 @@
-INSERT INTO timekeeper.locations (name, file) VALUES ('Betahaus | Schanze', 'betahaus.png');
+-- INSERT INTO timekeeper.locations (name, file) VALUES ('Betahaus | Schanze', 'betahaus.png');
+--
+-- INSERT INTO timekeeper.rooms (location, name, location_x, location_y, location_w, location_h)
+-- VALUES (1, 'Hackspace', 0, 0, 0, 0);
+-- INSERT INTO timekeeper.rooms (location, name, location_x, location_y, location_w, location_h)
+-- VALUES (1, 'Makespace', 0, 0, 0, 0);
+-- INSERT INTO timekeeper.rooms (location, name, location_x, location_y, location_w, location_h)
+-- VALUES (1, 'Ruhe Räume', 0, 0, 0, 0);
+-- INSERT INTO timekeeper.rooms (location, name, location_x, location_y, location_w, location_h)
+-- VALUES (1, 'Infodesk', 0, 0, 0, 0);
+-- INSERT INTO timekeeper.rooms (location, name, location_x, location_y, location_w, location_h)
+-- VALUES (1, 'Cafe', 0, 0, 0, 0);
+-- INSERT INTO timekeeper.rooms (location, name, location_x, location_y, location_w, location_h)
+-- VALUES (1, 'Tresen', 0, 0, 0, 0);
+-- INSERT INTO timekeeper.rooms (location, name, location_x, location_y, location_w, location_h)
+-- VALUES (1, 'Void', 0, 0, 0, 0);
 
-INSERT INTO timekeeper.rooms (location, name, location_x, location_y, location_w, location_h)
-VALUES (1, 'Hackspace', 0, 0, 0, 0);
-INSERT INTO timekeeper.rooms (location, name, location_x, location_y, location_w, location_h)
-VALUES (1, 'Makespace', 0, 0, 0, 0);
-INSERT INTO timekeeper.rooms (location, name, location_x, location_y, location_w, location_h)
-VALUES (1, 'Ruhe Räume', 0, 0, 0, 0);
-INSERT INTO timekeeper.rooms (location, name, location_x, location_y, location_w, location_h)
-VALUES (1, 'Infodesk', 0, 0, 0, 0);
-INSERT INTO timekeeper.rooms (location, name, location_x, location_y, location_w, location_h)
-VALUES (1, 'Cafe', 0, 0, 0, 0);
-INSERT INTO timekeeper.rooms (location, name, location_x, location_y, location_w, location_h)
-VALUES (1, 'Tresen', 0, 0, 0, 0);
-INSERT INTO timekeeper.rooms (location, name, location_x, location_y, location_w, location_h)
-VALUES (1, 'Void', 0, 0, 0, 0);
-
-INSERT INTO timekeeper.events (name, start) VALUES ('Jugend hackt Hamburg 2025', date(now()));
+INSERT INTO timekeeper.events (name, start) VALUES ('Jugend hackt Hamburg Test', date(now()));
 
 -- Friday
 INSERT INTO timekeeper.timeslots (event, title, note, day, start, room, role)
