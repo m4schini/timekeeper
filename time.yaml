@@ -1,0 +1,119 @@
+fr:
+    - timeslot: "15:00"
+      title: "Check in Hostel"
+    - timeslot: "16:00"
+      title: "Infodesk besetzt"
+      room: "Infodesk"
+    - timeslot: "16:30"
+      title: Ankunft
+      room: Infodesk
+      notes: ""
+      role: T
+    - timeslot: "16:30"
+      title: Mentor*innen Begrüßung
+      room: Void
+      notes: Erstes Meeting
+      role: M
+    - timeslot: "17:00"
+      title: Eröffnung
+      room: Cafe
+      notes: ""
+      role: T
+    - timeslot: "17:30"
+      title: "Input Talks"
+      room: "Betahaus"
+      notes: "Findet parallel in verschiedenen räumen statt"
+    - timeslot: 18:00
+      title: Abendessen
+      room: "Cafe"
+      role: T
+    - timeslot: 19:00
+      title: Brainstorming
+      room: Betahaus
+      notes: "Findet parallel in verschiedenen räumen statt"
+      role: T
+    - timeslot: 21:00
+      title: Vorstellung der Ideen
+      room: Cafe
+      role: T
+    - timeslot: 22:00
+      title: Tagesabschluss
+      room: Cafe
+      role: T
+      notes: |
+        Zulip, Hardware + Projektidee Gallery
+        Gruppenfoto
+        Spiel & Spaß, andere Lustige Abendgestaltung
+        Tagesabschluss, Gruppenfoto und ins Bett
+    - timeslot: 22:30
+      title: Aufbruch ins Hostel
+      room: Infodesk
+      role: T
+
+sa:
+    - timeslot: "8:00"
+      title: Frühstück
+      room: "Cafe"
+      notes: ""
+      role: T
+    - timeslot: "9:00"
+      title: Tageseröffnung
+      room: "Cafe"
+      notes: ""
+      role: T
+    - timeslot: "9:30"
+      title: Gruppenfindung
+      room: "Hackspace"
+      notes: ""
+      role: T
+    - timeslot: "10:00"
+      title: Arbeiten in gruppen
+      room: "Hackspace"
+      notes: ""
+      role: T
+    - timeslot: "13:00"
+      title: Mittagessen
+      room: "Cafe"
+      notes: ""
+      role: T
+    - timeslot: "18:00"
+      title: Abendessen
+      room: "Cafe"
+      notes: ""
+      role: T
+    - timeslot: "19:00"
+      title: Präsentationstraining
+      room: "Cafe"
+      notes: ""
+      role: T
+    - timeslot: "22:00"
+      title: Gemeinsamer Tagesabschluss
+      room: "Cafe"
+      notes: ""
+      role: T
+so:
+    - timeslot: "8:00"
+      title: Frühstück
+      room: "Cafe"
+      notes: ""
+      role: T
+    - timeslot: "9:00"
+      title: Tageseröffnung
+      room: "Cafe"
+      notes: "Evaluation"
+      role: T
+    - timeslot: "12:30"
+      title: Mittagssnack
+      room: "Cafe"
+      notes: ""
+      role: T
+    - timeslot: "13:30"
+      title: Abschlusspräsentation
+      room: "Cafe"
+      notes: ""
+      role: T
+    - timeslot: "15:00"
+      title: Ende der Veranstaltung
+      room: "Cafe"
+      notes: ""
+      role: T

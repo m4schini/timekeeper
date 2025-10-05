@@ -1,0 +1,335 @@
+:root {
+    --color-deep-red: #e52420;
+    --color-deep-orange: #ea680c;
+    --color-deep-yellow: #ffd003;
+    --color-deep-green: #4cad37;
+    --color-deep-blue: #00498c;
+    --color-deep-purple: #4c2582;
+    --color-deep-pink: #e95197;
+    --color-deep-grey: #52575b;
+    --color-soft-red: #e6414a;
+    --color-soft-orange: #f3971b;
+    --color-soft-yellow: #ffe50c;
+    --color-soft-green: #00b48d;
+    --color-soft-blue: #00a6de;
+    --color-soft-pruple: #51509d;
+    --color-soft-grey: #d1d6da;
+    --color-black: #000;
+}
+
+@font-face {
+    font-family: atkinson-hyperlegible-next; /* set name */
+    src: url(/static/AtkinsonHyperlegibleNext-Regular.otf); /* url of the font */
+    font-weight: normal;
+}
+@font-face {
+    font-family: atkinson-hyperlegible-next; /* set name */
+    src: url(/static/AtkinsonHyperlegibleNext-Bold.otf); /* url of the font */
+    font-weight: bold;
+}
+
+:root, html, body {
+    /*font-family: "atkinson-hyperlegible-next", sans-serif;*/
+    font-family: "atkinson-hyperlegible-next";
+    font-weight: normal;
+    height: 100%;
+}
+
+.days-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(30vw, 1fr));
+    /*gap: 1rem; !* spacing between columns *!*/
+    row-gap: 2rem;
+    width: 100%;
+}
+
+.day-container {
+    max-width: 30vw;
+    padding: 1rem;
+
+    box-shadow: rgba(60, 64, 67, 0.3) 0px 1px 2px 0px, rgba(60, 64, 67, 0.15) 0px 2px 6px 2px;
+}
+
+.day-container > h2 {
+    margin-top: 0;
+}
+
+.timeslot-container {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: 3rem 1fr 2rem auto;
+    column-gap: 1rem;
+
+    padding: 1rem;
+}
+.timeslot-container:hover {
+    background-color: lightgray;
+}
+
+.timeslot-container .timeslot-action {
+    grid-row: 4;
+    grid-column: 1 / 3;
+
+    display: flex;
+    gap: 0.5rem;
+    padding-top: 0.5rem;
+}
+
+.timeslot-container .timeslot-time {
+    grid-column-start: 1;
+    grid-row-start: 1;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-weight: bold;
+    font-size: xx-large;
+}
+
+.timeslot-container .timeslot-room {
+    grid-column-start: 1;
+    grid-row-start: 2;
+}
+
+.timeslot-container .timeslot-room a {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    width: 100%;
+    height: 2rem;
+    max-height: 2rem;
+
+    font-weight: bold;
+    text-decoration: none;
+    color: black;
+    background-color: var(--color-soft-blue);
+}
+
+.timeslot-container .timeslot-info {
+    grid-column: span 2 / span 2;
+    grid-row: span 2 / span 2;
+    grid-column-start: 2;
+    grid-row-start: 1;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    /*align-items: center;*/
+    gap: 0.5rem
+}
+
+.timeslot-container .timeslot-info-title {
+    font-weight: bold;
+    font-size: x-large;
+}
+
+.timeslot-container .timeslot-info-notes {
+
+}
+
+
+.timeslot-container .timeslot-roles {
+    grid-row-start: 3;
+
+    display: flex;
+    flex-direction: column;
+}
+
+.role {
+    color: black;
+    padding: 0.2rem;
+    text-align: center;
+}
+
+.role.role-o {
+    background-color: var(--color-soft-yellow);
+}
+
+.role.role-m {
+    background-color: var(--color-soft-orange);
+}
+
+.role.role-t {
+    background-color: var(--color-soft-green);
+}
+
+.page-header {
+    padding: 1rem;
+    background-color: var(--color-soft-green);
+    color: white;
+
+    display: flex;
+    justify-content: space-between;
+}
+
+.page-header .last-change {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.logo {
+    margin: 0;
+    background-color: var(--color-soft-green);
+    color: white;
+}
+
+.logo a {
+    text-decoration: none;
+    color: white;
+}
+
+.location-map img {
+    height: auto;
+    max-height: 90vh;
+    max-width: 95vw;
+}
+
+.location-crop {
+    position: relative;
+}
+
+.menu {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    gap: 1rem;
+}
+
+.menu a {
+    text-decoration: none;
+    color: white;
+    height: 100%;
+    padding: 0.5rem;
+    background-color: var(--color-deep-blue);
+}
+
+h2 {
+    background-color: var(--color-deep-green);
+    padding: 1rem;
+    color: white;
+}
+
+.full-timeslot-container {
+    display: grid;
+    grid-template-columns: 200px 200px 1fr;
+    grid-template-rows: 2rem 2rem;
+    column-gap: 1rem;
+
+    padding: 0.2rem 1rem;
+}
+.full-timeslot-container:hover {
+    background-color: lightgray;
+}
+
+.full-timeslot-container .timeslot-time {
+    grid-column-start: 1;
+    grid-row-start: 1;
+    grid-row: span 2 / span 2;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-weight: bold;
+    font-size: 2.5rem;
+}
+
+.full-timeslot-container .timeslot-room {
+    grid-column-start: 2;
+    grid-row-start: 1;
+}
+
+.full-timeslot-container .timeslot-room a {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+
+    width: 100%;
+    height: 2rem;
+    max-height: 2rem;
+
+    font-weight: bold;
+    text-decoration: none;
+    color: black;
+    background-color: var(--color-soft-blue);
+}
+
+.full-timeslot-container .timeslot-info {
+    grid-column-start: 3;
+    grid-row-start: 1;
+    grid-row: 1 / 3;
+
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    /*align-items: center;*/
+    gap: 0.5rem
+}
+
+.full-timeslot-container .timeslot-map {
+    grid-column-start: 5;
+    grid-row-start: 1;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: end;
+    gap: 0.5rem
+}
+
+.full-timeslot-container .timeslot-info-title {
+    font-weight: bold;
+    font-size: xx-large;
+}
+
+.full-timeslot-container .timeslot-info-notes {
+
+}
+
+
+.full-timeslot-container .timeslot-roles {
+    grid-column-start: 2;
+
+    display: flex;
+    flex-direction: column;
+}
+
+.separator {
+    display: flex;
+    align-items: center;
+    text-align: center;
+    color: var(--color-deep-red);
+    font-weight: bold;
+
+}
+
+.separator::before,
+.separator::after {
+    content: '';
+    flex: 1;
+    border-bottom: 2px solid var(--color-deep-red);
+}
+
+.separator:not(:empty)::before {
+    margin-right: .25em;
+}
+
+.separator:not(:empty)::after {
+    margin-left: .25em;
+}
+
+.form {
+    display: flex;
+    flex-direction: column;
+    max-width: 400px;
+    gap: 1rem;
+}
+
+.form > div {
+    display: flex;
+    flex-direction: column;
+}

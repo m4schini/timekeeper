@@ -1,0 +1,27 @@
+package command
+
+import (
+	"timekeeper/app/database/model"
+)
+
+func (c *Commands) UpdateTimeslot(m model.UpdateTimeslotModel) (err error) {
+	if m.Event == 0 {
+		return ErrInvalidEventId
+	}
+	if m.Room == 0 {
+		return ErrInvalidRoomId
+	}
+
+	_, err = c.DB.Exec(`
+UPDATE timekeeper.timeslots
+SET
+    event = $1,
+    title = $2,
+    note = $3,
+    day = $4,
+    start = $5,
+    room = $6,
+    role = $7
+WHERE id = $8`, m.Event, m.Title, m.Note, m.Day, m.Timeslot, m.Room, m.Role, m.ID)
+	return err
+}
