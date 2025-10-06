@@ -60,6 +60,14 @@ func (l *EventPageRoute) Handler() http.Handler {
 		roles := strings.Split(request.URL.Query().Get("role"), ",")
 		isOrganizer := middleware.IsOrganizer(request)
 
+		if !hasFilter {
+			if isOrganizer {
+				roles = []string{string(model.RoleOrganizer), string(model.RoleMentor), string(model.RoleParticipant)}
+			} else {
+				roles = []string{string(model.RoleParticipant)}
+			}
+		}
+
 		if err != nil {
 			RenderError(log, writer, http.StatusBadRequest, "invalid event id", err)
 			return
@@ -98,17 +106,13 @@ func (l *EventPageRoute) Handler() http.Handler {
 		renderData := make([][]model.TimeslotModel, len(tsMap))
 		for i, models := range tsMap {
 			var filteredModels []model.TimeslotModel
-			if hasFilter {
-				for _, timeslotModel := range models {
-					for _, role := range filterRoles {
-						if timeslotModel.Role == role {
-							filteredModels = append(filteredModels, timeslotModel)
-							break
-						}
+			for _, timeslotModel := range models {
+				for _, role := range filterRoles {
+					if timeslotModel.Role == role {
+						filteredModels = append(filteredModels, timeslotModel)
+						break
 					}
 				}
-			} else {
-				filteredModels = models
 			}
 
 			renderData[i] = filteredModels
