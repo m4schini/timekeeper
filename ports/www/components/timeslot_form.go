@@ -57,7 +57,7 @@ func TimeslotForm(ts *model.TimeslotModel, event model.EventModel, rooms []model
 
 		Div(
 			Label(For("note"), Text("Notiz")),
-			Textarea(Name("note"), Placeholder("Notiz"), Rows("4"), Cols("50"), If(hasTs, Value(ts.Note))),
+			Textarea(Name("note"), Placeholder("Notiz"), Rows("4"), Cols("50"), If(hasTs, Text(ts.Note))),
 		),
 
 		Div(
