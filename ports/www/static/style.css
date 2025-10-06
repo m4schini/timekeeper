@@ -130,7 +130,7 @@ h2 > a {
 }
 
 .timeslot-container .timeslot-info-notes {
-
+    white-space: pre-line
 }
 
 
