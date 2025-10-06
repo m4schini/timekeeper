@@ -10,11 +10,13 @@ const (
 
 func RoleFrom(role string) Role {
 	switch Role(role) {
+	case RoleOrganizer:
+		return RoleOrganizer
 	case RoleMentor:
 		return RoleMentor
 	case RoleParticipant:
 		return RoleParticipant
 	default:
-		return RoleOrganizer
+		return RoleParticipant
 	}
 }

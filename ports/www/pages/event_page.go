@@ -7,6 +7,7 @@ import (
 	. "maragu.dev/gomponents/html"
 	"net/http"
 	"strconv"
+	"strings"
 	"timekeeper/app/database"
 	model "timekeeper/app/database/model"
 	"timekeeper/ports/www/components"
@@ -56,7 +57,7 @@ func (l *EventPageRoute) Handler() http.Handler {
 		eventParam := chi.URLParam(request, "event")
 		eventId, err := strconv.ParseInt(eventParam, 10, 64)
 		hasFilter := request.URL.Query().Has("role")
-		filterRole := model.RoleFrom(request.URL.Query().Get("role"))
+		roles := strings.Split(request.URL.Query().Get("role"), ",")
 		isOrganizer := middleware.IsOrganizer(request)
 
 		if err != nil {
@@ -89,13 +90,21 @@ func (l *EventPageRoute) Handler() http.Handler {
 			tsMap[timeslot.Day] = ts
 		}
 
+		filterRoles := make([]model.Role, len(roles))
+		for i, role := range roles {
+			filterRoles[i] = model.RoleFrom(role)
+		}
+
 		renderData := make([][]model.TimeslotModel, len(tsMap))
 		for i, models := range tsMap {
 			var filteredModels []model.TimeslotModel
 			if hasFilter {
 				for _, timeslotModel := range models {
-					if timeslotModel.Role == filterRole {
-						filteredModels = append(filteredModels, timeslotModel)
+					for _, role := range filterRoles {
+						if timeslotModel.Role == role {
+							filteredModels = append(filteredModels, timeslotModel)
+							break
+						}
 					}
 				}
 			} else {
