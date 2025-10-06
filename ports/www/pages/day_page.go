@@ -11,6 +11,7 @@ import (
 	"timekeeper/app/database"
 	"timekeeper/app/database/model"
 	"timekeeper/ports/www/components"
+	"timekeeper/ports/www/middleware"
 	"timekeeper/ports/www/render"
 )
 
@@ -57,9 +58,21 @@ func (l *DayPageRoute) Handler() http.Handler {
 	queries := l.DB.Queries
 	return http.HandlerFunc(func(writer http.ResponseWriter, request *http.Request) {
 		var (
-			eventParam = strings.ToLower(chi.URLParam(request, "event"))
-			dayParam   = strings.ToLower(chi.URLParam(request, "day"))
+			eventParam  = strings.ToLower(chi.URLParam(request, "event"))
+			dayParam    = strings.ToLower(chi.URLParam(request, "day"))
+			hasFilter   = request.URL.Query().Has("role")
+			roles       = strings.Split(request.URL.Query().Get("role"), ",")
+			isOrganizer = middleware.IsOrganizer(request)
 		)
+
+		if !hasFilter {
+			if isOrganizer {
+				roles = []string{string(model.RoleOrganizer), string(model.RoleMentor), string(model.RoleParticipant)}
+			} else {
+				roles = []string{string(model.RoleParticipant)}
+			}
+		}
+
 		log.Debug("rendering day", zap.String("eventParam", eventParam), zap.String("dayParam", dayParam))
 		eventId, err := strconv.ParseInt(eventParam, 10, 64)
 		if err != nil {
@@ -84,10 +97,20 @@ func (l *DayPageRoute) Handler() http.Handler {
 			return
 		}
 
+		filterRoles := make([]model.Role, len(roles))
+		for i, role := range roles {
+			filterRoles[i] = model.RoleFrom(role)
+		}
+
 		dayData := make([]model.TimeslotModel, 0, len(timeslots))
 		for _, timeslot := range timeslots {
 			if timeslot.Day == int(day) {
-				dayData = append(dayData, timeslot)
+				for _, role := range filterRoles {
+					if timeslot.Role == role {
+						dayData = append(dayData, timeslot)
+						break
+					}
+				}
 			}
 		}
 
