@@ -17,7 +17,7 @@ import (
 func DayPage(day int, event model.EventModel, data []model.TimeslotModel) Node {
 	return Shell(
 		Main(
-			components.PageHeader(event),
+			components.PageHeader(event, false),
 			components.FullDay(day+1, components.AddDays(event.Start, day), data),
 			Div(Style("margin-top: 0.3rem; margin-bottom: -0.7rem"),
 				Text("Export: "),

@@ -21,7 +21,7 @@ func EditTimeslotPage(timeslot model.TimeslotModel, event model.EventModel, room
 	}
 
 	return Shell(
-		components.PageHeader(event),
+		components.PageHeader(event, false),
 		Main(
 			H1(Textf("%v (%v)", event.Name, event.Start.Format("2006.01.02"))),
 			components.TimeslotForm(&timeslot, event, rooms, "POST", fmt.Sprintf("/_/edit/timeslot/%v", timeslot.ID), "Update"),

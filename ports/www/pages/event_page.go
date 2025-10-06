@@ -23,7 +23,7 @@ func EventPage(event model.EventModel, withActions bool, days [][]model.Timeslot
 
 	return Shell(
 		Main(
-			components.PageHeader(event),
+			components.PageHeader(event, withActions),
 			Div(Class("days-container"),
 				g,
 			),

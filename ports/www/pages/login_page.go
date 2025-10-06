@@ -14,7 +14,7 @@ import (
 
 func LoginPage() Node {
 	return Shell(
-		components.PageHeader(model.EventModel{}),
+		components.PageHeader(model.EventModel{}, false),
 		Main(Style("width: 100%; height: 100%; display: flex; justify-content: center; align-items: center"),
 			Form(Method("POST"), Action("/_/login"), Class("form"),
 				Input(Type("text"), Name("username"), Placeholder("username")),

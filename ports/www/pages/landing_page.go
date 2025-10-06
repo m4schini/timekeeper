@@ -19,7 +19,7 @@ func LandingPage(events []model.EventModel) Node {
 	}
 	return Shell(
 		Main(
-			components.PageHeader(model.EventModel{}),
+			components.PageHeader(model.EventModel{}, false),
 			Ul(g),
 		),
 	)

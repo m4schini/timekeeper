@@ -15,7 +15,7 @@ func LocationPage() Node {
 
 	return Shell(
 		Main(
-			components.PageHeader(model.EventModel{}),
+			components.PageHeader(model.EventModel{}, false),
 			ImageWithBoxes("/static/betahaus.png", 3424, 2080, boxes),
 		),
 	)
