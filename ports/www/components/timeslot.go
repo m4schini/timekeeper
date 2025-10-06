@@ -28,6 +28,7 @@ func TimeSlot(t model.TimeslotModel, withActions, disabled bool) Node {
 		),
 		If(withActions, Div(Class("timeslot-action"),
 			EditTimeslotButton(t.ID),
+			DuplicateTimeslotButton(t.ID),
 			DeleteTimeslotButton(t.ID),
 		)),
 	)
@@ -43,6 +44,10 @@ func DeleteTimeslotButton(timeslotId int) Node {
 
 func EditTimeslotButton(timeslotId int) Node {
 	return A(Text("edit"), Href(fmt.Sprintf("/edit/timeslot/%v", timeslotId)))
+}
+
+func DuplicateTimeslotButton(timeslotId int) Node {
+	return A(Text("duplicate"), Href(fmt.Sprintf("/duplicate/timeslot/%v", timeslotId)))
 }
 
 func FullTimeSlot(t model.TimeslotModel, disabled bool) Node {

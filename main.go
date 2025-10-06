@@ -42,6 +42,7 @@ func main() {
 		&p.LogoutRoute{},
 		&p.CreateTimeslotPageRoute{DB: db},
 		&p.EditTimeslotPageRoute{DB: db},
+		&p.DuplicateTimeslotPageRoute{DB: db},
 		www.StaticFileRoute{},
 	}
 	components := []www.Route{
