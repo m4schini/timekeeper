@@ -35,6 +35,11 @@
     height: 100%;
 }
 
+h2 > a {
+    text-decoration: none;
+    color: white;
+}
+
 .days-container {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(30vw, 1fr));

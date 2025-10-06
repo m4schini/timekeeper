@@ -55,6 +55,8 @@ func (l *EventPageRoute) Handler() http.Handler {
 	return http.HandlerFunc(func(writer http.ResponseWriter, request *http.Request) {
 		eventParam := chi.URLParam(request, "event")
 		eventId, err := strconv.ParseInt(eventParam, 10, 64)
+		hasFilter := request.URL.Query().Has("role")
+		filterRole := model.RoleFrom(request.URL.Query().Get("role"))
 		isOrganizer := middleware.IsOrganizer(request)
 
 		if err != nil {
@@ -89,7 +91,18 @@ func (l *EventPageRoute) Handler() http.Handler {
 
 		renderData := make([][]model.TimeslotModel, len(tsMap))
 		for i, models := range tsMap {
-			renderData[i] = models
+			var filteredModels []model.TimeslotModel
+			if hasFilter {
+				for _, timeslotModel := range models {
+					if timeslotModel.Role == filterRole {
+						filteredModels = append(filteredModels, timeslotModel)
+					}
+				}
+			} else {
+				filteredModels = models
+			}
+
+			renderData[i] = filteredModels
 		}
 
 		Render(writer, request, EventPage(event, isOrganizer, renderData))

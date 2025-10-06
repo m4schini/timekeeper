@@ -1,8 +1,8 @@
 package query
 
 import (
-	"time"
 	. "timekeeper/app/database/model"
+	"timekeeper/config"
 )
 
 func (q *Queries) GetTimeslotsOfEvent(event int, offset, limit int) (ts []TimeslotModel, total int, err error) {
@@ -62,8 +62,7 @@ WHERE e.id = $1 ORDER BY ts.start LIMIT $2 OFFSET $3 `,
 		if err != nil {
 			return nil, 0, err
 		}
-		now := time.Now()
-		e.Start = e.Start.In(now.Location())
+		e.Start = e.Start.In(config.Timezone())
 		t.Event = e
 		r.Location = l
 		t.Room = r
