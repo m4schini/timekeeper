@@ -13,6 +13,7 @@ import (
 	"timekeeper/app/database"
 	"timekeeper/app/database/model"
 	"timekeeper/config"
+	"timekeeper/ports/www/middleware"
 	"timekeeper/ports/www/render"
 )
 
@@ -108,6 +109,11 @@ func (l *DeleteTimeslotRoute) Handler() http.Handler {
 	log := zap.L().Named(l.Pattern())
 	commands := l.DB.Commands
 	return http.HandlerFunc(func(writer http.ResponseWriter, request *http.Request) {
+		if !middleware.IsOrganizer(request) {
+			render.RenderError(log, writer, http.StatusUnauthorized, "unauthorized request detected", nil)
+			return
+		}
+
 		var (
 			timeslotParam = chi.URLParam(request, "timeslot")
 			timeslot, err = strconv.ParseInt(timeslotParam, 10, 64)
