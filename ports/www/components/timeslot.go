@@ -19,9 +19,11 @@ import (
 
 func TimeSlot(t model.TimeslotModel, withActions, disabled bool) Node {
 	return Div(Class("timeslot-container"), If(disabled, Style("opacity: 0.5;")),
-		timeslotTime(t.Event.Start, t.Start, t.Day),
-		timeslotRoom(t.Room),
-		Div(Class("timeslot-roles"), RoleTag(t.Role)),
+		Div(Class("timeslot-meta"),
+			timeslotTime(t.Event.Start, t.Start, t.Day),
+			timeslotRoom(t.Room),
+			Div(Class("timeslot-roles"), RoleTag(t.Role)),
+		),
 		Div(Class("timeslot-info"),
 			Div(Class("timeslot-info-title"), Text(t.Title)),
 			Div(Class("timeslot-info-notes"), Text(t.Note)),
