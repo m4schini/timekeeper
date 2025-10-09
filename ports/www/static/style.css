@@ -55,7 +55,7 @@ h2 > a {
     }
 
     .timeslot-container {
-        grid-template-columns: 200px 1fr !important;
+        grid-template-columns: 130px 1fr !important;
     }
 
     .timeslot-container .timeslot-time {
@@ -77,7 +77,7 @@ h2 > a {
     }
 
     .timeslot-container {
-        grid-template-columns: 200px 1fr !important;
+        grid-template-columns: 140px 1fr !important;
     }
 
     .timeslot-container .timeslot-time {
@@ -105,7 +105,7 @@ h2 > a {
 
 .timeslot-container {
     display: grid;
-    grid-template-columns: 120px 1fr;
+    grid-template-columns: 110px 1fr;
     grid-template-rows: auto auto;
     column-gap: 1rem;
 
