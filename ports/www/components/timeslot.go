@@ -59,7 +59,20 @@ func FullTimeSlot(t model.TimeslotModel, disabled bool) Node {
 		Div(Class("timeslot-roles"), RoleTag(t.Role)),
 		Div(Class("timeslot-info"),
 			Div(Class("timeslot-info-title"), Text(t.Title)),
-			//Div(Class("full-timeslot-info-notes"), Text(t.Note)),
+			Div(Class("full-timeslot-info-notes"), Text(t.Note)),
+		),
+		Div(Class("timeslot-map")), //LocationCrop(t.Location.X, t.Location.Y, t.Location.Width, t.Location.Height, 100),
+	)
+}
+
+func CompactTimeSlot(t model.TimeslotModel, disabled bool) Node {
+	return Div(Class("compact-timeslot-container"), If(disabled, Style("opacity: 0.5;")),
+		timeslotTime(t.Event.Start, t.Start, t.Day),
+		timeslotRoom(t.Room),
+		Div(Class("timeslot-roles"), RoleTag(t.Role)),
+		Div(Class("timeslot-info"),
+			Div(Class("timeslot-info-title"), Text(t.Title)),
+			Div(Class("timeslot-info-notes"), Text(t.Note)),
 		),
 		Div(Class("timeslot-map")), //LocationCrop(t.Location.X, t.Location.Y, t.Location.Width, t.Location.Height, 100),
 	)

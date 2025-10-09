@@ -41,6 +41,31 @@ setInterval(() => {
 		))
 }
 
+func CompactDayPage(day int, event model.EventModel, data []model.TimeslotModel) Node {
+	return Shell(
+		Main(
+			components.CompactDay(event.ID, day, data),
+			//Div(Style("margin-top: 0.3rem; margin-bottom: -0.7rem"),
+			//	Text("Export: "),
+			//	components.ExportMarkdownButton(event.ID, day),
+			//),
+			Script(Raw(`
+document.getElementById('separator').scrollIntoView({
+            behavior: 'auto',
+            block: 'center',
+            inline: 'center'
+        });
+`)),
+			Script(Raw(`
+console.log('starting reloader')
+setInterval(() => {
+    console.log('reloading page')
+    window.location.reload()
+    }, 60*1000)
+`)),
+		))
+}
+
 type DayPageRoute struct {
 	DB *database.Database
 }
@@ -63,6 +88,7 @@ func (l *DayPageRoute) Handler() http.Handler {
 			hasFilter   = request.URL.Query().Has("role")
 			roles       = strings.Split(request.URL.Query().Get("role"), ",")
 			isOrganizer = middleware.IsOrganizer(request)
+			useCompact  = request.URL.Query().Has("compact")
 		)
 
 		if !hasFilter {
@@ -114,7 +140,14 @@ func (l *DayPageRoute) Handler() http.Handler {
 			}
 		}
 
-		err = render.Render(writer, request, DayPage(int(day), event, dayData))
+		var page Node
+		if useCompact {
+			page = CompactDayPage(int(day), event, dayData)
+		} else {
+			page = DayPage(int(day), event, dayData)
+		}
+
+		err = render.Render(writer, request, page)
 		if err != nil {
 			log.Error("failed to render dayParam", zap.Error(err))
 		}

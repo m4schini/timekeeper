@@ -340,7 +340,7 @@ h2 {
 }
 
 .full-timeslot-container .timeslot-info-notes {
-
+    white-space: pre-line
 }
 
 
@@ -385,4 +385,82 @@ h2 {
 .form > div {
     display: flex;
     flex-direction: column;
+}
+
+.compact-timeslot-container {
+    display: grid;
+    grid-template-columns: 100px 100px 1fr;
+    grid-template-rows: 1rem auto;
+    column-gap: 0.5rem;
+
+    padding: 0.2rem 0.5rem;
+}
+
+.compact-timeslot-container:hover {
+    background-color: lightgray;
+}
+
+.compact-timeslot-container .timeslot-time {
+    grid-column-start: 1;
+    grid-row-start: 1;
+    grid-row: span 2 / span 2;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-weight: bold;
+    font-size: 1.5rem;
+}
+
+.compact-timeslot-container .timeslot-room {
+    grid-column-start: 2;
+    grid-row-start: 1;
+}
+
+.compact-timeslot-container .timeslot-room a {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+
+    width: 100%;
+    height: 1rem;
+    max-height: 1rem;
+
+    font-weight: bold;
+    text-decoration: none;
+    color: black;
+    background-color: var(--color-soft-blue);
+    font-size: 1rem;
+}
+
+.compact-timeslot-container .timeslot-info {
+    grid-column-start: 3;
+    grid-row-start: 1;
+    grid-row: 1 / 3;
+
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    /*align-items: center;*/
+}
+
+.compact-timeslot-container .timeslot-info-title {
+    font-weight: bold;
+    font-size: large;
+}
+
+.compact-timeslot-container .timeslot-info-notes {
+    font-size: small;
+    white-space: pre-line
+}
+
+
+.compact-timeslot-container .timeslot-roles {
+    grid-column-start: 2;
+
+    display: flex;
+    flex-direction: column;
+    font-size: x-small;
 }

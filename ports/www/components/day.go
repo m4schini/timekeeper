@@ -103,6 +103,36 @@ func FullDay(day int, date time.Time, timeslots []model.TimeslotModel) Node {
 	)
 }
 
+func CompactDay(event, day int, timeslots []model.TimeslotModel) Node {
+	//log := zap.L().Named("day")
+	t := Group{}
+	now := time.Now()
+	insertedSep := false
+	for _, timeslot := range timeslots {
+		ts := Timestamp(timeslot)
+		tsDay := ts.YearDay()
+		nowDay := now.YearDay()
+		until := now.Sub(ts)
+		if tsDay == nowDay {
+			if until <= 0 && !insertedSep {
+				until = until * (-1)
+				minutes := until.Minutes()
+
+				t = append(t, Div(Class("separator"), ID("separator"), Text(fmt.Sprintf("In %.0f Minuten", minutes))))
+				insertedSep = true
+			}
+		}
+		t = append(t, CompactTimeSlot(timeslot, until > 0 && !insertedSep))
+	}
+
+	return Div( //hx.Get("/_/day/"+day), hx.Trigger("load delay:60s"), hx.Swap("outerHTML"),
+		A(Href(fmt.Sprintf("/event/%v", event)), Text("Öffne Zeitplan"), Style("font-size: small; margin-bottom: 0.3rem")),
+		Div(Style("display: flex; flex-direction: column; gap: 1rem"),
+			t,
+		),
+	)
+}
+
 type DayRoute struct {
 	DB *database.Database
 }
