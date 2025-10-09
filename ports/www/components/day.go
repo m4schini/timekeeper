@@ -129,6 +129,7 @@ func CompactDay(event, day int, timeslots []model.TimeslotModel) Node {
 		Div(Style("display: flex; flex-direction: column; gap: 1rem"),
 			t,
 		),
+		P(Textf("Generated: %v", time.Now().Format(time.RFC822)), Style("opacity: 0.5; font-size: x-small")),
 	)
 }
 
