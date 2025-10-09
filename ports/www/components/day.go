@@ -126,7 +126,6 @@ func CompactDay(event, day int, timeslots []model.TimeslotModel) Node {
 	}
 
 	return Div( //hx.Get("/_/day/"+day), hx.Trigger("load delay:60s"), hx.Swap("outerHTML"),
-		A(Href(fmt.Sprintf("/event/%v", event)), Text("Öffne Zeitplan"), Style("font-size: small; margin-bottom: 0.3rem")),
 		Div(Style("display: flex; flex-direction: column; gap: 1rem"),
 			t,
 		),
