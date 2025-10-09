@@ -2,7 +2,10 @@ helmfile.yaml.gotmpl
 values.yaml
 apps/**
 apps/
+cluster-issuer.yaml
 cert.yaml
+dns-cluster-issuer.yaml
+hetzner-webhook-rbac.yaml
 
 ### GoLand+all template
 # Covers JetBrains IDEs: IntelliJ, RubyMine, PhpStorm, AppCode, PyCharm, CLion, Android Studio, WebStorm and Rider

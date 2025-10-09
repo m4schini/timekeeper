@@ -5,6 +5,9 @@ metadata:
   name: {{ include "timekeeper.fullname" . }}
   labels:
     {{- include "timekeeper.labels" . | nindent 4 }}
+    kubernetes.io/ingress.class: traefik
+    cert-manager.io/cluster-issuer: "letsencrypt-prod"
+    acme.cert-manager.io/http01-ingress-class: "traefik"
 spec:
   ingressClassName: {{ .Values.ingress.className }}
   rules:
