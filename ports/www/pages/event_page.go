@@ -51,6 +51,10 @@ func (l *EventPageRoute) Handler() http.Handler {
 	return http.HandlerFunc(func(writer http.ResponseWriter, request *http.Request) {
 		eventParam := chi.URLParam(request, "event")
 		eventId, err := strconv.ParseInt(eventParam, 10, 64)
+		if err != nil {
+			RenderError(log, writer, http.StatusBadRequest, "invalid event id", err)
+			return
+		}
 		hasFilter := request.URL.Query().Has("role")
 		roles := strings.Split(request.URL.Query().Get("role"), ",")
 		isOrganizer := middleware.IsOrganizer(request)
@@ -61,11 +65,6 @@ func (l *EventPageRoute) Handler() http.Handler {
 			} else {
 				roles = []string{string(model.RoleParticipant)}
 			}
-		}
-
-		if err != nil {
-			RenderError(log, writer, http.StatusBadRequest, "invalid event id", err)
-			return
 		}
 
 		event, err := queries.GetEvent(int(eventId))

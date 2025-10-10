@@ -8,6 +8,19 @@ const (
 	RoleParticipant Role = "Participant"
 )
 
+func (r Role) Title() string {
+	switch r {
+	case RoleOrganizer:
+		return "Orga"
+	case RoleMentor:
+		return "Mentor*innen"
+	case RoleParticipant:
+		return "Teilnehmer*innen"
+	default:
+		panic("unknown role")
+	}
+}
+
 func RoleFrom(role string) Role {
 	switch Role(role) {
 	case RoleOrganizer:

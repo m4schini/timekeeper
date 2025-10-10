@@ -25,6 +25,10 @@ func AdminPassword() string {
 	return mustEnv("ADMIN_PASSWORD")
 }
 
+func BaseUrl() string {
+	return getEnvOr("BASE_URL", "https://zeit.haeck.se")
+}
+
 func Port() string {
 	return getEnvOr("PORT", "80")
 }

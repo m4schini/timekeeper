@@ -8,6 +8,7 @@ import (
 	"timekeeper/app/database"
 	"timekeeper/config"
 	"timekeeper/ports/www"
+	a "timekeeper/ports/www/api"
 	c "timekeeper/ports/www/components"
 	p "timekeeper/ports/www/pages"
 )
@@ -52,7 +53,10 @@ func main() {
 		&c.DeleteTimeslotRoute{DB: db},
 		&p.LoginRoute{Auth: authy},
 	}
+	apis := []www.Route{
+		&a.VocScheduleRoute{DB: db},
+	}
 
 	logger.Debug("serving timekeeper :" + config.Port())
-	logger.Warn("failed to serve", zap.Error(www.Serve(l, authy, pages, components)))
+	logger.Warn("failed to serve", zap.Error(www.Serve(l, authy, pages, components, apis)))
 }
