@@ -2,37 +2,52 @@ package pages
 
 import (
 	"fmt"
+	"github.com/go-chi/chi/v5"
+	"go.uber.org/zap"
 	. "maragu.dev/gomponents"
 	. "maragu.dev/gomponents/html"
 	"net/http"
+	"strconv"
+	"timekeeper/app/database"
 	"timekeeper/app/database/model"
 	"timekeeper/ports/www/components"
 	. "timekeeper/ports/www/render"
 )
 
-func LocationPage() Node {
-	boxes := make([]Box, 0)
+func LocationPage(event model.EventModel, rooms []model.RoomModel) Node {
+	boxes := make([]Box, len(rooms))
+	for i, room := range rooms {
+		boxes[i] = Box{
+			Title:  room.Name,
+			Anchor: fmt.Sprintf("%v", room.ID),
+			X:      float64(room.LocationX),
+			Y:      float64(room.LocationY),
+			W:      float64(room.LocationW),
+			H:      float64(room.LocationH),
+		}
+	}
 
 	return Shell(
 		Main(
-			components.PageHeader(model.EventModel{}, false),
+			components.PageHeader(event, false),
 			ImageWithBoxes("/static/betahaus.png", 3424, 2080, boxes),
 		),
 	)
 }
 
 type Box struct {
-	Title string
-	X     float64 // left position (%, px, etc.)
-	Y     float64 // top position
-	W     float64 // width
-	H     float64 // height
+	Title  string
+	Anchor string
+	X      float64 // left position (%, px, etc.)
+	Y      float64 // top position
+	W      float64 // width
+	H      float64 // height
 }
 
 // ImageWithBoxes renders an image with overlayed boxes
 func ImageWithBoxes(imgSrc string, imgWidth, imgHeight float64, boxes []Box) Node {
 
-	return Div(
+	return Div(ID("karte"),
 		Style("position: relative; height: 100%; max-height: 95vh; margin: auto;"),
 		// Overlayed boxes
 		Map(boxes, func(b Box) Node {
@@ -45,13 +60,10 @@ func ImageWithBoxes(imgSrc string, imgWidth, imgHeight float64, boxes []Box) Nod
 			widthPct := b.W / imgWidth * 100
 			heightPct := b.H / imgHeight * 100
 
-			return Div(
+			return Div(ID(b.Anchor), Class("box"),
 				Style(fmt.Sprintf(
 					"position: absolute; left:%.2f%%; top:%.2f%%; "+
-						"width:%.2f%%; height:%.2f%%; "+
-						"display: flex; align-items: center; justify-content: center; "+
-						"border: 2px solid red; background: rgba(0,0,0,0.4); "+
-						"color: white; font-weight: bold;",
+						"width:%.2f%%; height:%.2f%%; ",
 					leftPct, topPct, widthPct, heightPct,
 				)),
 				Text(b.Title),
@@ -68,6 +80,7 @@ func ImageWithBoxes(imgSrc string, imgWidth, imgHeight float64, boxes []Box) Nod
 }
 
 type LocationPageRoute struct {
+	DB *database.Database
 }
 
 func (l *LocationPageRoute) Method() string {
@@ -75,11 +88,33 @@ func (l *LocationPageRoute) Method() string {
 }
 
 func (l *LocationPageRoute) Pattern() string {
-	return "/location"
+	return "/event/{event}/location/{location}"
 }
 
 func (l *LocationPageRoute) Handler() http.Handler {
+	log := zap.L().Named(l.Pattern())
+	queries := l.DB.Queries
 	return http.HandlerFunc(func(writer http.ResponseWriter, request *http.Request) {
-		Render(writer, request, LocationPage())
+		eventId, err := strconv.ParseInt(chi.URLParam(request, "event"), 10, 64)
+		if err != nil {
+			RenderError(log, writer, http.StatusBadRequest, "invalid eventId", err)
+			return
+		}
+
+		event, err := queries.GetEvent(int(eventId))
+
+		//location, err := strconv.ParseInt(chi.URLParam(request, "location"), 10, 64)
+		//if err != nil {
+		//	RenderError(log, writer, http.StatusBadRequest, "invalid locationId", err)
+		//	return
+		//}
+
+		rooms, _, err := queries.GetRooms(0, 100)
+		if err != nil {
+			RenderError(log, writer, http.StatusInternalServerError, "failed to get rooms", err)
+			return
+		}
+
+		Render(writer, request, LocationPage(event, rooms))
 	})
 }

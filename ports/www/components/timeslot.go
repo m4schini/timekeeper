@@ -21,7 +21,7 @@ func TimeSlot(t model.TimeslotModel, withActions, disabled bool) Node {
 	return Div(Class("timeslot-container"), If(disabled, Style("opacity: 0.5;")),
 		Div(Class("timeslot-meta"),
 			timeslotTime(t.Event.Start, t.Start, t.Day),
-			timeslotRoom(t.Room),
+			timeslotRoom(t.Event.ID, t.Room.Location.ID, t.Room),
 			Div(Class("timeslot-roles"), RoleTag(t.Role)),
 		),
 		Div(Class("timeslot-info"),
@@ -55,7 +55,7 @@ func DuplicateTimeslotButton(timeslotId int) Node {
 func FullTimeSlot(t model.TimeslotModel, disabled bool) Node {
 	return Div(Class("full-timeslot-container"), If(disabled, Style("opacity: 0.5;")),
 		timeslotTime(t.Event.Start, t.Start, t.Day),
-		timeslotRoom(t.Room),
+		timeslotRoom(t.Event.ID, t.Room.Location.ID, t.Room),
 		Div(Class("timeslot-roles"), RoleTag(t.Role)),
 		Div(Class("timeslot-info"),
 			Div(Class("timeslot-info-title"), Text(t.Title)),
@@ -68,7 +68,7 @@ func FullTimeSlot(t model.TimeslotModel, disabled bool) Node {
 func CompactTimeSlot(t model.TimeslotModel, disabled bool) Node {
 	return Div(Class("compact-timeslot-container"), If(disabled, Style("opacity: 0.5;")),
 		timeslotTime(t.Event.Start, t.Start, t.Day),
-		timeslotRoom(t.Room),
+		timeslotRoom(t.Event.ID, t.Room.Location.ID, t.Room),
 		Div(Class("timeslot-roles"), RoleTag(t.Role)),
 		Div(Class("timeslot-info"),
 			Div(Class("timeslot-info-title"), Text(t.Title)),
@@ -91,11 +91,11 @@ func timeslotTime(startDate, timeslot time.Time, day int) Node {
 			Format(time.RFC1123Z))))
 }
 
-func timeslotRoom(r model.RoomModel) Node {
+func timeslotRoom(eventId, locationId int, r model.RoomModel) Node {
 	return Div(Class("timeslot-room"),
 		If(
 			true,
-			A(Textf("%v", r.Name), Href(fmt.Sprintf("/location#%v", r.ID))),
+			A(Textf("%v", r.Name), Href(fmt.Sprintf("/event/%v/location/%v#%v", eventId, locationId, r.ID))),
 		),
 	)
 }

@@ -34,7 +34,7 @@ func main() {
 
 	pages := []www.Route{
 		&p.LandingPageRoute{DB: db},
-		&p.LocationPageRoute{},
+		&p.LocationPageRoute{DB: db},
 		&p.DayPageRoute{DB: db},
 		&p.DayMarkdownPageRoute{DB: db},
 		&p.EventPageRoute{DB: db},
