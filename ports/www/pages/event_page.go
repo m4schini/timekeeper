@@ -28,13 +28,8 @@ func EventPage(event model.EventModel, withActions bool, days [][]model.Timeslot
 				g,
 			),
 		),
-		Script(Raw(`
-document.getElementById('separator').scrollIntoView({
-            behavior: 'auto',
-            block: 'center',
-            inline: 'center'
-        });
-`)),
+		components.ScriptScrollSeperatorIntoView(),
+		If(!withActions, components.ScriptReloadPageEveryMinute()),
 	)
 }
 

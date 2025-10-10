@@ -24,20 +24,8 @@ func DayPage(day int, event model.EventModel, data []model.TimeslotModel) Node {
 				Text("Export: "),
 				components.ExportMarkdownButton(event.ID, day),
 			),
-			Script(Raw(`
-document.getElementById('separator').scrollIntoView({
-            behavior: 'auto',
-            block: 'center',
-            inline: 'center'
-        });
-`)),
-			Script(Raw(`
-console.log('starting reloader')
-setInterval(() => {
-    console.log('reloading page')
-    window.location.reload()
-    }, 60*1000)
-`)),
+			components.ScriptScrollSeperatorIntoView(),
+			components.ScriptReloadPageEveryMinute(),
 		))
 }
 
@@ -49,20 +37,8 @@ func CompactDayPage(day int, event model.EventModel, data []model.TimeslotModel)
 			//	Text("Export: "),
 			//	components.ExportMarkdownButton(event.ID, day),
 			//),
-			Script(Raw(`
-document.getElementById('separator').scrollIntoView({
-            behavior: 'auto',
-            block: 'center',
-            inline: 'center'
-        });
-`)),
-			Script(Raw(`
-console.log('starting reloader')
-setInterval(() => {
-    console.log('reloading page')
-    window.location.reload()
-    }, 60*1000)
-`)),
+			components.ScriptScrollSeperatorIntoView(),
+			components.ScriptReloadPageEveryMinute(),
 		))
 }
 
