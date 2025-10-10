@@ -30,7 +30,7 @@ func LocationPage(event model.EventModel, rooms []model.RoomModel) Node {
 	return Shell(
 		Main(
 			components.PageHeader(event, false),
-			ImageWithBoxes("/static/betahaus.png", 3424, 2080, boxes),
+			ImageWithBoxes("/static/betahaus2.png", 3424, 2080, boxes),
 		),
 	)
 }
