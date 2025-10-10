@@ -21,9 +21,13 @@ func ExportVocSchedule(event model.EventModel, timeslots []model.TimeslotModel) 
 		if _, ok := daysMap[day]; !ok {
 			daysMap[day] = map[string][]map[string]interface{}{}
 		}
+
+		eventDate := time.Date(event.Start.Year(), event.Start.Month(), event.Start.Day(),
+			t.Start.Hour(), t.Start.Minute(), t.Start.Second(), t.Start.Nanosecond(),
+			config.Timezone())
 		eventJSON := map[string]interface{}{
 			"abstract": "",
-			"date":     t.Start.Format(time.RFC3339),
+			"date":     eventDate,
 			"duration": "01:00",
 			"guid":     fmt.Sprintf("00000000-0000-0000-0000-%012d", t.ID),
 			"id":       t.ID,
@@ -33,7 +37,7 @@ func ExportVocSchedule(event model.EventModel, timeslots []model.TimeslotModel) 
 			"room":     room,
 			"slug":     fmt.Sprintf("event-%d", t.ID),
 			"start":    t.Start.Format("15:04"),
-			"subtitle": "",
+			"subtitle": t.Note,
 			"title":    t.Title,
 			"track":    nil,
 			"type":     "other",
