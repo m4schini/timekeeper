@@ -50,7 +50,7 @@ func (c Conference) MarshalJSON() ([]byte, error) {
 		Start:            c.Start.Format("2006-01-02"),
 		End:              c.End.Format("2006-01-02"),
 		DaysCount:        c.DaysCount,
-		TimeslotDuration: fmt.Sprintf("%2.f:%2.f", c.TimeslotDuration.Hours(), c.TimeslotDuration.Minutes()),
+		TimeslotDuration: fmt.Sprintf("%02.f:%02.f", c.TimeslotDuration.Hours(), c.TimeslotDuration.Minutes()),
 		TimeZoneName:     c.TimeZoneName,
 		Colors:           c.Colors,
 		Rooms:            rooms,

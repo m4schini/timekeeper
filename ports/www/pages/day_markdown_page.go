@@ -8,7 +8,7 @@ import (
 	"strings"
 	"timekeeper/app/database"
 	"timekeeper/app/database/model"
-	"timekeeper/app/export"
+	export "timekeeper/app/export/md"
 	"timekeeper/ports/www/render"
 )
 

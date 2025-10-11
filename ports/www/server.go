@@ -8,7 +8,7 @@ import (
 	"timekeeper/ports/www/middleware"
 )
 
-func Serve(listener net.Listener, authenticator auth.Authenticator, pages []Route, components []Route, apis []Route) error {
+func Serve(listener net.Listener, authenticator auth.Authenticator, pages []Route, components []Route) error {
 	r := chi.NewRouter()
 	r.Use(middleware.AllowAllCORS, middleware.Log, middleware.UseGzip, middleware.UseAuth(authenticator))
 	for _, route := range pages {
@@ -17,12 +17,6 @@ func Serve(listener net.Listener, authenticator auth.Authenticator, pages []Rout
 	r.Route("/_", func(r chi.Router) {
 		//r.Use(middleware.AllowAllCORS, middleware.Log, middleware.UseGzip, middleware.UseAuth(authenticator))
 		for _, route := range components {
-			HandleRoute(r, route)
-		}
-	})
-	r.Route("/api", func(r chi.Router) {
-		//r.Use(middleware.AllowAllCORS, middleware.Log, middleware.UseGzip, middleware.UseAuth(authenticator))
-		for _, route := range apis {
 			HandleRoute(r, route)
 		}
 	})
