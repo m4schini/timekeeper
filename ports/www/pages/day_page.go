@@ -29,10 +29,10 @@ func DayPage(day int, event model.EventModel, data []model.TimeslotModel) Node {
 		))
 }
 
-func CompactDayPage(day int, event model.EventModel, data []model.TimeslotModel) Node {
+func CompactDayPage(data []model.TimeslotModel) Node {
 	return Shell(
 		Main(
-			components.CompactDay(event.ID, day, data),
+			components.CompactDay(data),
 			//Div(Style("margin-top: 0.3rem; margin-bottom: -0.7rem"),
 			//	Text("Export: "),
 			//	components.ExportMarkdownButton(event.ID, day),
@@ -118,7 +118,7 @@ func (l *DayPageRoute) Handler() http.Handler {
 
 		var page Node
 		if useCompact {
-			page = CompactDayPage(int(day), event, dayData)
+			page = CompactDayPage(dayData)
 		} else {
 			page = DayPage(int(day), event, dayData)
 		}

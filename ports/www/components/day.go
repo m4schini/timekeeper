@@ -12,7 +12,6 @@ import (
 	"time"
 	"timekeeper/app/database"
 	"timekeeper/app/database/model"
-	"timekeeper/config"
 	"timekeeper/ports/www/middleware"
 	"timekeeper/ports/www/render"
 )
@@ -21,17 +20,6 @@ import (
 
 func ExportMarkdownButton(eventId, day int) Node {
 	return A(Href(fmt.Sprintf("/event/%v/%v/export/markdown", eventId, day)), Text("Markdown"))
-}
-
-func Timestamp(ts model.TimeslotModel) time.Time {
-	startDate := ts.Event.Start
-	timeslot := ts.Start
-	day := ts.Day
-	date := time.Date(startDate.Year(), startDate.Month(), startDate.Day(),
-		timeslot.Hour(), timeslot.Minute(), timeslot.Second(), timeslot.Nanosecond(),
-		config.Timezone())
-	offset := time.Duration(day) * 24 * time.Hour
-	return date.Add(offset)
 }
 
 func AddDays(t time.Time, days int) time.Time {
@@ -44,7 +32,7 @@ func Day(event, day int, date time.Time, withActions bool, timeslots []model.Tim
 	now := time.Now()
 	insertedSep := false
 	for _, timeslot := range timeslots {
-		ts := Timestamp(timeslot)
+		ts := timeslot.Date()
 		tsDay := ts.YearDay()
 		nowDay := now.YearDay()
 		until := now.Sub(ts)
@@ -79,7 +67,7 @@ func FullDay(day int, date time.Time, timeslots []model.TimeslotModel) Node {
 	now := time.Now()
 	insertedSep := false
 	for _, timeslot := range timeslots {
-		ts := Timestamp(timeslot)
+		ts := timeslot.Date()
 		tsDay := ts.YearDay()
 		nowDay := now.YearDay()
 		until := now.Sub(ts)
@@ -103,13 +91,13 @@ func FullDay(day int, date time.Time, timeslots []model.TimeslotModel) Node {
 	)
 }
 
-func CompactDay(event, day int, timeslots []model.TimeslotModel) Node {
+func CompactDay(timeslots []model.TimeslotModel) Node {
 	//log := zap.L().Named("day")
 	t := Group{}
 	now := time.Now()
 	insertedSep := false
 	for _, timeslot := range timeslots {
-		ts := Timestamp(timeslot)
+		ts := timeslot.Date()
 		tsDay := ts.YearDay()
 		nowDay := now.YearDay()
 		until := now.Sub(ts)

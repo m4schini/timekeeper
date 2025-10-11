@@ -19,25 +19,24 @@ func ExportVocSchedule(event model.EventModel, timeslots []model.TimeslotModel) 
 		day := t.Day
 		room := t.Room.Name
 
-		eventDate := time.Date(event.Start.Year(), event.Start.Month(), event.Start.Day()+t.Day,
-			t.Start.Hour(), t.Start.Minute(), t.Start.Second(), t.Start.Nanosecond(),
-			config.Timezone())
+		eventDate := t.Date()
 		event := ConferenceEvent{
-			Abstract: "",
-			Date:     eventDate,
-			Duration: "01:00",
-			Guid:     fmt.Sprintf("00000000-0000-0000-0000-%012d", t.ID),
-			Id:       t.ID,
-			Language: "de",
-			Room:     room,
-			Slug:     fmt.Sprintf("event-%d", t.ID),
-			Start:    t.Start.Format("15:04"),
-			Subtitle: t.Note,
-			Title:    t.Title,
-			Type:     "other",
-			Url:      fmt.Sprintf("%v/event/%v#%v", config.BaseUrl(), event.ID, t.ID),
-			Links:    make([]interface{}, 0),
-			Persons:  make([]Person, 0),
+			Abstract:    t.Note,
+			Description: t.Note,
+			Date:        eventDate,
+			Duration:    "01:00",
+			Guid:        fmt.Sprintf("00000000-0000-0000-0000-%012d", t.ID),
+			Id:          t.ID,
+			Language:    "de",
+			Room:        room,
+			Slug:        fmt.Sprintf("event-%d", t.ID),
+			Start:       t.Start.Format("15:04"),
+			Subtitle:    t.Note,
+			Title:       t.Title,
+			Type:        "other",
+			Url:         fmt.Sprintf("%v/event/%v#%v", config.BaseUrl(), event.ID, t.ID),
+			Links:       make([]interface{}, 0),
+			Persons:     make([]Person, 0),
 		}
 		conf.Days[day].Rooms[room] = append(conf.Days[day].Rooms[room], event)
 	}

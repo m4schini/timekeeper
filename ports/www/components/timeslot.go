@@ -12,7 +12,6 @@ import (
 	"time"
 	"timekeeper/app/database"
 	"timekeeper/app/database/model"
-	"timekeeper/config"
 	"timekeeper/ports/www/middleware"
 	"timekeeper/ports/www/render"
 )
@@ -20,7 +19,7 @@ import (
 func TimeSlot(t model.TimeslotModel, withActions, disabled bool) Node {
 	return Div(Class("timeslot-container"), If(disabled, Style("opacity: 0.5;")),
 		Div(Class("timeslot-meta"),
-			timeslotTime(t.Event.Start, t.Start, t.Day),
+			timeslotTime(t.Date()),
 			timeslotRoom(t.Event.ID, t.Room.Location.ID, t.Room),
 			Div(Class("timeslot-roles"), RoleTag(t.Role)),
 		),
@@ -54,7 +53,7 @@ func DuplicateTimeslotButton(timeslotId int) Node {
 
 func FullTimeSlot(t model.TimeslotModel, disabled bool) Node {
 	return Div(Class("full-timeslot-container"), If(disabled, Style("opacity: 0.5;")),
-		timeslotTime(t.Event.Start, t.Start, t.Day),
+		timeslotTime(t.Date()),
 		timeslotRoom(t.Event.ID, t.Room.Location.ID, t.Room),
 		Div(Class("timeslot-roles"), RoleTag(t.Role)),
 		Div(Class("timeslot-info"),
@@ -67,7 +66,7 @@ func FullTimeSlot(t model.TimeslotModel, disabled bool) Node {
 
 func CompactTimeSlot(t model.TimeslotModel, disabled bool) Node {
 	return Div(Class("compact-timeslot-container"), If(disabled, Style("opacity: 0.5;")),
-		timeslotTime(t.Event.Start, t.Start, t.Day),
+		timeslotTime(t.Date()),
 		timeslotRoom(t.Event.ID, t.Room.Location.ID, t.Room),
 		Div(Class("timeslot-roles"), RoleTag(t.Role)),
 		Div(Class("timeslot-info"),
@@ -78,17 +77,11 @@ func CompactTimeSlot(t model.TimeslotModel, disabled bool) Node {
 	)
 }
 
-func timeslotTime(startDate, timeslot time.Time, day int) Node {
-	date := time.Date(startDate.Year(), startDate.Month(), startDate.Day(),
-		timeslot.Hour(), timeslot.Minute(), timeslot.Second(), timeslot.Nanosecond(),
-		config.Timezone())
-	offset := time.Duration(day) * 24 * time.Hour
+func timeslotTime(date time.Time) Node {
 	return Div(
 		Class("timeslot-time"),
-		Text(timeslot.Format("15:04")),
-		Title(fmt.Sprintf("%v", date.
-			Add(offset).
-			Format(time.RFC1123Z))))
+		Text(date.Format("15:04")),
+		Title(date.Format(time.RFC1123Z)))
 }
 
 func timeslotRoom(eventId, locationId int, r model.RoomModel) Node {
