@@ -1,4 +1,4 @@
-package api
+package pages
 
 import (
 	"github.com/go-chi/chi/v5"
@@ -21,7 +21,7 @@ func (v *VocScheduleRoute) Method() string {
 }
 
 func (v *VocScheduleRoute) Pattern() string {
-	return "/event/{event}"
+	return "/event/{event}/export/schedule.json"
 }
 
 func (v *VocScheduleRoute) Handler() http.Handler {

@@ -21,6 +21,19 @@ func (r Role) Title() string {
 	}
 }
 
+func (r Role) Color() string {
+	switch r {
+	case RoleOrganizer:
+		return "#ffd003"
+	case RoleMentor:
+		return "#ea680c"
+	case RoleParticipant:
+		return "#4cad37"
+	default:
+		panic("unknown role")
+	}
+}
+
 func RoleFrom(role string) Role {
 	switch Role(role) {
 	case RoleOrganizer:

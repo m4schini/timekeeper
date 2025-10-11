@@ -1,4 +1,4 @@
-package export
+package voc
 
 import (
 	"fmt"
