@@ -19,7 +19,7 @@ func ExportVocSchedule(event model.EventModel, timeslots []model.TimeslotModel) 
 		day := t.Day
 		room := t.Room.Name
 
-		eventDate := time.Date(event.Start.Year(), event.Start.Month(), event.Start.Day(),
+		eventDate := time.Date(event.Start.Year(), event.Start.Month(), event.Start.Day()+t.Day,
 			t.Start.Hour(), t.Start.Minute(), t.Start.Second(), t.Start.Nanosecond(),
 			config.Timezone())
 		event := ConferenceEvent{
