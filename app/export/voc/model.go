@@ -50,7 +50,7 @@ func (c Conference) MarshalJSON() ([]byte, error) {
 		Start:            c.Start.Format("2006-01-02"),
 		End:              c.End.Format("2006-01-02"),
 		DaysCount:        c.DaysCount,
-		TimeslotDuration: fmt.Sprintf("%02.f:%02.f", c.TimeslotDuration.Hours(), c.TimeslotDuration.Minutes()),
+		TimeslotDuration: fmt.Sprintf("%02.f:%02.f", c.TimeslotDuration.Hours(), float64(0)),
 		TimeZoneName:     c.TimeZoneName,
 		Colors:           c.Colors,
 		Rooms:            rooms,
@@ -103,8 +103,8 @@ func (d Day) MarshalJSON() ([]byte, error) {
 	encodeModel := day{
 		Index:     d.Index,
 		Date:      d.Date.Format("2006-01-02"),
-		DateStart: d.DateStart.Format("2006-01-02T15:04:05+07:00"),
-		DateEnd:   d.DateStart.Format("2006-01-02T15:04:05+07:00"),
+		DateStart: d.DateStart.Format("2006-01-02T15:04:05-07:00"),
+		DateEnd:   d.DateStart.Format("2006-01-02T15:04:05-07:00"),
 		Rooms:     d.Rooms,
 	}
 	return json.Marshal(encodeModel)
