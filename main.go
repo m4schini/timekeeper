@@ -40,6 +40,7 @@ func main() {
 		&p.EditTimeslotPageRoute{DB: db},
 		&p.DuplicateTimeslotPageRoute{DB: db},
 		&p.VocScheduleRoute{DB: db},
+		&p.MarkdownPageRoute{DB: db},
 		www.StaticFileRoute{},
 	}
 	components := []www.Route{

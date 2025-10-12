@@ -16,14 +16,7 @@ import (
 	"timekeeper/ports/www/render"
 )
 
-//var titleCase = cases.Title(language.German)
-
-func AddDays(t time.Time, days int) time.Time {
-	return t.Add(time.Duration(days) * 24 * time.Hour)
-}
-
 func Day(event, day int, date time.Time, withActions bool, timeslots []model.TimeslotModel) Node {
-	//log := zap.L().Named("day")
 	t := Group{}
 	now := time.Now()
 	insertedSep := false
@@ -47,9 +40,7 @@ func Day(event, day int, date time.Time, withActions bool, timeslots []model.Tim
 	return Div(Class("day-container"), //hx.Get("/_/day/"+day), hx.Trigger("load delay:60s"), hx.Swap("outerHTML"),
 		H2(A(Text(fmt.Sprintf("Tag %v (%v)", day, date.Weekday())), Href(fmt.Sprintf("/event/%v/%v", event, day)))),
 		If(withActions, Div(Style("display: flex; gap: 1rem"), CreateTimeslotButton(event), ExportMarkdownButton(event, day))),
-		Div(Style("display: flex; flex-direction: column; gap: 1rem"),
-			t,
-		),
+		Div(Style("display: flex; flex-direction: column; gap: 1rem"), t),
 	)
 }
 
@@ -165,9 +156,6 @@ func (d *DayRoute) Handler() http.Handler {
 			}
 		}
 
-		err = render.Render(writer, request, Day(event.ID, int(day), event.Start, isOrganizer, dayData))
-		if err != nil {
-			log.Error("failed to render dayParam", zap.Error(err))
-		}
+		render.Render(log, writer, request, Day(event.ID, int(day), event.Start, isOrganizer, dayData))
 	})
 }

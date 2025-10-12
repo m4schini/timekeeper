@@ -9,7 +9,7 @@ import (
 	"timekeeper/ports/www/middleware"
 )
 
-func Render(w http.ResponseWriter, r *http.Request, node gomponents.Node) error {
+func Render(log *zap.Logger, w http.ResponseWriter, r *http.Request, node gomponents.Node) {
 	if !middleware.IsOrganizer(r) {
 		revalidate := 30 * time.Second
 		SetCache(w, 15*time.Second, &revalidate)
@@ -17,7 +17,10 @@ func Render(w http.ResponseWriter, r *http.Request, node gomponents.Node) error 
 		w.Header().Set("Cache-Control", "no-cache")
 	}
 	w.Header().Set("Content-Type", "text/html; charset=utf-8")
-	return node.Render(w)
+	err := node.Render(w)
+	if err != nil {
+		log.Error("failed to render node", zap.Error(err), zap.String("method", r.Method), zap.String("route", r.URL.Path))
+	}
 }
 
 func SetCache(w http.ResponseWriter, maxAge time.Duration, revalidate *time.Duration) {

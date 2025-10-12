@@ -65,9 +65,6 @@ func (l *CreateTimeslotPageRoute) Handler() http.Handler {
 			return
 		}
 
-		err = render.Render(writer, request, CreateTimeslotPage(event, rooms))
-		if err != nil {
-			log.Error("failed to render dayParam", zap.Error(err))
-		}
+		render.Render(log, writer, request, CreateTimeslotPage(event, rooms))
 	})
 }

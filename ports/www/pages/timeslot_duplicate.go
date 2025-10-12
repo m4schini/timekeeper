@@ -66,9 +66,6 @@ func (l *DuplicateTimeslotPageRoute) Handler() http.Handler {
 			return
 		}
 
-		err = render.Render(writer, request, DuplicateTimeslotPage(timeslot, timeslot.Event, rooms))
-		if err != nil {
-			log.Error("failed to render duplicate timeslot page", zap.Error(err))
-		}
+		render.Render(log, writer, request, DuplicateTimeslotPage(timeslot, timeslot.Event, rooms))
 	})
 }

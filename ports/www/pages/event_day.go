@@ -19,11 +19,7 @@ func DayPage(day int, event model.EventModel, data []model.TimeslotModel) Node {
 	return Shell(
 		Main(
 			components.PageHeader(event, false),
-			components.FullDay(day+1, components.AddDays(event.Start, day), data),
-			Div(Style("margin-top: 0.3rem; margin-bottom: -0.7rem"),
-				Text("Export: "),
-				components.ExportMarkdownButton(event.ID, day),
-			),
+			components.FullDay(day+1, event.Day(day), data),
 			components.ScriptScrollSeperatorIntoView(),
 			components.ScriptReloadPageEveryMinute(),
 		))
@@ -33,10 +29,6 @@ func CompactDayPage(data []model.TimeslotModel) Node {
 	return Shell(
 		Main(
 			components.CompactDay(data),
-			//Div(Style("margin-top: 0.3rem; margin-bottom: -0.7rem"),
-			//	Text("Export: "),
-			//	components.ExportMarkdownButton(event.ID, day),
-			//),
 			components.ScriptScrollSeperatorIntoView(),
 			components.ScriptReloadPageEveryMinute(),
 		))
@@ -61,21 +53,11 @@ func (l *DayPageRoute) Handler() http.Handler {
 		var (
 			eventParam  = strings.ToLower(chi.URLParam(request, "event"))
 			dayParam    = strings.ToLower(chi.URLParam(request, "day"))
-			hasFilter   = request.URL.Query().Has("role")
-			roles       = strings.Split(request.URL.Query().Get("role"), ",")
 			isOrganizer = middleware.IsOrganizer(request)
+			roles, _    = ParseRolesQuery(request.URL.Query(), isOrganizer)
 			useCompact  = request.URL.Query().Has("compact")
 		)
 
-		if !hasFilter {
-			if isOrganizer {
-				roles = []string{string(model.RoleOrganizer), string(model.RoleMentor), string(model.RoleParticipant)}
-			} else {
-				roles = []string{string(model.RoleParticipant)}
-			}
-		}
-
-		log.Debug("rendering day", zap.String("eventParam", eventParam), zap.String("dayParam", dayParam))
 		eventId, err := strconv.ParseInt(eventParam, 10, 64)
 		if err != nil {
 			render.RenderError(log, writer, http.StatusBadRequest, "invalid eventId", err)
@@ -98,34 +80,16 @@ func (l *DayPageRoute) Handler() http.Handler {
 			render.RenderError(log, writer, http.StatusInternalServerError, "failed to retrieve day", err)
 			return
 		}
-
-		filterRoles := make([]model.Role, len(roles))
-		for i, role := range roles {
-			filterRoles[i] = model.RoleFrom(role)
-		}
-
-		dayData := make([]model.TimeslotModel, 0, len(timeslots))
-		for _, timeslot := range timeslots {
-			if timeslot.Day == int(day) {
-				for _, role := range filterRoles {
-					if timeslot.Role == role {
-						dayData = append(dayData, timeslot)
-						break
-					}
-				}
-			}
-		}
+		timeslots = model.FilterTimeslotDay(timeslots, int(day))
+		timeslots = model.FilterTimeslotRoles(timeslots, roles)
 
 		var page Node
 		if useCompact {
-			page = CompactDayPage(dayData)
+			page = CompactDayPage(timeslots)
 		} else {
-			page = DayPage(int(day), event, dayData)
+			page = DayPage(int(day), event, timeslots)
 		}
 
-		err = render.Render(writer, request, page)
-		if err != nil {
-			log.Error("failed to render dayParam", zap.Error(err))
-		}
+		render.Render(log, writer, request, page)
 	})
 }

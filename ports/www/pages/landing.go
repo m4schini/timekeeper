@@ -46,6 +46,7 @@ func (l *LandingPageRoute) Handler() http.Handler {
 			RenderError(log, writer, http.StatusInternalServerError, "failed to get events", err)
 			return
 		}
-		Render(writer, request, LandingPage(events))
+
+		Render(log, writer, request, LandingPage(events))
 	})
 }

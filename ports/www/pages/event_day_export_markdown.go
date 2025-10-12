@@ -44,26 +44,14 @@ func (l *DayMarkdownPageRoute) Handler() http.Handler {
 			return
 		}
 
-		//event, err := queries.GetEvent(int(eventId))
-		//if err != nil {
-		//	render.RenderError(log, writer, http.StatusInternalServerError, "failed to get event", err)
-		//	return
-		//}
-
 		timeslots, _, err := queries.GetTimeslotsOfEvent(int(eventId), 0, 100)
 		if err != nil {
 			render.RenderError(log, writer, http.StatusInternalServerError, "failed to retrieve day", err)
 			return
 		}
+		timeslots = model.FilterTimeslotDay(timeslots, int(day))
 
-		dayData := make([]model.TimeslotModel, 0, len(timeslots))
-		for _, timeslot := range timeslots {
-			if timeslot.Day == int(day) {
-				dayData = append(dayData, timeslot)
-			}
-		}
-
-		md, err := export.ExportMarkdownTimetable(dayData)
+		md, err := export.ExportMarkdownTimetable(timeslots)
 		if err != nil {
 			render.RenderError(log, writer, http.StatusInternalServerError, "failed to render markdown", err)
 			return

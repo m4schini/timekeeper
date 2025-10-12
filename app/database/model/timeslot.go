@@ -23,6 +23,46 @@ func (t *TimeslotModel) Date() time.Time {
 		config.Timezone())
 }
 
+func FilterTimeslotDay(timeslots []TimeslotModel, dayIndex int) []TimeslotModel {
+	filtered := make([]TimeslotModel, 0, len(timeslots))
+	for _, timeslot := range timeslots {
+		if timeslot.Day == dayIndex {
+			filtered = append(filtered, timeslot)
+		}
+	}
+
+	return filtered
+}
+
+func FilterTimeslotRoles(timeslots []TimeslotModel, roles []Role) []TimeslotModel {
+	filtered := make([]TimeslotModel, 0, len(timeslots))
+	for _, timeslot := range timeslots {
+		for _, role := range roles {
+			if timeslot.Role == role {
+				filtered = append(filtered, timeslot)
+				break
+			}
+		}
+	}
+
+	return filtered
+}
+
+func MapTimeslotsToDays(timeslots []TimeslotModel) map[int][]TimeslotModel {
+	eventDays := make(map[int][]TimeslotModel)
+	for _, timeslot := range timeslots {
+		day, ok := eventDays[timeslot.Day]
+		if !ok {
+			day = make([]TimeslotModel, 0)
+		}
+
+		day = append(day, timeslot)
+
+		eventDays[timeslot.Day] = day
+	}
+	return eventDays
+}
+
 type CreateTimeslotModel struct {
 	Event    int
 	Role     Role

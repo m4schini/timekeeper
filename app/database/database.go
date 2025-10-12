@@ -35,4 +35,8 @@ type Commands interface {
 	CreateTimeslot(m model.CreateTimeslotModel) (id int, err error)
 	DeleteTimeslot(id int) (err error)
 	UpdateTimeslot(m model.UpdateTimeslotModel) (err error)
+
+	CreateEvent(m model.CreateEventModel) (id int, err error)
+	DeleteEvent(id int) (err error)
+	UpdateEvent(m model.UpdateEventModel) (err error)
 }

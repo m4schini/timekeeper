@@ -115,6 +115,6 @@ func (l *LocationPageRoute) Handler() http.Handler {
 			return
 		}
 
-		Render(writer, request, LocationPage(event, rooms))
+		Render(log, writer, request, LocationPage(event, rooms))
 	})
 }

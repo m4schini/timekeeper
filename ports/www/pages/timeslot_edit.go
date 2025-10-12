@@ -66,9 +66,6 @@ func (l *EditTimeslotPageRoute) Handler() http.Handler {
 			return
 		}
 
-		err = render.Render(writer, request, EditTimeslotPage(timeslot, timeslot.Event, rooms))
-		if err != nil {
-			log.Error("failed to render edit timeslot page", zap.Error(err))
-		}
+		render.Render(log, writer, request, EditTimeslotPage(timeslot, timeslot.Event, rooms))
 	})
 }

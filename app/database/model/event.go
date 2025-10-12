@@ -16,3 +16,18 @@ type EventModel struct {
 func (e EventModel) URL() string {
 	return fmt.Sprintf("%v/event/%v", config.BaseUrl(), e.ID)
 }
+
+func (e EventModel) Day(day int) time.Time {
+	return e.Start.AddDate(0, 0, day)
+}
+
+type CreateEventModel struct {
+	Name  string
+	Start time.Time
+}
+
+type UpdateEventModel struct {
+	ID    int
+	Name  string
+	Start time.Time
+}

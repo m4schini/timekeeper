@@ -43,10 +43,7 @@ func (l *LoginPageRoute) Handler() http.Handler {
 	return http.HandlerFunc(func(writer http.ResponseWriter, request *http.Request) {
 		_ = authenticator
 
-		err := render.Render(writer, request, LoginPage())
-		if err != nil {
-			log.Error("failed to render dayParam", zap.Error(err))
-		}
+		render.Render(log, writer, request, LoginPage())
 	})
 }
 

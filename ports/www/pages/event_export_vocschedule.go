@@ -5,7 +5,6 @@ import (
 	"go.uber.org/zap"
 	"net/http"
 	"strconv"
-	"strings"
 	"timekeeper/app/database"
 	"timekeeper/app/database/model"
 	export "timekeeper/app/export/voc"
@@ -34,12 +33,7 @@ func (v *VocScheduleRoute) Handler() http.Handler {
 			render.RenderError(log, writer, http.StatusBadRequest, "invalid event id", err)
 			return
 		}
-		hasFilter := request.URL.Query().Has("role")
-		roles := strings.Split(request.URL.Query().Get("role"), ",")
-
-		if !hasFilter {
-			roles = []string{string(model.RoleParticipant)}
-		}
+		roles, _ := ParseRolesQuery(request.URL.Query(), false)
 
 		event, err := queries.GetEvent(int(eventId))
 		if err != nil {
@@ -52,23 +46,9 @@ func (v *VocScheduleRoute) Handler() http.Handler {
 			render.RenderError(log, writer, http.StatusInternalServerError, "failed to get timeslots of event", err)
 			return
 		}
+		timeslots = model.FilterTimeslotRoles(timeslots, roles)
 
-		filterRoles := make([]model.Role, len(roles))
-		for i, role := range roles {
-			filterRoles[i] = model.RoleFrom(role)
-		}
-
-		eventData := make([]model.TimeslotModel, 0, len(timeslots))
-		for _, timeslot := range timeslots {
-			for _, role := range filterRoles {
-				if timeslot.Role == role {
-					eventData = append(eventData, timeslot)
-					break
-				}
-			}
-		}
-
-		scheduleJson, err := export.ExportVocSchedule(event, eventData)
+		scheduleJson, err := export.ExportVocSchedule(event, timeslots)
 		if err != nil {
 			render.RenderError(log, writer, http.StatusInternalServerError, "failed to generate voc schedule", err)
 			return
