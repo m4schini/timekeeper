@@ -5,7 +5,6 @@ import (
 	"github.com/go-chi/chi/v5"
 	"go.uber.org/zap"
 	. "maragu.dev/gomponents"
-	hx "maragu.dev/gomponents-htmx"
 	. "maragu.dev/gomponents/html"
 	"net/http"
 	"strconv"
@@ -33,22 +32,6 @@ func TimeSlot(t model.TimeslotModel, withActions, disabled bool) Node {
 			DeleteTimeslotButton(t.ID),
 		)),
 	)
-}
-
-func DeleteTimeslotButton(timeslotId int) Node {
-	return A(Text("delete"), Href("#"),
-		hx.Delete(fmt.Sprintf("/_/timeslot/%v", timeslotId)),
-		hx.Target("closest .timeslot-container"),
-		hx.Swap("outerHTML swap:1s"),
-	)
-}
-
-func EditTimeslotButton(timeslotId int) Node {
-	return A(Text("edit"), Href(fmt.Sprintf("/edit/timeslot/%v", timeslotId)))
-}
-
-func DuplicateTimeslotButton(timeslotId int) Node {
-	return A(Text("duplicate"), Href(fmt.Sprintf("/duplicate/timeslot/%v", timeslotId)))
 }
 
 func FullTimeSlot(t model.TimeslotModel, disabled bool) Node {

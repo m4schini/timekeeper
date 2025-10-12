@@ -25,12 +25,8 @@ func main() {
 	if err != nil {
 		logger.Fatal("failed to create postgresql adapter", zap.Error(err))
 	}
-	db := database.NewDatabase(dbAdapter)
+	db := database.New(dbAdapter)
 	authy := auth.NewAuthenticator()
-
-	//e := app.Event()
-	//out, _ := yaml.Marshal(e)
-	//os.WriteFile("./time.yaml", out, 0777)
 
 	pages := []www.Route{
 		&p.LandingPageRoute{DB: db},

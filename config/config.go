@@ -6,7 +6,8 @@ import (
 )
 
 func Timezone() *time.Location {
-	l, err := time.LoadLocation("Europe/Berlin")
+	timezone := getEnvOr("TIMEKEEPER_TIMEZONE", "Europe/Berlin")
+	l, err := time.LoadLocation(timezone)
 	if err != nil {
 		panic(err)
 	}

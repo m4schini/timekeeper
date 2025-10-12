@@ -18,10 +18,6 @@ import (
 
 //var titleCase = cases.Title(language.German)
 
-func ExportMarkdownButton(eventId, day int) Node {
-	return A(Href(fmt.Sprintf("/event/%v/%v/export/markdown", eventId, day)), Text("Markdown"))
-}
-
 func AddDays(t time.Time, days int) time.Time {
 	return t.Add(time.Duration(days) * 24 * time.Hour)
 }
@@ -55,10 +51,6 @@ func Day(event, day int, date time.Time, withActions bool, timeslots []model.Tim
 			t,
 		),
 	)
-}
-
-func CreateTimeslotButton(eventId int) Node {
-	return A(Href(fmt.Sprintf("/create/timeslot?event=%v", eventId)), Text("Create Timeslot"))
 }
 
 func FullDay(day int, date time.Time, timeslots []model.TimeslotModel) Node {

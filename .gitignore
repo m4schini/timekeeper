@@ -2,6 +2,7 @@ helmfile.yaml.gotmpl
 values.yaml
 apps/**
 apps/
+apps
 cluster-issuer.yaml
 cert.yaml
 dns-cluster-issuer.yaml

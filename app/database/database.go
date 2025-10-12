@@ -12,7 +12,7 @@ type Database struct {
 	Commands Commands
 }
 
-func NewDatabase(db *sql.DB) *Database {
+func New(db *sql.DB) *Database {
 	return &Database{
 		Queries:  &query.Queries{DB: db},
 		Commands: &command.Commands{DB: db},
