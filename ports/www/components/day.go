@@ -39,8 +39,8 @@ func Day(event, day int, date time.Time, withActions bool, timeslots []model.Tim
 	}
 
 	return Div(Class("day-container"), //hx.Get("/_/day/"+day), hx.Trigger("load delay:60s"), hx.Swap("outerHTML"),
-		H2(A(Text(fmt.Sprintf("Tag %v (%v)", day, md.Wochentag(date.Weekday()))), Href(fmt.Sprintf("/event/%v/%v", event, day)))),
-		If(withActions, Div(Style("display: flex; gap: 1rem"), CreateTimeslotButton(event), ExportEventDayMarkdownButton(event, day))),
+		H2(A(Text(fmt.Sprintf("Tag %v (%v)", day, md.Wochentag(date.Weekday()))), Href(fmt.Sprintf("/event/%v/schedule/%v?compact", event, day)))),
+		//If(withActions, Div(Style("display: flex; gap: 1rem"), CreateTimeslotButton(event), ExportEventDayMarkdownButton(event, day))),
 		Div(Style("display: flex; flex-direction: column; gap: 1rem"), t),
 	)
 }

@@ -6,14 +6,18 @@ import (
 	. "maragu.dev/gomponents/html"
 	"net/http"
 	"timekeeper/app/database"
+	"timekeeper/app/database/model"
+	"timekeeper/ports/www/components"
 	"timekeeper/ports/www/middleware"
 	. "timekeeper/ports/www/render"
 )
 
 func CreateEventPage() Node {
 	return Shell(
+		components.PageHeader(model.EventModel{}),
 		Main(
 			Div(Text("Create Event")),
+			components.EventForm(nil, "POST", "/_/create/event", "Create"),
 		),
 	)
 }

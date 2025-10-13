@@ -46,10 +46,6 @@ func (l *EventScheduleDayRoute) Pattern() string {
 	return "/event/{event}/schedule/{day}"
 }
 
-func (l *EventScheduleDayRoute) UseCache() bool {
-	return false
-}
-
 func (l *EventScheduleDayRoute) Handler() http.Handler {
 	log := zap.L().Named(l.Pattern())
 	queries := l.DB.Queries

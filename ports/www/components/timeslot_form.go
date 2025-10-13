@@ -83,10 +83,6 @@ func (l *CreateTimeslotRoute) Pattern() string {
 	return "/create/timeslot"
 }
 
-func (l *CreateTimeslotRoute) UseCache() bool {
-	return false
-}
-
 func (l *CreateTimeslotRoute) Handler() http.Handler {
 	log := zap.L().Named(l.Pattern())
 	commands := l.DB.Commands
@@ -125,7 +121,7 @@ func (l *CreateTimeslotRoute) Handler() http.Handler {
 		}
 		log.Debug("created timeslot", zap.Int("id", id))
 
-		http.Redirect(writer, request, fmt.Sprintf("/event/%v", eventParam), http.StatusSeeOther)
+		http.Redirect(writer, request, fmt.Sprintf("/event/%v/schedule", eventParam), http.StatusSeeOther)
 	})
 }
 
@@ -213,7 +209,7 @@ func (l *UpdateTimeslotRoute) Handler() http.Handler {
 		}
 		log.Debug("updated timeslot", zap.Int("id", model.ID))
 
-		http.Redirect(writer, request, fmt.Sprintf("/event/%v", eventParam), http.StatusSeeOther)
+		http.Redirect(writer, request, fmt.Sprintf("/event/%v/schedule", eventParam), http.StatusSeeOther)
 	})
 }
 

@@ -29,6 +29,7 @@ func ExportEventDayMarkdownButton(eventId, day int) Node {
 
 func EventActions(eventId int) Node {
 	return Div(Class("menu"),
+		CreateTimeslotButton(eventId),
 		Text("Export: "),
 		ExportEventMarkdownButton(eventId),
 		ExportEventVocScheduleButton(eventId),
@@ -104,7 +105,8 @@ func ExportEventVocScheduleButton(eventId int) Node {
 }
 
 func CreateTimeslotButton(eventId int) Node {
-	return A(Href(fmt.Sprintf("/timeslot/create?event=%v", eventId)), Text("Create Timeslot"))
+	return AButton(ColorDefault, fmt.Sprintf("/timeslot/create?event=%v", eventId), "Create Timeslot")
+	//return A(Href(fmt.Sprintf("/timeslot/create?event=%v", eventId)), Text("Create Timeslot"))
 }
 
 func EditTimeslotButton(timeslotId int) Node {

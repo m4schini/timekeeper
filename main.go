@@ -68,6 +68,7 @@ func main() {
 	}
 	components := []www.Route{
 		&c.DayRoute{DB: db},
+		&c.CreateEventRoute{DB: db},
 		&c.CreateTimeslotRoute{DB: db},
 		&c.UpdateTimeslotRoute{DB: db},
 		&c.DeleteTimeslotRoute{DB: db},

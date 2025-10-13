@@ -21,7 +21,7 @@ func LandingPage(events []model.EventModel) Node {
 	return Shell(
 		Main(
 			components.PageHeader(model.EventModel{}),
-			A(Href("/event/create"), Text("Create Event")),
+			components.AButton(components.ColorDefault, "/event/create", "Create Event"),
 			Ul(g),
 		),
 	)
