@@ -19,23 +19,23 @@ type Day struct {
 	Timeslots []model.TimeslotModel
 }
 
-type MarkdownPageRoute struct {
+type EventScheduleExportMarkdownRoute struct {
 	DB *database.Database
 }
 
-func (l *MarkdownPageRoute) Method() string {
+func (l *EventScheduleExportMarkdownRoute) Method() string {
 	return http.MethodGet
 }
 
-func (l *MarkdownPageRoute) Pattern() string {
+func (l *EventScheduleExportMarkdownRoute) Pattern() string {
 	return "/event/{event}/export/schedule.md"
 }
 
-func (l *MarkdownPageRoute) UseCache() bool {
+func (l *EventScheduleExportMarkdownRoute) UseCache() bool {
 	return true
 }
 
-func (l *MarkdownPageRoute) Handler() http.Handler {
+func (l *EventScheduleExportMarkdownRoute) Handler() http.Handler {
 	log := zap.L().Named(l.Pattern())
 	queries := l.DB.Queries
 	return http.HandlerFunc(func(writer http.ResponseWriter, request *http.Request) {

@@ -7,7 +7,7 @@ import (
 	"timekeeper/app/database/model"
 )
 
-func PageHeader(event model.EventModel, withActions bool) Node {
+func PageHeader(event model.EventModel) Node {
 	return Header(Class("page-header"),
 		Logo(event.Name, event.ID),
 		Div(Class("last-change"),

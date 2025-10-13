@@ -20,7 +20,7 @@ func LandingPage(events []model.EventModel) Node {
 	}
 	return Shell(
 		Main(
-			components.PageHeader(model.EventModel{}, false),
+			components.PageHeader(model.EventModel{}),
 			A(Href("/event/create"), Text("Create Event")),
 			Ul(g),
 		),
@@ -37,10 +37,6 @@ func (l *LandingPageRoute) Method() string {
 
 func (l *LandingPageRoute) Pattern() string {
 	return "/"
-}
-
-func (l *LandingPageRoute) UseCache() bool {
-	return false
 }
 
 func (l *LandingPageRoute) Handler() http.Handler {

@@ -4,7 +4,7 @@ CREATE SCHEMA timekeeper;
 CREATE TABLE timekeeper.users (
    id SERIAL PRIMARY KEY ,
    login_name VARCHAR NOT NULL ,
-   password DATE NOT NULL
+   password VARCHAR NOT NULL
 );
 
 CREATE TYPE EVENT_ROLE AS ENUM ('Organizer', 'Mentor', 'Participant');
@@ -14,6 +14,13 @@ CREATE TABLE timekeeper.events (
     name VARCHAR NOT NULL ,
     start DATE NOT NULL,
     owner INT NOT NULL REFERENCES timekeeper.users(id)
+);
+
+CREATE TABLE timekeeper.event_has_location (
+    id SERIAL PRIMARY KEY ,
+    name VARCHAR NOT NULL ,
+    event INT NOT NULL REFERENCES timekeeper.events(id) ON DELETE CASCADE ,
+    location INT NOT NULL REFERENCES timekeeper.events(id) ON DELETE CASCADE
 );
 
 CREATE TABLE timekeeper.locations (

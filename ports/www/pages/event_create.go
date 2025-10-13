@@ -30,10 +30,6 @@ func (l *CreateEventPageRoute) Pattern() string {
 	return "/event/create"
 }
 
-func (l *CreateEventPageRoute) UseCache() bool {
-	return false
-}
-
 func (l *CreateEventPageRoute) Handler() http.Handler {
 	log := zap.L().Named("www").Named("event")
 	//queries := l.DB.Queries

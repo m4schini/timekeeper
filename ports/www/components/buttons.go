@@ -5,7 +5,23 @@ import (
 	. "maragu.dev/gomponents"
 	hx "maragu.dev/gomponents-htmx"
 	. "maragu.dev/gomponents/html"
+	"strings"
+	"timekeeper/app/database/model"
 )
+
+type PaletteColor string
+
+const (
+	ColorDefault   = ""
+	ColorDeepBlue  = "var(--color-deep-blue)"
+	ColorDeepGreen = "var(--color-deep-green)"
+	ColorSoftGrey  = "var(--color-soft-grey)"
+)
+
+func AButton(color PaletteColor, href, text string, a ...any) Node {
+	return A(If(color != ColorDefault, Style("background-color: "+string(color))), Class("button"), Href(href), Textf(text, a...))
+
+}
 
 func ExportEventDayMarkdownButton(eventId, day int) Node {
 	return A(Href(fmt.Sprintf("/event/%v/%v/export/schedule.md", eventId, day)), Text("Markdown"))
@@ -16,62 +32,75 @@ func EventActions(eventId int) Node {
 		Text("Export: "),
 		ExportEventMarkdownButton(eventId),
 		ExportEventVocScheduleButton(eventId),
-		Text("View: "),
-		EventViewOrganizer(eventId),
-		EventViewMentor(eventId),
-		EventViewParticipant(eventId, true),
-		Text("Share: "),
-		EventViewOrganizer(eventId),
-		EventViewMentor(eventId),
-		EventViewParticipant(eventId, false),
+		Text("View Only: "),
+		EventViewOnlyRole("Orga", eventId, model.RoleOrganizer),
+		EventViewOnlyRole("Mentor*innen", eventId, model.RoleMentor),
+		EventViewOnlyRole("Teilnehmer*innen", eventId, model.RoleParticipant),
 	)
 }
 
-func ExportEventActions(eventId int) Node {
-	return Div(Class("menu"), Text("Export: "),
-		ExportEventMarkdownButton(eventId),
-		ExportEventVocScheduleButton(eventId),
+func CopyTextBox(name, label, value string) Node {
+	return Div(Style("max-width: 800px; width: 100%; display: flex; justify-content: space-between"),
+		Label(For(name), Text(label)),
+		Input(Type("text"), Name(name), Value(value), Attr("onclick", "this.select()"), Style("width: 600px")),
 	)
 }
 
-func EventViewActions(eventId int) Node {
-	return Div(Class("menu"), Text("View: "),
-		EventViewOrganizer(eventId),
-		EventViewMentor(eventId),
-		EventViewParticipant(eventId, true),
-	)
+func UrlScheduleWithRoles(eventId int, roles ...model.Role) string {
+	if roles == nil || len(roles) == 0 {
+		return fmt.Sprintf("/event/%v/schedule", eventId)
+	}
+
+	roleStrs := make([]string, len(roles))
+	for i, role := range roles {
+		roleStrs[i] = string(role)
+	}
+
+	return fmt.Sprintf("/event/%v/schedule?role=%v", eventId, strings.Join(roleStrs, ","))
 }
 
-func ShareActions(eventId int) Node {
-	return Div(Class("menu"), Text("Share: "),
-		EventViewOrganizer(eventId),
-		EventViewMentor(eventId),
-		EventViewParticipant(eventId, false),
-	)
+func UrlExportVocSchedule(eventId int) string {
+	return fmt.Sprintf("/event/%v/export/schedule.json", eventId)
+}
+
+func UrlExportMdSchedule(eventId int) string {
+	return fmt.Sprintf("/event/%v/export/schedule.md", eventId)
+}
+
+func EventSchedule(eventId int) Node {
+	return A(Class("button"), Href(UrlScheduleWithRoles(eventId)), Text("Zeitplan öffnen"))
+}
+
+func EventLocation(eventId int) Node {
+	return A(Class("button"), Href(UrlScheduleWithRoles(eventId)), Text("Location hinzufügen"))
 }
 
 func EventViewParticipant(eventId int, withFilter bool) Node {
 	if withFilter {
-		return A(Href(fmt.Sprintf("/event/%v?role=Participant", eventId)), Text("Teilnehmer*innen"))
+		return A(Href(UrlScheduleWithRoles(eventId, model.RoleParticipant)), Text("Teilnehmer*innen"))
 	} else {
-		return A(Href(fmt.Sprintf("/event/%v", eventId)), Text("Teilnehmer*innen"))
+		return A(Href(UrlScheduleWithRoles(eventId)), Text("Teilnehmer*innen"))
 	}
 }
 
 func EventViewMentor(eventId int) Node {
-	return A(Href(fmt.Sprintf("/event/%v?role=Mentor,Participant", eventId)), Text("Mentor*innen"))
+	return A(Href(UrlScheduleWithRoles(eventId, model.RoleParticipant, model.RoleMentor)), Text("Mentor*innen"))
+}
+
+func EventViewOnlyRole(text string, eventId int, roles ...model.Role) Node {
+	return A(Href(UrlScheduleWithRoles(eventId, roles...)), Text(text))
 }
 
 func EventViewOrganizer(eventId int) Node {
-	return A(Href(fmt.Sprintf("/event/%v?role=Organizer,Mentor,Participant", eventId)), Text("Orga"))
+	return A(Href(UrlScheduleWithRoles(eventId, model.RoleParticipant, model.RoleMentor, model.RoleOrganizer)), Text("Orga"))
 }
 
 func ExportEventMarkdownButton(eventId int) Node {
-	return A(Href(fmt.Sprintf("/event/%v/export/schedule.md", eventId)), Text("Markdown"))
+	return AButton(ColorDefault, UrlExportMdSchedule(eventId), "Markdown")
 }
 
 func ExportEventVocScheduleButton(eventId int) Node {
-	return A(Href(fmt.Sprintf("/event/%v/export/schedule.json", eventId)), Text("VOC Schedule"))
+	return AButton(ColorDefault, UrlExportVocSchedule(eventId), "VOC Schedule (Info Beamer)")
 }
 
 func CreateTimeslotButton(eventId int) Node {

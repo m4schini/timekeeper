@@ -21,7 +21,7 @@ func DuplicateTimeslotPage(timeslot model.TimeslotModel, event model.EventModel,
 	}
 
 	return Shell(
-		components.PageHeader(event, false),
+		components.PageHeader(event),
 		Main(
 			H1(Textf("%v (%v)", event.Name, event.Start.Format("2006.01.02"))),
 			components.TimeslotForm(&timeslot, event, rooms, "POST", "/_/create/timeslot", "Duplicate"),
@@ -39,10 +39,6 @@ func (l *DuplicateTimeslotPageRoute) Method() string {
 
 func (l *DuplicateTimeslotPageRoute) Pattern() string {
 	return "/timeslot/duplicate/{timeslot}"
-}
-
-func (l *DuplicateTimeslotPageRoute) UseCache() bool {
-	return false
 }
 
 func (l *DuplicateTimeslotPageRoute) Handler() http.Handler {

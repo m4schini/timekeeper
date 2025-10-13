@@ -4,34 +4,74 @@ import (
 	"fmt"
 	"github.com/golang-jwt/jwt/v5"
 	"go.uber.org/zap"
+	"sync"
 	"time"
+	"timekeeper/app/database"
+	"timekeeper/app/database/model"
 	"timekeeper/config"
+)
+
+var (
+	ErrUserExists      = fmt.Errorf("loginName is already in use")
+	ErrInvalidPassword = fmt.Errorf("invalid password")
 )
 
 type Authenticator interface {
 	AuthenticateUser(username, password string) (jwt string, err error)
 	AuthenticateToken(jwt string) (err error)
+
+	CreateUser(username, password string) (id int, err error)
 }
 
 type authy struct {
+	DB     *database.Database
+	userMu sync.Mutex
 }
 
-func NewAuthenticator() *authy {
-	return new(authy)
+func NewAuthenticator(db *database.Database) *authy {
+	a := new(authy)
+	a.DB = db
+	return a
+}
+
+func (a *authy) CreateUser(username, password string) (id int, err error) {
+	a.userMu.Lock()
+	defer a.userMu.Unlock()
+	user, err := a.DB.Queries.GetUserByLoginName(username)
+	if err == nil {
+		return user.ID, ErrUserExists
+	}
+
+	hash, err := GeneratePasswordHash(password, &DefaultPasswordParams)
+	if err != nil {
+		return -1, err
+	}
+
+	return a.DB.Commands.CreateUser(model.CreateUserModel{
+		LoginName:    username,
+		PasswordHash: hash,
+	})
 }
 
 func (a *authy) AuthenticateUser(username, password string) (token string, err error) {
 	log := zap.L().Named("auth")
-	if username != "admin" || password != config.AdminPassword() {
-		err := fmt.Errorf("invalid credentials")
-		log.Error("login failed", zap.Error(err))
+	user, err := a.DB.Queries.GetUserByLoginName(username)
+	if err != nil {
 		return "", err
+	}
+
+	matches, err := ComparePasswordAndHash(password, user.PasswordHash)
+	if err != nil {
+		return "", err
+	}
+	if !matches {
+		return "", ErrInvalidPassword
 	}
 
 	t := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.RegisteredClaims{
 		Issuer:    "timekeeper",
 		Audience:  nil,
-		ExpiresAt: jwt.NewNumericDate(time.Now().Add(18 * time.Hour)),
+		ExpiresAt: jwt.NewNumericDate(time.Now().Add(72 * time.Hour)),
 		IssuedAt:  jwt.NewNumericDate(time.Now()),
 		ID:        fmt.Sprintf("%v", time.Now().Unix()),
 	})

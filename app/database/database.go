@@ -29,6 +29,7 @@ type Queries interface {
 	GetEvents(offset int, limit int) (es []model.EventModel, err error)
 	GetTimeslot(id int) (r model.TimeslotModel, err error)
 	GetTimeslotsOfEvent(event int, offset int, limit int) (ts []model.TimeslotModel, total int, err error)
+	GetUserByLoginName(loginName string) (u model.UserModel, err error)
 }
 
 type Commands interface {
@@ -39,4 +40,6 @@ type Commands interface {
 	CreateEvent(m model.CreateEventModel) (id int, err error)
 	DeleteEvent(id int) (err error)
 	UpdateEvent(m model.UpdateEventModel) (err error)
+
+	CreateUser(m model.CreateUserModel) (id int, err error)
 }

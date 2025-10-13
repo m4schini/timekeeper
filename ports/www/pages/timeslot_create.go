@@ -20,7 +20,7 @@ func CreateTimeslotPage(event model.EventModel, rooms []model.RoomModel) Node {
 	}
 
 	return Shell(
-		components.PageHeader(event, false),
+		components.PageHeader(event),
 		Main(
 			H1(Textf("%v (%v)", event.Name, event.Start.Format("2006.01.02"))),
 			components.TimeslotForm(nil, event, rooms, "POST", "/_/create/timeslot", "Create"),
@@ -38,10 +38,6 @@ func (l *CreateTimeslotPageRoute) Method() string {
 
 func (l *CreateTimeslotPageRoute) Pattern() string {
 	return "/timeslot/create"
-}
-
-func (l *CreateTimeslotPageRoute) UseCache() bool {
-	return false
 }
 
 func (l *CreateTimeslotPageRoute) Handler() http.Handler {

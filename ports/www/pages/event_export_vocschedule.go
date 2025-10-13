@@ -11,23 +11,19 @@ import (
 	"timekeeper/ports/www/render"
 )
 
-type VocScheduleRoute struct {
+type EventExportVocScheduleRoute struct {
 	DB *database.Database
 }
 
-func (v *VocScheduleRoute) Method() string {
+func (v *EventExportVocScheduleRoute) Method() string {
 	return http.MethodGet
 }
 
-func (v *VocScheduleRoute) Pattern() string {
+func (v *EventExportVocScheduleRoute) Pattern() string {
 	return "/event/{event}/export/schedule.json"
 }
 
-func (v *VocScheduleRoute) UseCache() bool {
-	return true
-}
-
-func (v *VocScheduleRoute) Handler() http.Handler {
+func (v *EventExportVocScheduleRoute) Handler() http.Handler {
 	queries := v.DB.Queries
 	log := zap.L().Named("api")
 	return http.HandlerFunc(func(writer http.ResponseWriter, request *http.Request) {

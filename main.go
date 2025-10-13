@@ -43,22 +43,27 @@ func main() {
 		logger.Fatal("failed to create postgresql adapter", zap.Error(err))
 	}
 	db := database.New(dbAdapter)
-	authy := auth.NewAuthenticator()
+	authy := auth.NewAuthenticator(db)
+
+	id, err := authy.CreateUser("admin", config.AdminPassword())
+	if err != nil {
+		logger.Debug("tried to create admin user", zap.Error(err), zap.Int("user", id))
+	}
 
 	pages := []www.Route{
 		&p.LandingPageRoute{DB: db},
 		&p.LocationPageRoute{DB: db},
-		&p.DayPageRoute{DB: db},
-		&p.DayMarkdownPageRoute{DB: db},
+		&p.EventScheduleDayRoute{DB: db},
 		&p.EventPageRoute{DB: db},
+		&p.SchedulePageRoute{DB: db},
 		&p.CreateEventPageRoute{DB: db},
 		&p.LoginPageRoute{Auth: authy},
 		&p.LogoutRoute{},
 		&p.CreateTimeslotPageRoute{DB: db},
 		&p.EditTimeslotPageRoute{DB: db},
 		&p.DuplicateTimeslotPageRoute{DB: db},
-		&p.VocScheduleRoute{DB: db},
-		&p.MarkdownPageRoute{DB: db},
+		&p.EventExportVocScheduleRoute{DB: db},
+		&p.EventScheduleExportMarkdownRoute{DB: db},
 		www.StaticFileRoute{},
 	}
 	components := []www.Route{

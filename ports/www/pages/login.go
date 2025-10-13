@@ -14,7 +14,7 @@ import (
 
 func LoginPage() Node {
 	return Shell(
-		components.PageHeader(model.EventModel{}, false),
+		components.PageHeader(model.EventModel{}),
 		Main(Style("width: 100%; height: 100%; display: flex; justify-content: center; align-items: center"),
 			Form(Method("POST"), Action("/_/login"), Class("form"),
 				Input(Type("text"), Name("username"), Placeholder("username")),
@@ -61,10 +61,6 @@ func (l *LoginRoute) Method() string {
 
 func (l *LoginRoute) Pattern() string {
 	return "/login"
-}
-
-func (l *LoginRoute) UseCache() bool {
-	return false
 }
 
 func (l *LoginRoute) Handler() http.Handler {

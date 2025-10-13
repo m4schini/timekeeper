@@ -18,7 +18,7 @@ import (
 func DayPage(day int, event model.EventModel, data []model.TimeslotModel) Node {
 	return Shell(
 		Main(
-			components.PageHeader(event, false),
+			components.PageHeader(event),
 			components.FullDay(day+1, event.Day(day), data),
 			components.ScriptScrollSeperatorIntoView(),
 			components.ScriptReloadPageEveryMinute(),
@@ -34,23 +34,23 @@ func CompactDayPage(data []model.TimeslotModel) Node {
 		))
 }
 
-type DayPageRoute struct {
+type EventScheduleDayRoute struct {
 	DB *database.Database
 }
 
-func (l *DayPageRoute) Method() string {
+func (l *EventScheduleDayRoute) Method() string {
 	return http.MethodGet
 }
 
-func (l *DayPageRoute) Pattern() string {
-	return "/event/{event}/{day}"
+func (l *EventScheduleDayRoute) Pattern() string {
+	return "/event/{event}/schedule/{day}"
 }
 
-func (l *DayPageRoute) UseCache() bool {
+func (l *EventScheduleDayRoute) UseCache() bool {
 	return false
 }
 
-func (l *DayPageRoute) Handler() http.Handler {
+func (l *EventScheduleDayRoute) Handler() http.Handler {
 	log := zap.L().Named(l.Pattern())
 	queries := l.DB.Queries
 	return http.HandlerFunc(func(writer http.ResponseWriter, request *http.Request) {

@@ -21,7 +21,7 @@ func EditTimeslotPage(timeslot model.TimeslotModel, event model.EventModel, room
 	}
 
 	return Shell(
-		components.PageHeader(event, false),
+		components.PageHeader(event),
 		Main(
 			H1(Textf("%v (%v)", event.Name, event.Start.Format("2006.01.02"))),
 			components.TimeslotForm(&timeslot, event, rooms, "POST", fmt.Sprintf("/_/edit/timeslot/%v", timeslot.ID), "Update"),
@@ -39,10 +39,6 @@ func (l *EditTimeslotPageRoute) Method() string {
 
 func (l *EditTimeslotPageRoute) Pattern() string {
 	return "/timeslot/edit/{timeslot}"
-}
-
-func (l *EditTimeslotPageRoute) UseCache() bool {
-	return false
 }
 
 func (l *EditTimeslotPageRoute) Handler() http.Handler {

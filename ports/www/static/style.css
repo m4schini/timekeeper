@@ -34,6 +34,17 @@
     font-weight: normal;
     height: 100%;
     width: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+a.button {
+    padding: 0.5rem;
+    margin-right: 0.5rem;
+    text-decoration: none;
+    color: black;
+    background-color: var(--color-soft-blue);
+    width: fit-content;
 }
 
 .box {
@@ -61,6 +72,18 @@ h2 > a {
     /*gap: 1rem; !* spacing between columns *!*/
     row-gap: 2rem;
     width: 100%;
+}
+
+.event-container {
+    padding: 1rem;
+}
+
+.event-container > div {
+    width: 900px;
+
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 3rem;
 }
 
 @media screen and (min-width: 1000px) and (max-width: 1400px) {
