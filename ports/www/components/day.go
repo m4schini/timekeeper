@@ -12,6 +12,7 @@ import (
 	"time"
 	"timekeeper/app/database"
 	"timekeeper/app/database/model"
+	"timekeeper/app/export/md"
 	"timekeeper/ports/www/middleware"
 	"timekeeper/ports/www/render"
 )
@@ -38,14 +39,13 @@ func Day(event, day int, date time.Time, withActions bool, timeslots []model.Tim
 	}
 
 	return Div(Class("day-container"), //hx.Get("/_/day/"+day), hx.Trigger("load delay:60s"), hx.Swap("outerHTML"),
-		H2(A(Text(fmt.Sprintf("Tag %v (%v)", day, date.Weekday())), Href(fmt.Sprintf("/event/%v/%v", event, day)))),
-		If(withActions, Div(Style("display: flex; gap: 1rem"), CreateTimeslotButton(event), ExportMarkdownButton(event, day))),
+		H2(A(Text(fmt.Sprintf("Tag %v (%v)", day, md.Wochentag(date.Weekday()))), Href(fmt.Sprintf("/event/%v/%v", event, day)))),
+		If(withActions, Div(Style("display: flex; gap: 1rem"), CreateTimeslotButton(event), ExportEventDayMarkdownButton(event, day))),
 		Div(Style("display: flex; flex-direction: column; gap: 1rem"), t),
 	)
 }
 
 func FullDay(day int, date time.Time, timeslots []model.TimeslotModel) Node {
-	//log := zap.L().Named("day")
 	t := Group{}
 	now := time.Now()
 	insertedSep := false
@@ -114,6 +114,10 @@ func (d *DayRoute) Method() string {
 
 func (d *DayRoute) Pattern() string {
 	return "/event/{event}/{day}"
+}
+
+func (d *DayRoute) UseCache() bool {
+	return false
 }
 
 func (d *DayRoute) Handler() http.Handler {

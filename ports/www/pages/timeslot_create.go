@@ -37,7 +37,11 @@ func (l *CreateTimeslotPageRoute) Method() string {
 }
 
 func (l *CreateTimeslotPageRoute) Pattern() string {
-	return "/create/timeslot"
+	return "/timeslot/create"
+}
+
+func (l *CreateTimeslotPageRoute) UseCache() bool {
+	return false
 }
 
 func (l *CreateTimeslotPageRoute) Handler() http.Handler {

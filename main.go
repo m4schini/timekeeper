@@ -21,6 +21,23 @@ func main() {
 		logger.Fatal("failed to listen", zap.Error(err))
 	}
 
+	//memcached, err := memory.NewAdapter(
+	//	memory.AdapterWithAlgorithm(memory.LRU),
+	//	memory.AdapterWithCapacity(10000000),
+	//)
+	//if err != nil {
+	//	logger.Fatal("failed to create memcached adapter", zap.Error(err))
+	//}
+	//
+	//cacheClient, err := cache.NewClient(
+	//	cache.ClientWithAdapter(memcached),
+	//	cache.ClientWithTTL(1*time.Minute),
+	//	cache.ClientWithRefreshKey("opn"),
+	//)
+	//if err != nil {
+	//	logger.Fatal("failed to create cache client", zap.Error(err))
+	//}
+
 	dbAdapter, err := adapters.NewPostgresqlDatabase()
 	if err != nil {
 		logger.Fatal("failed to create postgresql adapter", zap.Error(err))
@@ -34,6 +51,7 @@ func main() {
 		&p.DayPageRoute{DB: db},
 		&p.DayMarkdownPageRoute{DB: db},
 		&p.EventPageRoute{DB: db},
+		&p.CreateEventPageRoute{DB: db},
 		&p.LoginPageRoute{Auth: authy},
 		&p.LogoutRoute{},
 		&p.CreateTimeslotPageRoute{DB: db},

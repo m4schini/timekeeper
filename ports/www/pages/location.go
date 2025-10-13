@@ -30,6 +30,8 @@ func LocationPage(event model.EventModel, rooms []model.RoomModel) Node {
 	return Shell(
 		Main(
 			components.PageHeader(event, false),
+			//<iframe width="425" height="350" src="https://www.openstreetmap.org/export/embed.html?bbox=13.465826511383058%2C52.51108885548261%2C13.48895788192749%2C52.52363705879041&amp;layer=mapnik" style="border: 1px solid black"></iframe><br/><small><a href="https://www.openstreetmap.org/?#map=16/52.51736/13.47739">View Larger Map</a></small>
+			IFrame(Width("425"), Height("350"), Src("https://www.openstreetmap.org/export/embed.html?bbox=13.474296927452087%2C52.51540800941198%2C13.480079770088198%2C52.51854508785383&amp;layer=mapnik&amp;marker=52.51697657663071%2C13.477188348770142")),
 			ImageWithBoxes("/static/betahaus2.png", 3424, 2080, boxes),
 		),
 	)
@@ -89,6 +91,10 @@ func (l *LocationPageRoute) Method() string {
 
 func (l *LocationPageRoute) Pattern() string {
 	return "/event/{event}/location/{location}"
+}
+
+func (l *LocationPageRoute) UseCache() bool {
+	return false
 }
 
 func (l *LocationPageRoute) Handler() http.Handler {

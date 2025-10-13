@@ -38,7 +38,11 @@ func (l *EditTimeslotPageRoute) Method() string {
 }
 
 func (l *EditTimeslotPageRoute) Pattern() string {
-	return "/edit/timeslot/{timeslot}"
+	return "/timeslot/edit/{timeslot}"
+}
+
+func (l *EditTimeslotPageRoute) UseCache() bool {
+	return false
 }
 
 func (l *EditTimeslotPageRoute) Handler() http.Handler {

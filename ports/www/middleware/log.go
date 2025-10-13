@@ -15,11 +15,11 @@ func Log(next http.Handler) http.Handler {
 			path = path[:16] + "..." + path[len(path)-16:]
 		}
 
-		log := log.With(zap.String("method", request.Method), zap.String("path", path))
+		log := log.With(zap.String("method", request.Method), zap.String("path", path)).WithOptions(zap.AddCallerSkip(1))
 		log.Debug("received api request")
 
 		next.ServeHTTP(writer, request)
 
-		log.Debug("handled api request", zap.Duration("duration", time.Since(start)))
+		log.Info("handled api request", zap.Duration("duration", time.Since(start)))
 	})
 }

@@ -27,7 +27,7 @@ func AdminPassword() string {
 }
 
 func BaseUrl() string {
-	return getEnvOr("BASE_URL", "https://zeit.haeck.se")
+	return getEnvOr("TIMEKEEPER_BASE_URL", "https://zeit.haeck.se")
 }
 
 func Port() string {

@@ -23,6 +23,10 @@ func (v *VocScheduleRoute) Pattern() string {
 	return "/event/{event}/export/schedule.json"
 }
 
+func (v *VocScheduleRoute) UseCache() bool {
+	return true
+}
+
 func (v *VocScheduleRoute) Handler() http.Handler {
 	queries := v.DB.Queries
 	log := zap.L().Named("api")

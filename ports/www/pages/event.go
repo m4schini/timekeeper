@@ -25,6 +25,7 @@ func EventPage(event model.EventModel, withActions bool, days [][]model.Timeslot
 	return Shell(
 		Main(
 			components.PageHeader(event, withActions),
+			If(withActions, components.EventActions(event.ID)),
 			Div(Class("days-container"), dayNodes),
 		),
 		components.ScriptScrollSeperatorIntoView(),
@@ -62,6 +63,10 @@ func (l *EventPageRoute) Method() string {
 
 func (l *EventPageRoute) Pattern() string {
 	return "/event/{event}"
+}
+
+func (l *EventPageRoute) UseCache() bool {
+	return true
 }
 
 func (l *EventPageRoute) Handler() http.Handler {

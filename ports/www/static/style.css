@@ -223,7 +223,7 @@ h2 > a {
 
 .page-header {
     padding: 1rem;
-    background-color: var(--color-soft-green);
+    background-color: var(--color-deep-blue);
     color: white;
 
     display: flex;
@@ -238,7 +238,6 @@ h2 > a {
 
 .logo {
     margin: 0;
-    background-color: var(--color-soft-green);
     color: white;
 }
 
@@ -267,16 +266,28 @@ h2 > a {
 
 .menu a {
     text-decoration: none;
-    color: white;
+    color: black;
     height: 100%;
     padding: 0.5rem;
-    background-color: var(--color-deep-blue);
+    background-color: var(--color-soft-blue);
 }
 
 h2 {
-    background-color: var(--color-deep-green);
+    background-color: var(--color-soft-blue);
     padding: 1rem;
     color: white;
+}
+
+.export-actions {
+    padding: 1rem;
+}
+
+.export-actions > a {
+    margin-right: 1rem;
+    padding: 0.5rem;
+    background-color: var(--color-soft-blue);
+    color: black;
+    text-decoration: none;
 }
 
 .full-timeslot-container {

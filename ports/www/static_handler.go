@@ -22,6 +22,10 @@ func (s StaticFileRoute) Pattern() string {
 	return "/static/{file}"
 }
 
+func (s StaticFileRoute) UseCache() bool {
+	return true
+}
+
 func (s StaticFileRoute) Handler() http.Handler {
 	return http.HandlerFunc(func(writer http.ResponseWriter, request *http.Request) {
 		fileName := chi.URLParam(request, "file")

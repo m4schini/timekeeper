@@ -1,7 +1,6 @@
 package components
 
 import (
-	"fmt"
 	"github.com/go-chi/chi/v5"
 	"go.uber.org/zap"
 	. "maragu.dev/gomponents"
@@ -71,7 +70,7 @@ func timeslotRoom(eventId, locationId int, r model.RoomModel) Node {
 	return Div(Class("timeslot-room"),
 		If(
 			true,
-			A(Textf("%v", r.Name), Href(fmt.Sprintf("/event/%v/location/%v#%v", eventId, locationId, r.ID))),
+			A(Textf("%v", r.Name), Href("#")), //fmt.Sprintf("/event/%v/location/%v#%v", eventId, locationId, r.ID)
 		),
 	)
 }
@@ -99,6 +98,10 @@ func (l *DeleteTimeslotRoute) Method() string {
 
 func (l *DeleteTimeslotRoute) Pattern() string {
 	return "/timeslot/{timeslot}"
+}
+
+func (l *DeleteTimeslotRoute) UseCache() bool {
+	return false
 }
 
 func (l *DeleteTimeslotRoute) Handler() http.Handler {

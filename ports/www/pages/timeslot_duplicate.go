@@ -38,7 +38,11 @@ func (l *DuplicateTimeslotPageRoute) Method() string {
 }
 
 func (l *DuplicateTimeslotPageRoute) Pattern() string {
-	return "/duplicate/timeslot/{timeslot}"
+	return "/timeslot/duplicate/{timeslot}"
+}
+
+func (l *DuplicateTimeslotPageRoute) UseCache() bool {
+	return false
 }
 
 func (l *DuplicateTimeslotPageRoute) Handler() http.Handler {

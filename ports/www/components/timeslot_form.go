@@ -83,6 +83,10 @@ func (l *CreateTimeslotRoute) Pattern() string {
 	return "/create/timeslot"
 }
 
+func (l *CreateTimeslotRoute) UseCache() bool {
+	return false
+}
+
 func (l *CreateTimeslotRoute) Handler() http.Handler {
 	log := zap.L().Named(l.Pattern())
 	commands := l.DB.Commands
@@ -164,6 +168,10 @@ func (l *UpdateTimeslotRoute) Method() string {
 
 func (l *UpdateTimeslotRoute) Pattern() string {
 	return "/edit/timeslot/{timeslot}"
+}
+
+func (l *UpdateTimeslotRoute) UseCache() bool {
+	return false
 }
 
 func (l *UpdateTimeslotRoute) Handler() http.Handler {

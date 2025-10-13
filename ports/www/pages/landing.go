@@ -9,6 +9,7 @@ import (
 	"timekeeper/app/database"
 	"timekeeper/app/database/model"
 	"timekeeper/ports/www/components"
+	"timekeeper/ports/www/middleware"
 	. "timekeeper/ports/www/render"
 )
 
@@ -20,6 +21,7 @@ func LandingPage(events []model.EventModel) Node {
 	return Shell(
 		Main(
 			components.PageHeader(model.EventModel{}, false),
+			A(Href("/event/create"), Text("Create Event")),
 			Ul(g),
 		),
 	)
@@ -37,10 +39,19 @@ func (l *LandingPageRoute) Pattern() string {
 	return "/"
 }
 
+func (l *LandingPageRoute) UseCache() bool {
+	return false
+}
+
 func (l *LandingPageRoute) Handler() http.Handler {
 	queries := l.DB.Queries
 	log := zap.L().Named(l.Pattern())
 	return http.HandlerFunc(func(writer http.ResponseWriter, request *http.Request) {
+		if !middleware.IsOrganizer(request) {
+			http.Redirect(writer, request, "/login", http.StatusTemporaryRedirect)
+			return
+		}
+
 		events, err := queries.GetEvents(0, 100)
 		if err != nil {
 			RenderError(log, writer, http.StatusInternalServerError, "failed to get events", err)

@@ -24,6 +24,10 @@ func (l *DayMarkdownPageRoute) Pattern() string {
 	return "/event/{event}/{day}/export/markdown"
 }
 
+func (l *DayMarkdownPageRoute) UseCache() bool {
+	return false
+}
+
 func (l *DayMarkdownPageRoute) Handler() http.Handler {
 	log := zap.L().Named(l.Pattern())
 	queries := l.DB.Queries

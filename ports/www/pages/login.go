@@ -37,6 +37,10 @@ func (l *LoginPageRoute) Pattern() string {
 	return "/login"
 }
 
+func (l *LoginPageRoute) UseCache() bool {
+	return true
+}
+
 func (l *LoginPageRoute) Handler() http.Handler {
 	log := zap.L().Named(l.Pattern())
 	authenticator := l.Auth
@@ -57,6 +61,10 @@ func (l *LoginRoute) Method() string {
 
 func (l *LoginRoute) Pattern() string {
 	return "/login"
+}
+
+func (l *LoginRoute) UseCache() bool {
+	return false
 }
 
 func (l *LoginRoute) Handler() http.Handler {
@@ -106,6 +114,10 @@ func (l *LogoutRoute) Method() string {
 
 func (l *LogoutRoute) Pattern() string {
 	return "/logout"
+}
+
+func (l *LogoutRoute) UseCache() bool {
+	return false
 }
 
 func (l *LogoutRoute) Handler() http.Handler {

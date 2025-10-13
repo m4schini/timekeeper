@@ -14,14 +14,13 @@ func UseAuth(authenticator auth.Authenticator) func(next http.Handler) http.Hand
 		return http.HandlerFunc(func(writer http.ResponseWriter, request *http.Request) {
 			cookie, err := request.Cookie("SESSION")
 			if err != nil {
-				log.Debug("failed to get session cookie", zap.Error(err))
 				next.ServeHTTP(writer, request)
 				return
 			}
 
 			err = authenticator.AuthenticateToken(cookie.Value)
 			if err != nil {
-				log.Debug("failed to authenticate token", zap.Error(err))
+				log.Warn("failed to authenticate token", zap.Error(err))
 				next.ServeHTTP(writer, request)
 				return
 			}

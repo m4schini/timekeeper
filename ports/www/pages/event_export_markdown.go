@@ -31,6 +31,10 @@ func (l *MarkdownPageRoute) Pattern() string {
 	return "/event/{event}/export/schedule.md"
 }
 
+func (l *MarkdownPageRoute) UseCache() bool {
+	return true
+}
+
 func (l *MarkdownPageRoute) Handler() http.Handler {
 	log := zap.L().Named(l.Pattern())
 	queries := l.DB.Queries
