@@ -22,6 +22,7 @@ func New(db *sql.DB) *Database {
 type Queries interface {
 	GetLocation(id int) (l model.LocationModel, err error)
 	GetLocations(offset int, limit int) (ls []model.LocationModel, err error)
+	GetLocationsOfEvent(eventId int) (ls []model.EventLocationModel, err error)
 	GetRoom(id int) (r model.RoomModel, err error)
 	GetRooms(offset int, limit int) (rs []model.RoomModel, total int, err error)
 	GetRoomsOfLocation(location int, offset int, limit int) (rs []model.RoomModel, total int, err error)
@@ -40,6 +41,10 @@ type Commands interface {
 	CreateEvent(m model.CreateEventModel) (id int, err error)
 	DeleteEvent(id int) (err error)
 	UpdateEvent(m model.UpdateEventModel) (err error)
+
+	CreateLocation(m model.CreateLocationModel) (id int, err error)
+	AddLocationToEvent(m model.AddLocationToEventModel) (id int, err error)
+	DeleteLocationFromEvent(id int) (err error)
 
 	CreateUser(m model.CreateUserModel) (id int, err error)
 }

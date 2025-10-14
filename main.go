@@ -38,6 +38,8 @@ func main() {
 	//	logger.Fatal("failed to create cache client", zap.Error(err))
 	//}
 
+	nominatimClient := adapters.NewNominatimClient()
+
 	dbAdapter, err := adapters.NewPostgresqlDatabase()
 	if err != nil {
 		logger.Fatal("failed to create postgresql adapter", zap.Error(err))
@@ -54,7 +56,7 @@ func main() {
 		&p.LandingPageRoute{DB: db},
 		&p.LocationPageRoute{DB: db},
 		&p.EventScheduleDayRoute{DB: db},
-		&p.EventPageRoute{DB: db},
+		&p.EventPageRoute{DB: db, Nominatim: nominatimClient},
 		&p.SchedulePageRoute{DB: db},
 		&p.CreateEventPageRoute{DB: db},
 		&p.LoginPageRoute{Auth: authy},
@@ -72,6 +74,8 @@ func main() {
 		&c.CreateTimeslotRoute{DB: db},
 		&c.UpdateTimeslotRoute{DB: db},
 		&c.DeleteTimeslotRoute{DB: db},
+		&c.AddLocationToEventRoute{DB: db},
+		&c.DeleteLocationFromEventRoute{DB: db},
 		&p.LoginRoute{Auth: authy},
 	}
 

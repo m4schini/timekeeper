@@ -3,7 +3,7 @@ package query
 import . "timekeeper/app/database/model"
 
 func (q *Queries) GetLocations(offset, limit int) (ls []LocationModel, err error) {
-	rows, err := q.DB.Query(`SELECT id, name, file FROM locations LIMIT $1 OFFSET $2`, limit, offset)
+	rows, err := q.DB.Query(`SELECT id, name, file FROM timekeeper.locations LIMIT $1 OFFSET $2`, limit, offset)
 	if err != nil {
 		return nil, err
 	}

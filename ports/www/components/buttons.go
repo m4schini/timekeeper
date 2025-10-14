@@ -124,3 +124,15 @@ func DeleteTimeslotButton(timeslotId int) Node {
 		hx.Swap("outerHTML swap:1s"),
 	)
 }
+
+func EditLocationButton(locationId int) Node {
+	return A(Text("edit"), Href(fmt.Sprintf("/location/edit/%v", locationId)))
+}
+
+func DeleteEventLocationButton(eventId, relationshipId int) Node {
+	return A(Text("remove"), Href("#"),
+		hx.Delete(fmt.Sprintf("/_/event/%v/location/%v", eventId, relationshipId)),
+		hx.Target("closest li"),
+		hx.Swap("outerHTML swap:1s"),
+	)
+}

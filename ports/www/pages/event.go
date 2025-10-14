@@ -8,6 +8,7 @@ import (
 	. "maragu.dev/gomponents/html"
 	"net/http"
 	"strconv"
+	"timekeeper/adapters"
 	"timekeeper/app/database"
 	"timekeeper/app/database/model"
 	"timekeeper/config"
@@ -16,7 +17,13 @@ import (
 	. "timekeeper/ports/www/render"
 )
 
-func EventPublicPage(event model.EventModel) Node {
+func EventPublicPage(event model.EventModel, locations []model.EventLocationModel) Node {
+	eventLocationsGroup := Group{}
+	for _, location := range locations {
+		eventLocationsGroup = append(eventLocationsGroup, components.EventLocationCard(event, location, false))
+		//eventLocationsGroup = append(eventLocationsGroup, Li(Textf("%v: %v (%v)", location.Relationship, location.Name, location.Address.City)))
+	}
+
 	return Shell(
 		components.PageHeader(event),
 		Main(
@@ -36,13 +43,24 @@ func EventPublicPage(event model.EventModel) Node {
 				),
 				Div(
 					H2(Text("Orte")),
+					Div(Style("display: flex; gap: 1rem"), eventLocationsGroup),
 				),
 			),
 		),
 	)
 }
 
-func EventOrgaPage(event model.EventModel) Node {
+func EventOrgaPage(event model.EventModel, locations []model.LocationModel, eventLocations []model.EventLocationModel) Node {
+	eventLocationItems := Group{}
+	for _, location := range eventLocations {
+		eventLocationItems = append(eventLocationItems, components.EventLocationCard(event, location, true))
+
+		//eventLocationItems = append(eventLocationItems, Li(
+		//	Textf("%v: %v ", location.Relationship, location.Name),
+		//	Title(fmt.Sprintf("%v (id=%v, relationship=%v)", location.Name, location.ID, location.RelationshipId)),
+		//	components.DeleteEventLocationButton(event.ID, location.RelationshipId)))
+	}
+
 	return Shell(
 		components.PageHeader(event),
 		Main(
@@ -61,20 +79,10 @@ func EventOrgaPage(event model.EventModel) Node {
 				Div(
 					H2(Text("Ort der Veranstaltung")),
 					Div(Style("display: flex; gap: 1rem; align-items: center; justify-content: space-between"),
-						Label(For("location"), Text("Ort")),
-						Select(Name("location"),
-							Option(Text("Betahaus | Schanze")),
-							Option(Text("Pyjama Park")),
-							Option(Text("Theater an der Parkaue")),
-						),
-						Label(For("relationship"), Text("Wofür?")),
-						Select(Name("relationship"),
-							Option(Text("Event Location")),
-							Option(Text("Übernachtung")),
-						),
-						components.AButton(components.ColorDefault, "#", "Location hinzufügen"),
+						components.AddLocationForm(event.ID, locations),
 						components.AButton(components.ColorSoftGrey, "#", "Neue Location erstellen"),
 					),
+					Div(Style("display: flex; gap: 1rem; margin-top: 2rem"), eventLocationItems),
 				),
 			),
 		),
@@ -82,7 +90,8 @@ func EventOrgaPage(event model.EventModel) Node {
 }
 
 type EventPageRoute struct {
-	DB *database.Database
+	DB        *database.Database
+	Nominatim *adapters.NominatimClient
 }
 
 func (l *EventPageRoute) Method() string {
@@ -104,17 +113,41 @@ func (l *EventPageRoute) Handler() http.Handler {
 			RenderError(log, writer, http.StatusBadRequest, "invalid event id", err)
 			return
 		}
+
 		event, err := queries.GetEvent(int(eventId))
 		if err != nil {
 			RenderError(log, writer, http.StatusInternalServerError, "failed to get event", err)
 			return
 		}
 
+		eventLocations, err := queries.GetLocationsOfEvent(int(eventId))
+		if err != nil {
+			log.Warn("failed to get event locations", zap.Error(err))
+			eventLocations = make([]model.EventLocationModel, 0)
+		}
+
+		for i, location := range eventLocations {
+			resp, err := l.Nominatim.Lookup(request.Context(), location.OsmId)
+			if err != nil {
+				log.Warn("failed to lookup osm data", zap.Error(err))
+				continue
+			}
+
+			location.Address = &resp.Address
+			eventLocations[i] = location
+		}
+
 		var page Node
 		if isOrganizer {
-			page = EventOrgaPage(event)
+			locations, err := queries.GetLocations(0, 100)
+			if err != nil {
+				log.Warn("failed to get locations", zap.Error(err))
+				locations = make([]model.LocationModel, 0)
+			}
+
+			page = EventOrgaPage(event, locations, eventLocations)
 		} else {
-			page = EventPublicPage(event)
+			page = EventPublicPage(event, eventLocations)
 		}
 
 		Render(log, writer, request, page)

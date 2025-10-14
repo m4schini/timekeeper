@@ -4,9 +4,41 @@ import (
 	"fmt"
 	. "maragu.dev/gomponents"
 	. "maragu.dev/gomponents/html"
+	"strings"
+	"timekeeper/app/database/model"
 )
 
 const locationMapSrc = "/static/betahaus.png"
+
+func EventLocationCard(event model.EventModel, eventLocation model.EventLocationModel, withActions bool) Node {
+	address := eventLocation.Address
+	var eventRole string
+	switch strings.TrimSpace(strings.ToLower(eventLocation.Relationship)) {
+	case "sleep_location":
+		eventRole = "Übernachtung"
+		break
+	case "event_location":
+		eventRole = "Event Location"
+		break
+	}
+
+	return Div(
+		Div(Strong(Text(eventRole))), Br(),
+		Div(Text(eventLocation.Name)),
+		Div(Style("white-space: pre-line"), Iff(eventLocation.Address != nil, func() Node {
+			return Textf(`%v %v
+%v %v
+`, address.Road, address.HouseNumber, address.Postcode, address.City)
+		}),
+			Iff(withActions, func() Node {
+				return Div(Style("display: flex; gap: 1rem"),
+					EditLocationButton(eventLocation.RelationshipId),
+					DeleteEventLocationButton(event.ID, eventLocation.RelationshipId),
+				)
+			}),
+		),
+	)
+}
 
 func LocationMap() Node {
 	return Div(Class("location-map"),
