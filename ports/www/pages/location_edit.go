@@ -1,6 +1,7 @@
 package pages
 
 import (
+	"fmt"
 	"github.com/go-chi/chi/v5"
 	"go.uber.org/zap"
 	. "maragu.dev/gomponents"
@@ -13,12 +14,26 @@ import (
 	. "timekeeper/ports/www/render"
 )
 
-func EditLocationPage(locationModel model.LocationModel) Node {
+func EditLocationPage(locationModel model.LocationModel, rooms []model.RoomModel) Node {
+	roomsList := Group{}
+	for _, room := range rooms {
+		roomsList = append(roomsList, Li(Form(
+			Input(Type("hidden"), Name("room"), Value(fmt.Sprintf("%v", room.ID))),
+			Input(Name("text"), Name("name"), Value(room.Name)),
+			Input(Type("submit"), Value("Umbenennen"), Disabled()),
+		),
+			components.DeleteRoomButton(room.ID),
+		))
+	}
+
 	return Shell(
 		components.PageHeader(model.EventModel{}),
 		Main(
 			Div(Text("Location bearbeiten")),
 			components.EditLocationForm(locationModel),
+			H3(Text("Räume")),
+			Ul(roomsList),
+			components.CreateRoomForm(locationModel),
 		),
 	)
 }
@@ -55,6 +70,13 @@ func (l *UpdateLocationPageRoute) Handler() http.Handler {
 		}
 		log.Debug("retrieved location", zap.Any("model", location))
 
-		Render(log, writer, request, EditLocationPage(location))
+		rooms, total, err := queries.GetRoomsOfLocation(location.ID, 0, 100)
+		if err != nil {
+			RenderError(log, writer, http.StatusInternalServerError, "failed to get rooms of location", err)
+			return
+		}
+		log.Debug("retrieved rooms of location", zap.Int("total", total), zap.Int("rooms", len(rooms)))
+
+		Render(log, writer, request, EditLocationPage(location, rooms))
 	})
 }

@@ -17,7 +17,6 @@ func (q *Queries) GetRoomsOfLocation(location int, offset, limit int) (rs []Room
 
 	rows, err := q.DB.Query(`
 SELECT r.id as id,
-       location,
        r.name as name,
        location_x,
        location_y,
@@ -29,7 +28,7 @@ SELECT r.id as id,
 FROM timekeeper.rooms r
 JOIN timekeeper.locations l
 ON r.location = l.id
-WHERE l.id = $1
+WHERE r.location = $1
 LIMIT $2 OFFSET $3`,
 		location, limit, offset)
 	if err != nil {
@@ -40,8 +39,8 @@ LIMIT $2 OFFSET $3`,
 	for rows.Next() {
 		var r RoomModel
 		var l LocationModel
-		err = row.Scan(&r.ID, &r.Name, &r.LocationX, &r.LocationY, &r.LocationW, &r.LocationH,
-			l.ID, l.Name, l.File)
+		err = rows.Scan(&r.ID, &r.Name, &r.LocationX, &r.LocationY, &r.LocationW, &r.LocationH,
+			&l.ID, &l.Name, &l.File)
 		if err != nil {
 			return nil, 0, err
 		}

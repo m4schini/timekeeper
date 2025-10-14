@@ -1,0 +1,18 @@
+package command
+
+import (
+	"timekeeper/app/database/model"
+)
+
+func (c *Commands) CreateRoom(m model.CreateRoomModel) (id int, err error) {
+	row := c.DB.QueryRow(`
+INSERT INTO timekeeper.rooms (location, name, location_x, location_y, location_w, location_h) 
+VALUES ($1, $2, $3, $4, $5, $6)
+RETURNING id`, m.Location, m.Name, 0, 0, 0, 0)
+	if err = row.Err(); err != nil {
+		return -1, err
+	}
+
+	err = row.Scan(&id)
+	return id, err
+}

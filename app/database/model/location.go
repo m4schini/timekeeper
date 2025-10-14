@@ -10,12 +10,13 @@ type LocationModel struct {
 }
 
 type EventLocationModel struct {
-	ID             int
-	Name           string
-	File           string
-	OsmId          string
-	Relationship   string
-	RelationshipId int
+	ID               int
+	Name             string
+	File             string
+	OsmId            string
+	Relationship     string
+	RelationshipId   int
+	RelationshipNote string
 
 	Address *adapters.OsmAddress
 }
@@ -37,6 +38,13 @@ type AddLocationToEventModel struct {
 	Name       string
 	EventId    int
 	LocationId int
+	Note       string
+}
+
+type UpdateLocationToEventModel struct {
+	ID   int
+	Name string
+	Note string
 }
 
 type DeleteLocationFromEventModel struct {

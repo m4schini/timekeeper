@@ -10,3 +10,8 @@ type RoomModel struct {
 	LocationW int
 	LocationH int
 }
+
+type CreateRoomModel struct {
+	Location int
+	Name     string
+}

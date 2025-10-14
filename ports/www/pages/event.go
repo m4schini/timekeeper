@@ -61,6 +61,14 @@ func EventOrgaPage(event model.EventModel, locations []model.LocationModel, even
 		//	components.DeleteEventLocationButton(event.ID, location.RelationshipId)))
 	}
 
+	embedDays := Group{}
+	for i := 0; i < event.TotalDays; i++ {
+		embedDays = append(embedDays, Div(Style("display: flex"),
+			Div(Style("max-width: 400px"), components.CopyTextBox(fmt.Sprintf("copy_embed_day_%v", i), fmt.Sprintf("Tag %v: ", i), components.IFrameCompactDay(event.ID, i))),
+			Div(Style("max-width: 400px"), components.CopyTextBox(fmt.Sprintf("copy_embed_day_%v_r", i), " Für Mentor*innen: ", components.IFrameCompactDay(event.ID, i, model.RoleParticipant, model.RoleMentor))),
+		))
+	}
+
 	return Shell(
 		components.PageHeader(event),
 		Main(
@@ -79,6 +87,10 @@ func EventOrgaPage(event model.EventModel, locations []model.LocationModel, even
 						components.CopyTextBox("copy_men", "Link für Mentor*innen", fmt.Sprintf("%v%v", config.BaseUrl(), components.UrlScheduleWithRoles(event.ID, model.RoleParticipant, model.RoleMentor))),
 						components.CopyTextBox("copy_org", "Link für Orga", fmt.Sprintf("%v%v", config.BaseUrl(), components.UrlScheduleWithRoles(event.ID, model.RoleParticipant, model.RoleMentor, model.RoleOrganizer))),
 						components.CopyTextBox("copy_voc", "Link für VOC/Info-Beamer", fmt.Sprintf("%v%v", config.BaseUrl(), components.UrlExportVocSchedule(event.ID))),
+					),
+					Div(Style("display: flex; flex-direction: column; margin-top: 1rem"),
+						Strong(Text("Links zum im Pad einbetten (einfach ins pad kopieren)")),
+						embedDays,
 					),
 				),
 				Div(

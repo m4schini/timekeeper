@@ -46,7 +46,11 @@ type Commands interface {
 	CreateLocation(m model.CreateLocationModel) (id int, err error)
 	UpdateLocation(m model.UpdateLocationModel) (err error)
 	AddLocationToEvent(m model.AddLocationToEventModel) (id int, err error)
+	UpdateLocationToEvent(m model.UpdateLocationToEventModel) (err error)
 	DeleteLocationFromEvent(id int) (err error)
+
+	CreateRoom(m model.CreateRoomModel) (id int, err error)
+	DeleteRoom(id int) (err error)
 
 	CreateUser(m model.CreateUserModel) (id int, err error)
 }

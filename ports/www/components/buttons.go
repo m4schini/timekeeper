@@ -39,9 +39,25 @@ func EventActions(eventId int) Node {
 
 func CopyTextBox(name, label, value string) Node {
 	return Div(Style("max-width: 800px; width: 100%; display: flex; justify-content: space-between"),
-		Label(For(name), Text(label)),
+		Label(Style("min-width: 140px"), For(name), Text(label)),
 		Input(Type("text"), Name(name), Value(value), Attr("onclick", "this.select()"), Style("width: 600px")),
 	)
+}
+
+func IFrameCompactDay(event, day int, roles ...model.Role) string {
+	height := 600
+	var embedUrl string
+	if len(roles) > 0 {
+		rolesStr := make([]string, len(roles))
+		for i, role := range roles {
+			rolesStr[i] = string(role)
+		}
+
+		embedUrl = fmt.Sprintf("https://zeit.haeck.se/event/%v/schedule/%v?role=%v&compact", event, day, strings.Join(rolesStr, ","))
+	} else {
+		embedUrl = fmt.Sprintf("https://zeit.haeck.se/event/%v/schedule/%v?compact", event, day)
+	}
+	return fmt.Sprintf(`<iframe src="%v" width="100%%" height="%v" frameborder="0"></iframe>`, embedUrl, height)
 }
 
 func UrlScheduleWithRoles(eventId int, roles ...model.Role) string {
@@ -118,6 +134,14 @@ func DeleteEventLocationButton(eventId, relationshipId int) Node {
 	return A(Text("remove"), Href("#"),
 		hx.Delete(fmt.Sprintf("/_/event/%v/location/%v", eventId, relationshipId)),
 		hx.Target("closest .location-card"),
+		hx.Swap("outerHTML swap:1s"),
+	)
+}
+
+func DeleteRoomButton(roomId int) Node {
+	return A(Text("remove"), Href("#"),
+		hx.Delete(fmt.Sprintf("/_/room/%v", roomId)),
+		hx.Target("closest li"),
 		hx.Swap("outerHTML swap:1s"),
 	)
 }
