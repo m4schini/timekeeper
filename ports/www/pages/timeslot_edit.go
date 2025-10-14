@@ -15,11 +15,6 @@ import (
 )
 
 func EditTimeslotPage(timeslot model.TimeslotModel, event model.EventModel, rooms []model.RoomModel) Node {
-	roomOptions := Group{}
-	for _, room := range rooms {
-		roomOptions = append(roomOptions, Option(Value(fmt.Sprintf("%v", room.ID)), Text(room.Name)))
-	}
-
 	return Shell(
 		components.PageHeader(event),
 		Main(
@@ -60,7 +55,7 @@ func (l *EditTimeslotPageRoute) Handler() http.Handler {
 			return
 		}
 
-		rooms, _, err := queries.GetRooms(0, 100)
+		rooms, err := queries.GetRoomsOfEventLocations(timeslot.Event.ID)
 		if err != nil {
 			render.RenderError(log, writer, http.StatusInternalServerError, "failed to retrieve rooms", err)
 			return

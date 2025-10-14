@@ -26,6 +26,13 @@ type CreateLocationModel struct {
 	OsmId   string
 }
 
+type UpdateLocationModel struct {
+	ID      int
+	Name    string
+	MapFile string
+	OsmId   string
+}
+
 type AddLocationToEventModel struct {
 	Name       string
 	EventId    int

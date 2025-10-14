@@ -23,17 +23,14 @@ func AButton(color PaletteColor, href, text string, a ...any) Node {
 
 }
 
-func ExportEventDayMarkdownButton(eventId, day int) Node {
-	return A(Href(fmt.Sprintf("/event/%v/%v/export/schedule.md", eventId, day)), Text("Markdown"))
-}
-
 func EventActions(eventId int) Node {
 	return Div(Class("menu"),
 		CreateTimeslotButton(eventId),
 		Text("Export: "),
 		ExportEventMarkdownButton(eventId),
 		ExportEventVocScheduleButton(eventId),
-		Text("View Only: "),
+		Text("View: "),
+		EventViewOnlyRole("Alle", eventId, model.RoleOrganizer, model.RoleMentor, model.RoleParticipant),
 		EventViewOnlyRole("Orga", eventId, model.RoleOrganizer),
 		EventViewOnlyRole("Mentor*innen", eventId, model.RoleMentor),
 		EventViewOnlyRole("Teilnehmer*innen", eventId, model.RoleParticipant),
@@ -72,28 +69,16 @@ func EventSchedule(eventId int) Node {
 	return A(Class("button"), Href(UrlScheduleWithRoles(eventId)), Text("Zeitplan öffnen"))
 }
 
-func EventLocation(eventId int) Node {
-	return A(Class("button"), Href(UrlScheduleWithRoles(eventId)), Text("Location hinzufügen"))
+func EditEvent(eventId int) Node {
+	return A(Class("button"), Href(fmt.Sprintf("/event/edit/%v", eventId)), Text("Event bearbeiten"))
 }
 
-func EventViewParticipant(eventId int, withFilter bool) Node {
-	if withFilter {
-		return A(Href(UrlScheduleWithRoles(eventId, model.RoleParticipant)), Text("Teilnehmer*innen"))
-	} else {
-		return A(Href(UrlScheduleWithRoles(eventId)), Text("Teilnehmer*innen"))
-	}
-}
-
-func EventViewMentor(eventId int) Node {
-	return A(Href(UrlScheduleWithRoles(eventId, model.RoleParticipant, model.RoleMentor)), Text("Mentor*innen"))
+func CreateLocation() Node {
+	return AButton(ColorSoftGrey, "/location/create", "Location Erstellen")
 }
 
 func EventViewOnlyRole(text string, eventId int, roles ...model.Role) Node {
 	return A(Href(UrlScheduleWithRoles(eventId, roles...)), Text(text))
-}
-
-func EventViewOrganizer(eventId int) Node {
-	return A(Href(UrlScheduleWithRoles(eventId, model.RoleParticipant, model.RoleMentor, model.RoleOrganizer)), Text("Orga"))
 }
 
 func ExportEventMarkdownButton(eventId int) Node {
@@ -132,7 +117,7 @@ func EditLocationButton(locationId int) Node {
 func DeleteEventLocationButton(eventId, relationshipId int) Node {
 	return A(Text("remove"), Href("#"),
 		hx.Delete(fmt.Sprintf("/_/event/%v/location/%v", eventId, relationshipId)),
-		hx.Target("closest li"),
+		hx.Target("closest .location-card"),
 		hx.Swap("outerHTML swap:1s"),
 	)
 }

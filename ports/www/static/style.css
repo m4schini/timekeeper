@@ -83,7 +83,7 @@ h2 > a {
 
     display: flex;
     flex-direction: column;
-    margin-bottom: 3rem;
+    margin-bottom: 2rem;
 }
 
 @media screen and (min-width: 1000px) and (max-width: 1400px) {

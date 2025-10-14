@@ -26,6 +26,7 @@ type Queries interface {
 	GetRoom(id int) (r model.RoomModel, err error)
 	GetRooms(offset int, limit int) (rs []model.RoomModel, total int, err error)
 	GetRoomsOfLocation(location int, offset int, limit int) (rs []model.RoomModel, total int, err error)
+	GetRoomsOfEventLocations(event int) (rs []model.RoomModel, err error)
 	GetEvent(id int) (r model.EventModel, err error)
 	GetEvents(offset int, limit int) (es []model.EventModel, err error)
 	GetTimeslot(id int) (r model.TimeslotModel, err error)
@@ -43,6 +44,7 @@ type Commands interface {
 	UpdateEvent(m model.UpdateEventModel) (err error)
 
 	CreateLocation(m model.CreateLocationModel) (id int, err error)
+	UpdateLocation(m model.UpdateLocationModel) (err error)
 	AddLocationToEvent(m model.AddLocationToEventModel) (id int, err error)
 	DeleteLocationFromEvent(id int) (err error)
 

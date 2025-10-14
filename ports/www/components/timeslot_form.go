@@ -24,7 +24,7 @@ func TimeslotForm(ts *model.TimeslotModel, event model.EventModel, rooms []model
 	for _, room := range rooms {
 		roomOptions = append(roomOptions, Option(
 			Value(fmt.Sprintf("%v", room.ID)),
-			Text(room.Name),
+			Textf("%v: %v", room.Location.Name, room.Name),
 			If(hasTs && room.ID == ts.Room.ID, Selected())))
 	}
 

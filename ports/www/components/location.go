@@ -22,7 +22,7 @@ func EventLocationCard(event model.EventModel, eventLocation model.EventLocation
 		break
 	}
 
-	return Div(
+	return Div(Class("location-card"),
 		Div(Strong(Text(eventRole))), Br(),
 		Div(Text(eventLocation.Name)),
 		Div(Style("white-space: pre-line"), Iff(eventLocation.Address != nil, func() Node {
@@ -32,7 +32,7 @@ func EventLocationCard(event model.EventModel, eventLocation model.EventLocation
 		}),
 			Iff(withActions, func() Node {
 				return Div(Style("display: flex; gap: 1rem"),
-					EditLocationButton(eventLocation.RelationshipId),
+					EditLocationButton(eventLocation.ID),
 					DeleteEventLocationButton(event.ID, eventLocation.RelationshipId),
 				)
 			}),

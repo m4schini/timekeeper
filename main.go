@@ -55,6 +55,8 @@ func main() {
 	pages := []www.Route{
 		&p.LandingPageRoute{DB: db},
 		&p.LocationPageRoute{DB: db},
+		&p.CreateLocationPageRoute{DB: db},
+		&p.UpdateLocationPageRoute{DB: db},
 		&p.EventScheduleDayRoute{DB: db},
 		&p.EventPageRoute{DB: db, Nominatim: nominatimClient},
 		&p.SchedulePageRoute{DB: db},
@@ -71,6 +73,8 @@ func main() {
 	components := []www.Route{
 		&c.DayRoute{DB: db},
 		&c.CreateEventRoute{DB: db},
+		&c.CreateLocationRoute{DB: db},
+		&c.EditLocationRoute{DB: db},
 		&c.CreateTimeslotRoute{DB: db},
 		&c.UpdateTimeslotRoute{DB: db},
 		&c.DeleteTimeslotRoute{DB: db},

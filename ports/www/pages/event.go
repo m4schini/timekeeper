@@ -65,6 +65,11 @@ func EventOrgaPage(event model.EventModel, locations []model.LocationModel, even
 		components.PageHeader(event),
 		Main(
 			Div(Class("event-container"),
+				Div(Style("display: flex; flex-direction: column"),
+					components.CopyTextBox("copy_event", "Link zum Event", fmt.Sprintf("%v/event/%v", config.BaseUrl(), event.ID)),
+					components.EditEvent(event.ID),
+				),
+
 				Div(
 					H2(Text("Zeitplan")),
 					components.EventSchedule(event.ID),
@@ -80,7 +85,7 @@ func EventOrgaPage(event model.EventModel, locations []model.LocationModel, even
 					H2(Text("Ort der Veranstaltung")),
 					Div(Style("display: flex; gap: 1rem; align-items: center; justify-content: space-between"),
 						components.AddLocationForm(event.ID, locations),
-						components.AButton(components.ColorSoftGrey, "#", "Neue Location erstellen"),
+						components.CreateLocation(),
 					),
 					Div(Style("display: flex; gap: 1rem; margin-top: 2rem"), eventLocationItems),
 				),
