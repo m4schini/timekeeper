@@ -1,14 +1,16 @@
 package voc
 
 import (
+	"bytes"
 	"encoding/json"
 	"fmt"
+	"io"
 	"time"
 	"timekeeper/app/database/model"
 	"timekeeper/config"
 )
 
-func ExportVocSchedule(event model.EventModel, timeslots []model.TimeslotModel) ([]byte, error) {
+func ExportVocScheduleTo(event model.EventModel, timeslots []model.TimeslotModel, writer io.Writer) error {
 	conf := NewConference(fmt.Sprintf("timekeeper_event_%v", event.ID), event.Name, event.Start, event.TotalDays)
 
 	tracksSet := make(map[model.Role]Track)
@@ -49,5 +51,15 @@ func ExportVocSchedule(event model.EventModel, timeslots []model.TimeslotModel) 
 	conf.Tracks = tracks
 
 	schedule := NewSchedule(event.URL(), fmt.Sprintf("0.0.%v", time.Now().Unix()), event.URL(), conf)
-	return json.Marshal(schedule)
+	return json.NewEncoder(writer).Encode(schedule)
+}
+
+func ExportVocSchedule(event model.EventModel, timeslots []model.TimeslotModel) ([]byte, error) {
+	var buf bytes.Buffer
+	err := ExportVocScheduleTo(event, timeslots, &buf)
+	if err != nil {
+		return nil, err
+	}
+
+	return buf.Bytes(), nil
 }

@@ -1,29 +1,30 @@
 package pages
 
 import (
+	"fmt"
 	"github.com/go-chi/chi/v5"
 	"go.uber.org/zap"
 	"net/http"
 	"strconv"
 	"timekeeper/app/database"
 	"timekeeper/app/database/model"
-	export "timekeeper/app/export/voc"
+	export "timekeeper/app/export/ical"
 	"timekeeper/ports/www/render"
 )
 
-type EventExportVocScheduleRoute struct {
+type EventExportIcalScheduleRoute struct {
 	DB *database.Database
 }
 
-func (v *EventExportVocScheduleRoute) Method() string {
+func (v *EventExportIcalScheduleRoute) Method() string {
 	return http.MethodGet
 }
 
-func (v *EventExportVocScheduleRoute) Pattern() string {
-	return "/event/{event}/export/schedule.json"
+func (v *EventExportIcalScheduleRoute) Pattern() string {
+	return "/event/{event}/export/schedule.ics"
 }
 
-func (v *EventExportVocScheduleRoute) Handler() http.Handler {
+func (v *EventExportIcalScheduleRoute) Handler() http.Handler {
 	queries := v.DB.Queries
 	log := zap.L().Named("api")
 	return http.HandlerFunc(func(writer http.ResponseWriter, request *http.Request) {
@@ -48,10 +49,11 @@ func (v *EventExportVocScheduleRoute) Handler() http.Handler {
 		}
 		timeslots = model.FilterTimeslotRoles(timeslots, roles)
 
-		writer.Header().Set("Content-Type", "application/json")
-		err = export.ExportVocScheduleTo(event, timeslots, writer)
+		writer.Header().Set("Content-Type", "text/calendar; charset=utf-8")
+		writer.Header().Set("Content-Disposition", fmt.Sprintf("inline; filename=timekeeper_event_%v.ics", event.ID))
+		err = export.ExportCalendarScheduleTo(event, timeslots, writer)
 		if err != nil {
-			render.RenderError(log, writer, http.StatusInternalServerError, "failed to generate voc schedule", err)
+			render.RenderError(log, writer, http.StatusInternalServerError, "failed to generate ical schedule", err)
 			return
 		}
 	})

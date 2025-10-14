@@ -67,6 +67,7 @@ func main() {
 		&p.EditTimeslotPageRoute{DB: db},
 		&p.DuplicateTimeslotPageRoute{DB: db},
 		&p.EventExportVocScheduleRoute{DB: db},
+		&p.EventExportIcalScheduleRoute{DB: db},
 		&p.EventScheduleExportMarkdownRoute{DB: db},
 		www.StaticFileRoute{},
 	}

@@ -73,6 +73,10 @@ func UrlScheduleWithRoles(eventId int, roles ...model.Role) string {
 	return fmt.Sprintf("/event/%v/schedule?role=%v", eventId, strings.Join(roleStrs, ","))
 }
 
+func UrlExportIcalSchedule(eventId int) string {
+	return fmt.Sprintf("/event/%v/export/schedule.ics", eventId)
+}
+
 func UrlExportVocSchedule(eventId int) string {
 	return fmt.Sprintf("/event/%v/export/schedule.json", eventId)
 }
@@ -103,6 +107,10 @@ func ExportEventMarkdownButton(eventId int) Node {
 
 func ExportEventVocScheduleButton(eventId int) Node {
 	return AButton(ColorDefault, UrlExportVocSchedule(eventId), "VOC Schedule (Info Beamer)")
+}
+
+func ExportEventIcalScheduleButton(eventId int) Node {
+	return AButton(ColorDefault, UrlExportIcalSchedule(eventId), "Calendar")
 }
 
 func CreateTimeslotButton(eventId int) Node {
