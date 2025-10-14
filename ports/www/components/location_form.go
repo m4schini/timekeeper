@@ -81,7 +81,7 @@ func (l *AddLocationToEventRoute) Handler() http.Handler {
 
 		id, err := commands.AddLocationToEvent(model)
 		if err != nil {
-			render.RenderError(log, writer, http.StatusInternalServerError, "failed to create timeslot", err)
+			render.RenderError(log, writer, http.StatusInternalServerError, "failed to add location to event", err)
 			return
 		}
 		log.Debug("added location to event", zap.Int("id", id))

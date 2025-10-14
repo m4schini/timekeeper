@@ -20,7 +20,7 @@ CREATE TABLE timekeeper.event_has_location (
     id SERIAL PRIMARY KEY ,
     name VARCHAR NOT NULL ,
     event INT NOT NULL REFERENCES timekeeper.events(id) ON DELETE CASCADE ,
-    location INT NOT NULL REFERENCES timekeeper.events(id) ON DELETE CASCADE
+    location INT NOT NULL REFERENCES timekeeper.locations(id) ON DELETE CASCADE
 );
 
 CREATE TABLE timekeeper.locations (

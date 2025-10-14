@@ -20,10 +20,10 @@ func CreateLocationForm() Node {
 				Input(Type("text"), Name("name"), Placeholder("Location Name"), Required()),
 			),
 
-			Div(
-				Label(For("map_file"), Text("Link zu map file (Optional)")),
-				Input(Type("text"), Name("map_file"), Placeholder("/static/betahaus2.png")),
-			),
+			//Div(
+			//	Label(For("map_file"), Text("Link zu map file (Optional)")),
+			//	Input(Type("text"), Name("map_file"), Placeholder("/static/betahaus2.png")),
+			//),
 
 			Div(
 				Label(For("osm_id"), Text("Open Streetmap ID (Optional)")),
@@ -64,7 +64,7 @@ func (l *CreateLocationRoute) Handler() http.Handler {
 
 		var (
 			nameParam    = request.PostFormValue("name")
-			mapFileParam = request.PostFormValue("map_file")
+			mapFileParam = "" //request.PostFormValue("map_file")
 			osmIdParam   = request.PostFormValue("osm_id")
 		)
 		model, err := ParseCreateLocationModel(nameParam, mapFileParam, osmIdParam)

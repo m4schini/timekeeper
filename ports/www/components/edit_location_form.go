@@ -23,10 +23,10 @@ func EditLocationForm(location model.LocationModel) Node {
 				Input(Type("text"), Name("name"), Placeholder("Location Name"), Required(), Value(location.Name)),
 			),
 
-			Div(
-				Label(For("map_file"), Text("Link zu map file (Optional)")),
-				Input(Type("text"), Name("map_file"), Placeholder("/static/betahaus2.png"), Value(location.File)),
-			),
+			//Div(
+			//	Label(For("map_file"), Text("Link zu map file (Optional)")),
+			//	Input(Type("text"), Name("map_file"), Placeholder("/static/betahaus2.png"), Value(location.File)),
+			//),
 
 			Div(
 				Label(For("osm_id"), Text("Open Streetmap ID (Optional)")),
@@ -68,7 +68,7 @@ func (l *EditLocationRoute) Handler() http.Handler {
 		var (
 			locationParam = request.PostFormValue("location")
 			nameParam     = request.PostFormValue("name")
-			mapFileParam  = request.PostFormValue("map_file")
+			mapFileParam  = "" //request.PostFormValue("map_file")
 			osmIdParam    = request.PostFormValue("osm_id")
 		)
 		model, err := ParseUpdateLocationModel(locationParam, nameParam, mapFileParam, osmIdParam)
