@@ -512,3 +512,11 @@ h2 {
     flex-direction: column;
     font-size: x-small;
 }
+
+.rooms .form input[type=submit] {
+    margin-bottom: 1rem;
+}
+
+.rooms li {
+    padding-bottom: 1rem;
+}

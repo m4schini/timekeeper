@@ -11,6 +11,7 @@ SELECT r.id as id,
        location_y,
        location_w,
        location_h,
+       description,
        l.id as location_id,
        l.name as location_name,
        l.file as file
@@ -23,7 +24,7 @@ WHERE r.id = $1`, id)
 	}
 
 	var l LocationModel
-	err = row.Scan(&r.ID, &r.Name, &r.LocationX, &r.LocationY, &r.LocationW, &r.LocationH,
+	err = row.Scan(&r.ID, &r.Name, &r.LocationX, &r.LocationY, &r.LocationW, &r.LocationH, &r.Description,
 		l.ID, l.Name, l.File)
 	r.Location = l
 	return r, err

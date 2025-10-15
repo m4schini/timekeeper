@@ -1,7 +1,6 @@
 package pages
 
 import (
-	"fmt"
 	"github.com/go-chi/chi/v5"
 	"go.uber.org/zap"
 	. "maragu.dev/gomponents"
@@ -17,11 +16,7 @@ import (
 func EditLocationPage(locationModel model.LocationModel, rooms []model.RoomModel) Node {
 	roomsList := Group{}
 	for _, room := range rooms {
-		roomsList = append(roomsList, Li(Form(
-			Input(Type("hidden"), Name("room"), Value(fmt.Sprintf("%v", room.ID))),
-			Input(Name("text"), Name("name"), Value(room.Name)),
-			Input(Type("submit"), Value("Umbenennen"), Disabled()),
-		),
+		roomsList = append(roomsList, Li(components.UpdateRoomForm(room),
 			components.DeleteRoomButton(room.ID),
 		))
 	}
@@ -32,7 +27,7 @@ func EditLocationPage(locationModel model.LocationModel, rooms []model.RoomModel
 			Div(Text("Location bearbeiten")),
 			components.EditLocationForm(locationModel),
 			H3(Text("Räume")),
-			Ul(roomsList),
+			Ul(Class("rooms"), roomsList),
 			components.CreateRoomForm(locationModel),
 		),
 	)

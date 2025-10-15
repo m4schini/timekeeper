@@ -22,12 +22,14 @@ SELECT r.id as id,
        location_y,
        location_w,
        location_h,
+       description,
        l.id as location_id,
        l.name as location_name,
        l.file as file
 FROM timekeeper.rooms r
 JOIN timekeeper.locations l
 ON r.location = l.id
+ORDER BY location_name, name
 LIMIT $1 OFFSET $2`, limit, offset)
 	if err != nil {
 		return nil, -1, err
@@ -37,7 +39,7 @@ LIMIT $1 OFFSET $2`, limit, offset)
 	for rows.Next() {
 		var r RoomModel
 		var l LocationModel
-		err = rows.Scan(&r.ID, &r.Name, &r.LocationX, &r.LocationY, &r.LocationW, &r.LocationH,
+		err = rows.Scan(&r.ID, &r.Name, &r.LocationX, &r.LocationY, &r.LocationW, &r.LocationH, &r.Description,
 			&l.ID, &l.Name, &l.File)
 		if err != nil {
 			return nil, 0, err

@@ -8,6 +8,7 @@ import (
 	. "maragu.dev/gomponents/html"
 	"net/http"
 	"strconv"
+	"time"
 	"timekeeper/adapters"
 	"timekeeper/app/database"
 	"timekeeper/app/database/model"
@@ -16,6 +17,10 @@ import (
 	"timekeeper/ports/www/middleware"
 	. "timekeeper/ports/www/render"
 )
+
+func EventDateRange(start time.Time, totalDays int) Node {
+	return H3(Style("margin: 0"), Textf("%v - %v", start.Format("02.01.2006"), start.AddDate(0, 0, totalDays-1).Format("02.01.2006")))
+}
 
 func EventPublicPage(event model.EventModel, locations []model.EventLocationModel) Node {
 	eventLocationsGroup := Group{}
@@ -28,6 +33,10 @@ func EventPublicPage(event model.EventModel, locations []model.EventLocationMode
 		components.PageHeader(event),
 		Main(
 			Div(Class("event-container"),
+				Div(Style("display: flex; flex-direction: column"),
+					EventDateRange(event.Start, event.TotalDays),
+				),
+
 				Div(
 					H2(Text("Zeitplan")),
 					Div(Style("display: flex; justify-content: space-between"),
@@ -76,6 +85,7 @@ func EventOrgaPage(event model.EventModel, locations []model.LocationModel, even
 				Div(Style("display: flex; flex-direction: column"),
 					components.CopyTextBox("copy_event", "Link zum Event", fmt.Sprintf("%v/event/%v", config.BaseUrl(), event.ID)),
 					components.EditEvent(event.ID),
+					EventDateRange(event.Start, event.TotalDays),
 				),
 
 				Div(
@@ -87,7 +97,7 @@ func EventOrgaPage(event model.EventModel, locations []model.LocationModel, even
 						Div(
 							Span(Text("Export:"), Style("margin-right: 1rem")),
 							components.ExportEventMarkdownButton(event.ID),
-							components.ExportEventIcalScheduleButton(event.ID),
+							//components.ExportEventIcalScheduleButton(event.ID),
 							components.ExportEventVocScheduleButton(event.ID),
 						),
 					),
@@ -97,7 +107,7 @@ func EventOrgaPage(event model.EventModel, locations []model.LocationModel, even
 						components.CopyTextBox("copy_men", "Link für Mentor*innen", fmt.Sprintf("%v%v", config.BaseUrl(), components.UrlScheduleWithRoles(event.ID, model.RoleParticipant, model.RoleMentor))),
 						components.CopyTextBox("copy_org", "Link für Orga", fmt.Sprintf("%v%v", config.BaseUrl(), components.UrlScheduleWithRoles(event.ID, model.RoleParticipant, model.RoleMentor, model.RoleOrganizer))),
 						components.CopyTextBox("copy_voc", "Link für VOC/Info-Beamer", fmt.Sprintf("%v%v", config.BaseUrl(), components.UrlExportVocSchedule(event.ID))),
-						components.CopyTextBox("copy_voc", "Link für Calendar", fmt.Sprintf("%v%v", config.BaseUrl(), components.UrlExportIcalSchedule(event.ID))),
+						//components.CopyTextBox("copy_ical", "Link für Calendar", fmt.Sprintf("%v%v", config.BaseUrl(), components.UrlExportIcalSchedule(event.ID))),
 					),
 					Div(Style("display: flex; flex-direction: column; margin-top: 1rem"),
 						Strong(Text("Links zum im Pad einbetten (einfach ins pad kopieren)")),

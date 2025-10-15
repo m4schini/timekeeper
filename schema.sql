@@ -40,7 +40,8 @@ CREATE TABLE timekeeper.rooms (
   location_x INT NOT NULL ,
   location_y INT NOT NULL ,
   location_w INT NOT NULL ,
-  location_h INT NOT NULL
+  location_h INT NOT NULL ,
+  description VARCHAR NOT NULL
 );
 
 CREATE TABLE timekeeper.timeslots (

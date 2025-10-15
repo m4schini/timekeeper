@@ -83,6 +83,7 @@ func main() {
 		&c.DeleteLocationFromEventRoute{DB: db},
 		&c.UpdateEventLocationRoute{DB: db},
 		&c.CreateRoomRoute{DB: db},
+		&c.UpdateRoomRoute{DB: db},
 		&c.DeleteRoomRoute{DB: db},
 		&p.LoginRoute{Auth: authy},
 	}

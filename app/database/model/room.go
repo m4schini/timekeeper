@@ -1,9 +1,10 @@
 package model
 
 type RoomModel struct {
-	ID       int
-	Location LocationModel
-	Name     string
+	ID          int
+	Location    LocationModel
+	Name        string
+	Description string
 
 	LocationX int
 	LocationY int
@@ -12,6 +13,13 @@ type RoomModel struct {
 }
 
 type CreateRoomModel struct {
-	Location int
-	Name     string
+	Location    int
+	Name        string
+	Description string
+}
+
+type UpdateRoomModel struct {
+	ID          int
+	Name        string
+	Description string
 }

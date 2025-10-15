@@ -9,6 +9,7 @@ func (q *Queries) GetRoomsOfEventLocations(event int) (rs []RoomModel, err error
        location_y,
        location_w,
        location_h,
+       description,
        l.id as location_id,
        l.name as location_name,
        l.file as file
@@ -27,7 +28,7 @@ WHERE l.id
 	for rows.Next() {
 		var r RoomModel
 		var l LocationModel
-		err = rows.Scan(&r.ID, &r.Name, &r.LocationX, &r.LocationY, &r.LocationW, &r.LocationH,
+		err = rows.Scan(&r.ID, &r.Name, &r.LocationX, &r.LocationY, &r.LocationW, &r.LocationH, &r.Description,
 			&l.ID, &l.Name, &l.File)
 		if err != nil {
 			return nil, err
