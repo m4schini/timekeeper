@@ -14,10 +14,10 @@ import (
 )
 
 func EditEventPage(event model.EventModel) Node {
-	return Shell(
+	return Shell(event.Name,
 		components.PageHeader(model.EventModel{}),
 		Main(
-			Div(Text("Edit Event")),
+			H2(Text("Edit Event")),
 			components.EventForm(&event, "POST", "/_/event/edit", "Update"),
 		),
 	)

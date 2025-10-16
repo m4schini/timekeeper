@@ -26,7 +26,7 @@ func LocationPage(event model.EventModel, rooms []model.RoomModel) Node {
 		}
 	}
 
-	return Shell(
+	return Shell(event.Name,
 		Main(
 			components.PageHeader(event),
 			//<iframe width="425" height="350" src="https://www.openstreetmap.org/export/embed.html?bbox=13.465826511383058%2C52.51108885548261%2C13.48895788192749%2C52.52363705879041&amp;layer=mapnik" style="border: 1px solid black"></iframe><br/><small><a href="https://www.openstreetmap.org/?#map=16/52.51736/13.47739">View Larger Map</a></small>

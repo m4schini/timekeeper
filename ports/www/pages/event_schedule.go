@@ -21,7 +21,7 @@ func SchedulePage(event model.EventModel, withActions bool, days [][]model.Times
 		dayNodes[i] = components.Day(event.ID, i, event.Day(i), withActions, timeslots)
 	}
 
-	return Shell(
+	return Shell(event.Name,
 		Main(
 			components.PageHeader(event),
 			If(withActions, components.EventActions(event.ID)),

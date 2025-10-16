@@ -20,10 +20,10 @@ func DuplicateTimeslotPage(timeslot model.TimeslotModel, event model.EventModel,
 		roomOptions = append(roomOptions, Option(Value(fmt.Sprintf("%v", room.ID)), Text(room.Name)))
 	}
 
-	return Shell(
+	return Shell(event.Name,
 		components.PageHeader(event),
 		Main(
-			H1(Textf("%v (%v)", event.Name, event.Start.Format("2006.01.02"))),
+			H2(Text("Duplicate Timeslot")),
 			components.TimeslotForm(&timeslot, event, rooms, "POST", "/_/create/timeslot", "Duplicate"),
 		),
 	)

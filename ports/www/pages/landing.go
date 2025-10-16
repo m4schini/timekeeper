@@ -17,7 +17,7 @@ func LandingPage(events []model.EventModel) Node {
 	for _, event := range events {
 		g = append(g, Li(A(Href(fmt.Sprintf("/event/%v", event.ID)), Text(event.Name))))
 	}
-	return Shell(
+	return Shell("",
 		Main(
 			components.PageHeader(model.EventModel{}),
 			components.AButton(components.ColorDefault, "/event/new", "New Event"),

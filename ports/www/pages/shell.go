@@ -7,9 +7,12 @@ import (
 	. "maragu.dev/gomponents/html"
 )
 
-func Shell(children ...Node) Node {
+func Shell(title string, children ...Node) Node {
+	if title == "" {
+		title = "Timekeeper"
+	}
 	return HTML5(HTML5Props{
-		Title:       "Timekeeper",
+		Title:       title,
 		Description: "Zeitplan",
 		Language:    "de",
 		Head: []Node{

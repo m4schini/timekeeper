@@ -15,26 +15,24 @@ import (
 
 func EditLocationForm(location model.LocationModel) Node {
 	return Form(Method("POST"), Action("/_/location/edit"), Class("form"),
-		Div(
-			Input(Type("hidden"), Name("location"), Value(fmt.Sprintf("%v", location.ID))),
+		Input(Type("hidden"), Name("location"), Value(fmt.Sprintf("%v", location.ID))),
 
-			Div(
-				Label(For("name"), Text("Name")),
-				Input(Type("text"), Name("name"), Placeholder("Location Name"), Required(), Value(location.Name)),
-			),
-
-			//Div(
-			//	Label(For("map_file"), Text("Link zu map file (Optional)")),
-			//	Input(Type("text"), Name("map_file"), Placeholder("/static/betahaus2.png"), Value(location.File)),
-			//),
-
-			Div(
-				Label(For("osm_id"), Text("Open Streetmap ID (Optional)")),
-				Input(Type("text"), Name("osm_id"), Placeholder("N1234567"), Value(location.OsmId)),
-			),
-
-			Input(Type("submit"), Value("Speichern")),
+		Div(Class("param"),
+			Label(For("name"), Text("Name")),
+			Input(Type("text"), Name("name"), Placeholder("Location Name"), Required(), Value(location.Name)),
 		),
+
+		//Div(
+		//	Label(For("map_file"), Text("Link zu map file (Optional)")),
+		//	Input(Type("text"), Name("map_file"), Placeholder("/static/betahaus2.png"), Value(location.File)),
+		//),
+
+		Div(Class("param"),
+			Label(For("osm_id"), Text("Open Streetmap ID (Optional)")),
+			Input(Type("text"), Name("osm_id"), Placeholder("N1234567"), Value(location.OsmId)),
+		),
+
+		Input(Type("submit"), Value("Speichern")),
 	)
 }
 

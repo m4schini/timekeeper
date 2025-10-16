@@ -29,7 +29,7 @@ func EventPublicPage(event model.EventModel, locations []model.EventLocationMode
 		//eventLocationsGroup = append(eventLocationsGroup, Li(Textf("%v: %v (%v)", location.Relationship, location.Name, location.Address.City)))
 	}
 
-	return Shell(
+	return Shell(event.Name,
 		components.PageHeader(event),
 		Main(
 			Div(Class("event-container"),
@@ -73,7 +73,7 @@ func EventOrgaPage(event model.EventModel, locations []model.LocationModel, even
 		))
 	}
 
-	return Shell(
+	return Shell(event.Name,
 		components.PageHeader(event),
 		Main(
 			Div(Class("event-container"),

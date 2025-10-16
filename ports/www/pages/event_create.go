@@ -12,10 +12,10 @@ import (
 )
 
 func CreateEventPage() Node {
-	return Shell(
+	return Shell("",
 		components.PageHeader(model.EventModel{}),
 		Main(
-			Div(Text("Create Event")),
+			H2(Text("Create Event")),
 			components.EventForm(nil, "POST", "/_/event", "Create"),
 		),
 	)

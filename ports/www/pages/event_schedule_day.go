@@ -15,7 +15,7 @@ import (
 )
 
 func DayPage(day int, event model.EventModel, data []model.TimeslotModel) Node {
-	return Shell(
+	return Shell(event.Name,
 		Main(
 			components.PageHeader(event),
 			components.FullDay(day+1, event.Day(day), data),
@@ -24,8 +24,8 @@ func DayPage(day int, event model.EventModel, data []model.TimeslotModel) Node {
 		))
 }
 
-func CompactDayPage(data []model.TimeslotModel) Node {
-	return Shell(
+func CompactDayPage(event model.EventModel, data []model.TimeslotModel) Node {
+	return Shell(event.Name,
 		Main(
 			components.CompactDay(data),
 			components.ScriptScrollSeperatorIntoView(),
@@ -84,7 +84,7 @@ func (l *EventScheduleDayRoute) Handler() http.Handler {
 
 		var page Node
 		if useCompact {
-			page = CompactDayPage(timeslots)
+			page = CompactDayPage(event, timeslots)
 		} else {
 			page = DayPage(int(day), event, timeslots)
 		}

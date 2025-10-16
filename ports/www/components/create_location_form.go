@@ -14,24 +14,22 @@ import (
 
 func CreateLocationForm() Node {
 	return Form(Method("POST"), Action("/_/event"), Class("form"),
-		Div(
-			Div(
-				Label(For("name"), Text("Name")),
-				Input(Type("text"), Name("name"), Placeholder("Location Name"), Required()),
-			),
-
-			//Div(
-			//	Label(For("map_file"), Text("Link zu map file (Optional)")),
-			//	Input(Type("text"), Name("map_file"), Placeholder("/static/betahaus2.png")),
-			//),
-
-			Div(
-				Label(For("osm_id"), Text("Open Streetmap ID (Optional)")),
-				Input(Type("text"), Name("osm_id"), Placeholder("N1234567")),
-			),
-
-			Input(Type("submit"), Value("Location erstellen")),
+		Div(Class("param"),
+			Label(For("name"), Text("Name")),
+			Input(Type("text"), Name("name"), Placeholder("Location Name"), Required()),
 		),
+
+		//Div(
+		//	Label(For("map_file"), Text("Link zu map file (Optional)")),
+		//	Input(Type("text"), Name("map_file"), Placeholder("/static/betahaus2.png")),
+		//),
+
+		Div(Class("param"),
+			Label(For("osm_id"), Text("Open Streetmap ID (Optional)")),
+			Input(Type("text"), Name("osm_id"), Placeholder("N1234567")),
+		),
+
+		Input(Type("submit"), Value("Location erstellen")),
 	)
 }
 

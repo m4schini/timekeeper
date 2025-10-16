@@ -17,17 +17,15 @@ import (
 func EditLocationPage(locationModel model.LocationModel, rooms []model.RoomModel) Node {
 	roomsList := Group{}
 	for _, room := range rooms {
-		roomsList = append(roomsList, Li(components.UpdateRoomForm(room),
-			components.DeleteRoomButton(room.ID),
-		))
+		roomsList = append(roomsList, Li(components.UpdateRoomForm(room)))
 	}
 
-	return Shell(
+	return Shell("",
 		components.PageHeader(model.EventModel{}),
 		Main(
-			Div(Text("Location bearbeiten")),
+			H2(Text("Location bearbeiten")),
 			components.EditLocationForm(locationModel),
-			H3(Text("Räume")),
+			H2(Text("Räume")),
 			Ul(Class("rooms"), roomsList),
 			components.CreateRoomForm(locationModel),
 		),

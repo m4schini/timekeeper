@@ -15,10 +15,10 @@ import (
 )
 
 func EditTimeslotPage(timeslot model.TimeslotModel, event model.EventModel, rooms []model.RoomModel) Node {
-	return Shell(
+	return Shell(event.Name,
 		components.PageHeader(event),
 		Main(
-			H1(Textf("%v (%v)", event.Name, event.Start.Format("2006.01.02"))),
+			H2(Text("Edit Timeslot")),
 			components.TimeslotForm(&timeslot, event, rooms, "POST", fmt.Sprintf("/_/edit/timeslot/%v", timeslot.ID), "Update"),
 		),
 	)

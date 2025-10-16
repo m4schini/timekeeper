@@ -12,7 +12,7 @@ import (
 )
 
 func CreateUserPage() Node {
-	return Shell(
+	return Shell("",
 		components.PageHeader(model.EventModel{}),
 		Main(
 			H2(Text("Create User")),

@@ -197,7 +197,7 @@ h2 > a {
 
 .timeslot-container .timeslot-info {
     grid-column: span 2 / span 2;
-    grid-row: span 2 / span 2;
+    /*grid-row: span 2 / span 2;*/
     grid-column-start: 2;
     grid-row-start: 1;
 
@@ -426,13 +426,37 @@ h2 {
 .form {
     display: flex;
     flex-direction: column;
-    max-width: 400px;
+    width: 96%;
     gap: 1rem;
+    max-width: 100vw;
+
+    padding: 1rem;
 }
 
-.form > div {
+.form > .param {
     display: flex;
     flex-direction: column;
+}
+
+.form input[type=submit] {
+    padding: 0.5rem;
+    margin-right: 0.5rem;
+    margin-bottom: 0 !important;
+    text-decoration: none;
+    width: fit-content;
+    border: none;
+
+    color: white;
+    background-color: var(--color-deep-blue);
+}
+
+.form input[type=submit]:hover {
+    color: black;
+    background-color: var(--color-soft-blue);
+}
+
+.form input[type=text] {
+    padding: 0.3rem;
 }
 
 .compact-timeslot-container {

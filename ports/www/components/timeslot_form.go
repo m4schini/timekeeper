@@ -31,7 +31,7 @@ func TimeslotForm(ts *model.TimeslotModel, event model.EventModel, rooms []model
 	return Form(Method(method), Action(action), Class("form"),
 		Input(Type("hidden"), Name("event"), Value(fmt.Sprintf("%v", event.ID))),
 
-		Div(
+		Div(Class("param"),
 			Label(For("role"), Text("Rolle")),
 			Select(Name("role"), Required(),
 				Option(Value("Organizer"), Text("Orga"), If(hasTs && ts.Role == model.RoleOrganizer, Selected())),
@@ -40,27 +40,27 @@ func TimeslotForm(ts *model.TimeslotModel, event model.EventModel, rooms []model
 			),
 		),
 
-		Div(
+		Div(Class("param"),
 			Label(For("day"), Text("Tag")),
 			Input(Type("number"), Name("day"), Placeholder("0"), Min("0"), Required(), If(hasTs, Value(fmt.Sprintf("%v", ts.Day)))),
 		),
 
-		Div(
+		Div(Class("param"),
 			Label(For("timeslot"), Text("Zeit")),
-			Input(Type("text"), Name("timeslot"), Placeholder("08:00"), Required(), If(hasTs, Value(ts.Start.Format("15:04")))),
+			Input(Type("text"), Name("timeslot"), Placeholder("08:00"), Pattern(`^([01]\d|2[0-3]):([0-5]\d)$`), Required(), If(hasTs, Value(ts.Start.Format("15:04")))),
 		),
 
-		Div(
+		Div(Class("param"),
 			Label(For("title"), Text("Titel")),
 			Input(Type("text"), Name("title"), Placeholder("Title"), Required(), If(hasTs, Value(ts.Title))),
 		),
 
-		Div(
+		Div(Class("param"),
 			Label(For("note"), Text("Notiz")),
 			Textarea(Name("note"), Placeholder("Notiz"), Rows("4"), Cols("50"), If(hasTs, Text(ts.Note))),
 		),
 
-		Div(
+		Div(Class("param"),
 			Label(For("room"), Text("Raum")),
 			Select(Name("room"), Required(),
 				roomOptions,

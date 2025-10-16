@@ -18,8 +18,11 @@ func UpdateRoomForm(room model.RoomModel) Node {
 		Input(Type("hidden"), Name("room"), Value(fmt.Sprintf("%v", room.ID))),
 		Input(Type("hidden"), Name("location"), Value(fmt.Sprintf("%v", room.Location.ID))),
 		Input(Type("text"), Name("room_name"), Value(room.Name)),
-		Textarea(Name("description"), Text(room.Description)),
-		Input(Type("submit"), Value("Speichern")),
+		Textarea(Name("description"), Placeholder("Raumbeschreibung (wo ist der Raum?)"), Text(room.Description)),
+		Div(Style("display: flex"),
+			Input(Type("submit"), Value("Speichern")),
+			DeleteRoomButton(room.ID),
+		),
 	)
 }
 

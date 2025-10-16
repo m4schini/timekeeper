@@ -15,7 +15,7 @@ import (
 )
 
 func CreateRoomForm(location model.LocationModel) Node {
-	return Form(Method("POST"), Action("/_/room"),
+	return Form(Method("POST"), Action("/_/room"), Class("form"),
 		Div(
 			Input(Type("hidden"), Name("location"), Value(fmt.Sprintf("%v", location.ID))),
 

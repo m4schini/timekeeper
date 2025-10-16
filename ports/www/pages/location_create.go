@@ -12,10 +12,10 @@ import (
 )
 
 func CreateLocationPage() Node {
-	return Shell(
+	return Shell("",
 		components.PageHeader(model.EventModel{}),
 		Main(
-			Div(Text("New Location")),
+			H2(Text("New Location")),
 			components.CreateLocationForm(),
 		),
 	)

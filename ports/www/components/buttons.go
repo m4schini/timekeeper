@@ -119,15 +119,15 @@ func CreateTimeslotButton(eventId int) Node {
 }
 
 func EditTimeslotButton(timeslotId int) Node {
-	return A(Text("edit"), Href(fmt.Sprintf("/timeslot/edit/%v", timeslotId)))
+	return A(Class("button"), Text("edit"), Href(fmt.Sprintf("/timeslot/edit/%v", timeslotId)))
 }
 
 func DuplicateTimeslotButton(timeslotId int) Node {
-	return A(Text("duplicate"), Href(fmt.Sprintf("/timeslot/duplicate/%v", timeslotId)))
+	return A(Class("button"), Text("duplicate"), Href(fmt.Sprintf("/timeslot/duplicate/%v", timeslotId)))
 }
 
 func DeleteTimeslotButton(timeslotId int) Node {
-	return A(Text("delete"), Href("#"),
+	return A(Class("button"), Style("background-color: var(--color-soft-red)"), Text("delete"), Href("#"),
 		hx.Delete(fmt.Sprintf("/_/timeslot/%v", timeslotId)),
 		hx.Target("closest .timeslot-container"),
 		hx.Swap("outerHTML swap:1s"),
@@ -135,11 +135,11 @@ func DeleteTimeslotButton(timeslotId int) Node {
 }
 
 func EditLocationButton(locationId int) Node {
-	return A(Text("edit"), Href(fmt.Sprintf("/location/edit/%v", locationId)))
+	return A(Class("button"), Text("edit"), Href(fmt.Sprintf("/location/edit/%v", locationId)))
 }
 
 func DeleteEventLocationButton(eventId, relationshipId int) Node {
-	return A(Text("remove"), Href("#"),
+	return A(Class("button"), Style("background-color: var(--color-soft-red)"), Text("remove"), Href("#"),
 		hx.Delete(fmt.Sprintf("/_/event/%v/location/%v", eventId, relationshipId)),
 		hx.Target("closest .location-card"),
 		hx.Swap("outerHTML swap:1s"),
@@ -147,7 +147,7 @@ func DeleteEventLocationButton(eventId, relationshipId int) Node {
 }
 
 func DeleteRoomButton(roomId int) Node {
-	return A(Text("remove"), Href("#"),
+	return A(Class("button"), Style("background-color: var(--color-soft-red)"), Text("remove"), Href("#"),
 		hx.Delete(fmt.Sprintf("/_/room/%v", roomId)),
 		hx.Target("closest li"),
 		hx.Swap("outerHTML swap:1s"),
