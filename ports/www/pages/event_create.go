@@ -1,7 +1,6 @@
 package pages
 
 import (
-	"go.uber.org/zap"
 	. "maragu.dev/gomponents"
 	. "maragu.dev/gomponents/html"
 	"net/http"
@@ -31,11 +30,11 @@ func (l *CreateEventPageRoute) Method() string {
 }
 
 func (l *CreateEventPageRoute) Pattern() string {
-	return "/create"
+	return "/event/new"
 }
 
 func (l *CreateEventPageRoute) Handler() http.Handler {
-	log := zap.L().Named("www").Named("event")
+	log := components.Logger(l)
 	//queries := l.DB.Queries
 	return http.HandlerFunc(func(writer http.ResponseWriter, request *http.Request) {
 		isOrganizer := middleware.IsOrganizer(request)

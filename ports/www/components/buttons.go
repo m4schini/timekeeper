@@ -94,7 +94,7 @@ func EditEvent(eventId int) Node {
 }
 
 func CreateLocation() Node {
-	return AButton(ColorSoftGrey, "/location/create", "Location Erstellen")
+	return AButton(ColorSoftGrey, "/location/new", "Location erstellen")
 }
 
 func EventViewOnlyRole(text string, eventId int, roles ...model.Role) Node {

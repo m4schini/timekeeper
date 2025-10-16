@@ -136,7 +136,7 @@ func (l *EventPageRoute) Pattern() string {
 }
 
 func (l *EventPageRoute) Handler() http.Handler {
-	log := zap.L().Named("www").Named("event")
+	log := components.Logger(l)
 	queries := l.DB.Queries
 	return http.HandlerFunc(func(writer http.ResponseWriter, request *http.Request) {
 		isOrganizer := middleware.IsOrganizer(request)

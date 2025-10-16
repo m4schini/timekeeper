@@ -3,7 +3,6 @@ package pages
 import (
 	"fmt"
 	"github.com/go-chi/chi/v5"
-	"go.uber.org/zap"
 	. "maragu.dev/gomponents"
 	. "maragu.dev/gomponents/html"
 	"net/http"
@@ -94,7 +93,7 @@ func (l *LocationPageRoute) Pattern() string {
 }
 
 func (l *LocationPageRoute) Handler() http.Handler {
-	log := zap.L().Named(l.Pattern())
+	log := components.Logger(l)
 	queries := l.DB.Queries
 	return http.HandlerFunc(func(writer http.ResponseWriter, request *http.Request) {
 		eventId, err := strconv.ParseInt(chi.URLParam(request, "event"), 10, 64)

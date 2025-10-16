@@ -4,6 +4,7 @@ import (
 	"github.com/go-chi/chi/v5"
 	"go.uber.org/zap"
 	"net/http"
+	"timekeeper/ports/www/middleware"
 )
 
 type Route interface {
@@ -13,7 +14,7 @@ type Route interface {
 }
 
 func HandleRoute(router chi.Router, route Route) {
-	router.Method(route.Method(), route.Pattern(), route.Handler())
+	router.Method(route.Method(), route.Pattern(), middleware.UseGzip(route.Handler()))
 
 	zap.L().Named("ports").Named("www").
 		Debug("added route",

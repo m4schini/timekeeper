@@ -47,7 +47,7 @@ func (l *UpdateLocationPageRoute) Pattern() string {
 }
 
 func (l *UpdateLocationPageRoute) Handler() http.Handler {
-	log := zap.L().Named("www").Named("event")
+	log := components.Logger(l)
 	queries := l.DB.Queries
 	return http.HandlerFunc(func(writer http.ResponseWriter, request *http.Request) {
 		isOrganizer := middleware.IsOrganizer(request)

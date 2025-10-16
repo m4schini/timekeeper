@@ -121,7 +121,7 @@ func (d *DayRoute) UseCache() bool {
 }
 
 func (d *DayRoute) Handler() http.Handler {
-	log := zap.L().Named(d.Pattern())
+	log := Logger(d)
 	queries := d.DB.Queries
 	return http.HandlerFunc(func(writer http.ResponseWriter, request *http.Request) {
 		var (

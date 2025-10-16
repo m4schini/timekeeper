@@ -102,6 +102,5 @@ func (a *authy) AuthenticateToken(token string) (err error) {
 		return err
 	}
 
-	log.Debug("authenticated token")
 	return nil
 }

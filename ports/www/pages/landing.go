@@ -2,7 +2,6 @@ package pages
 
 import (
 	"fmt"
-	"go.uber.org/zap"
 	. "maragu.dev/gomponents"
 	. "maragu.dev/gomponents/html"
 	"net/http"
@@ -21,7 +20,7 @@ func LandingPage(events []model.EventModel) Node {
 	return Shell(
 		Main(
 			components.PageHeader(model.EventModel{}),
-			components.AButton(components.ColorDefault, "/event/create", "Create Event"),
+			components.AButton(components.ColorDefault, "/event/new", "New Event"),
 			Ul(g),
 		),
 	)
@@ -41,7 +40,7 @@ func (l *LandingPageRoute) Pattern() string {
 
 func (l *LandingPageRoute) Handler() http.Handler {
 	queries := l.DB.Queries
-	log := zap.L().Named(l.Pattern())
+	log := components.Logger(l)
 	return http.HandlerFunc(func(writer http.ResponseWriter, request *http.Request) {
 		if !middleware.IsOrganizer(request) {
 			http.Redirect(writer, request, "/login", http.StatusTemporaryRedirect)

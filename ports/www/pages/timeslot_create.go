@@ -2,7 +2,6 @@ package pages
 
 import (
 	"fmt"
-	"go.uber.org/zap"
 	. "maragu.dev/gomponents"
 	. "maragu.dev/gomponents/html"
 	"net/http"
@@ -42,7 +41,7 @@ func (l *CreateTimeslotPageRoute) Pattern() string {
 }
 
 func (l *CreateTimeslotPageRoute) Handler() http.Handler {
-	log := zap.L().Named(l.Pattern())
+	log := components.Logger(l)
 	queries := l.DB.Queries
 	return http.HandlerFunc(func(writer http.ResponseWriter, request *http.Request) {
 		isOrganizer := middleware.IsOrganizer(request)

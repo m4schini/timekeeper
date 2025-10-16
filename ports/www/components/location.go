@@ -75,7 +75,7 @@ func (l *UpdateEventLocationRoute) Pattern() string {
 }
 
 func (l *UpdateEventLocationRoute) Handler() http.Handler {
-	log := zap.L().Named(l.Pattern())
+	log := Logger(l)
 	commands := l.DB.Commands
 	return http.HandlerFunc(func(writer http.ResponseWriter, request *http.Request) {
 		if !middleware.IsOrganizer(request) {

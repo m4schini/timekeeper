@@ -11,6 +11,7 @@ import (
 	"timekeeper/app/database"
 	"timekeeper/app/database/model"
 	export "timekeeper/app/export/md"
+	"timekeeper/ports/www/components"
 	"timekeeper/ports/www/render"
 )
 
@@ -36,7 +37,7 @@ func (l *EventScheduleExportMarkdownRoute) UseCache() bool {
 }
 
 func (l *EventScheduleExportMarkdownRoute) Handler() http.Handler {
-	log := zap.L().Named(l.Pattern())
+	log := components.Logger(l)
 	queries := l.DB.Queries
 	return http.HandlerFunc(func(writer http.ResponseWriter, request *http.Request) {
 		var (

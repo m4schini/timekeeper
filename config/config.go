@@ -2,6 +2,7 @@ package config
 
 import (
 	"os"
+	"strings"
 	"time"
 )
 
@@ -14,6 +15,10 @@ func Timezone() *time.Location {
 	return l
 }
 
+func TelemetryEnabled() bool {
+	return strings.ToLower(getEnvOr("TIMEKEEPER_TELEMETRY_ENABLED", "false")) == "true"
+}
+
 func DatabaseConnectionString() string {
 	return mustEnv("DATABASE_CONNECTIONSTRING")
 }
@@ -23,7 +28,7 @@ func HmacSecret() []byte {
 }
 
 func AdminPassword() string {
-	return mustEnv("ADMIN_PASSWORD")
+	return getEnvOr("ADMIN_PASSWORD", "")
 }
 
 func BaseUrl() string {

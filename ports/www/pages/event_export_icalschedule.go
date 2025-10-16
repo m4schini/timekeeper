@@ -3,12 +3,12 @@ package pages
 import (
 	"fmt"
 	"github.com/go-chi/chi/v5"
-	"go.uber.org/zap"
 	"net/http"
 	"strconv"
 	"timekeeper/app/database"
 	"timekeeper/app/database/model"
 	export "timekeeper/app/export/ical"
+	"timekeeper/ports/www/components"
 	"timekeeper/ports/www/render"
 )
 
@@ -26,7 +26,7 @@ func (v *EventExportIcalScheduleRoute) Pattern() string {
 
 func (v *EventExportIcalScheduleRoute) Handler() http.Handler {
 	queries := v.DB.Queries
-	log := zap.L().Named("api")
+	log := components.Logger(v)
 	return http.HandlerFunc(func(writer http.ResponseWriter, request *http.Request) {
 		eventParam := chi.URLParam(request, "event")
 		eventId, err := strconv.ParseInt(eventParam, 10, 64)

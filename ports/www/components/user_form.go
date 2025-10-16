@@ -6,8 +6,7 @@ import (
 	. "maragu.dev/gomponents"
 	. "maragu.dev/gomponents/html"
 	"net/http"
-	"timekeeper/app/database"
-	"timekeeper/app/database/model"
+	"timekeeper/app/auth"
 	"timekeeper/ports/www/middleware"
 	"timekeeper/ports/www/render"
 )
@@ -29,7 +28,7 @@ func UserForm() Node {
 }
 
 type CreateUserRoute struct {
-	DB *database.Database
+	Auth auth.Authenticator
 }
 
 func (l *CreateUserRoute) Method() string {
@@ -42,7 +41,7 @@ func (l *CreateUserRoute) Pattern() string {
 
 func (l *CreateUserRoute) Handler() http.Handler {
 	log := zap.L().Named(l.Pattern())
-	commands := l.DB.Commands
+	authy := l.Auth
 	return http.HandlerFunc(func(writer http.ResponseWriter, request *http.Request) {
 		if !middleware.IsOrganizer(request) {
 			render.RenderError(log, writer, http.StatusUnauthorized, "unauthorized request detected", nil)
@@ -59,27 +58,14 @@ func (l *CreateUserRoute) Handler() http.Handler {
 			usernameParam = request.PostFormValue("username")
 			passwordParam = request.PostFormValue("password")
 		)
-		model, err := ParseCreateUserModel(usernameParam, passwordParam)
-		if err != nil {
-			render.RenderError(log, writer, http.StatusBadRequest, "failed to parse form", err)
-			return
-		}
-		log.Debug("parsed create user form", zap.Any("model", model))
 
-		id, err := commands.CreateUser(model)
+		id, err := authy.CreateUser(usernameParam, passwordParam)
 		if err != nil {
 			render.RenderError(log, writer, http.StatusInternalServerError, "failed to create user", err)
 			return
 		}
 		log.Debug("created user", zap.Int("id", id))
 
-		http.Redirect(writer, request, fmt.Sprintf("/event/%v", id), http.StatusSeeOther)
+		http.Redirect(writer, request, fmt.Sprintf("/"), http.StatusSeeOther)
 	})
-}
-
-func ParseCreateUserModel(username, password string) (model.CreateUserModel, error) {
-	return model.CreateUserModel{
-		LoginName:    username,
-		PasswordHash: password,
-	}, nil
 }

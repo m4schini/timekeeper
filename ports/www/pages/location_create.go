@@ -1,7 +1,6 @@
 package pages
 
 import (
-	"go.uber.org/zap"
 	. "maragu.dev/gomponents"
 	. "maragu.dev/gomponents/html"
 	"net/http"
@@ -16,7 +15,7 @@ func CreateLocationPage() Node {
 	return Shell(
 		components.PageHeader(model.EventModel{}),
 		Main(
-			Div(Text("Create Location")),
+			Div(Text("New Location")),
 			components.CreateLocationForm(),
 		),
 	)
@@ -31,11 +30,11 @@ func (l *CreateLocationPageRoute) Method() string {
 }
 
 func (l *CreateLocationPageRoute) Pattern() string {
-	return "/location/create"
+	return "/location/new"
 }
 
 func (l *CreateLocationPageRoute) Handler() http.Handler {
-	log := zap.L().Named("www").Named("event")
+	log := components.Logger(l)
 	//queries := l.DB.Queries
 	return http.HandlerFunc(func(writer http.ResponseWriter, request *http.Request) {
 		isOrganizer := middleware.IsOrganizer(request)
