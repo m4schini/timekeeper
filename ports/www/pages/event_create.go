@@ -17,7 +17,7 @@ func CreateEventPage() Node {
 		components.PageHeader(model.EventModel{}),
 		Main(
 			Div(Text("Create Event")),
-			components.EventForm(nil, "POST", "/_/create/event", "Create"),
+			components.EventForm(nil, "POST", "/_/event", "Create"),
 		),
 	)
 }
@@ -31,7 +31,7 @@ func (l *CreateEventPageRoute) Method() string {
 }
 
 func (l *CreateEventPageRoute) Pattern() string {
-	return "/event/create"
+	return "/create"
 }
 
 func (l *CreateEventPageRoute) Handler() http.Handler {
@@ -39,9 +39,10 @@ func (l *CreateEventPageRoute) Handler() http.Handler {
 	//queries := l.DB.Queries
 	return http.HandlerFunc(func(writer http.ResponseWriter, request *http.Request) {
 		isOrganizer := middleware.IsOrganizer(request)
-		roles, _ := ParseRolesQuery(request.URL.Query(), isOrganizer)
-
-		_ = roles
+		if !isOrganizer {
+			RenderError(log, writer, http.StatusUnauthorized, "user is not authorized", nil)
+			return
+		}
 
 		Render(log, writer, request, CreateEventPage())
 	})

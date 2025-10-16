@@ -10,6 +10,7 @@ import (
 	"timekeeper/app/database"
 	"timekeeper/app/database/model"
 	"timekeeper/ports/www/components"
+	"timekeeper/ports/www/middleware"
 	. "timekeeper/ports/www/render"
 )
 
@@ -49,6 +50,11 @@ func (l *UpdateLocationPageRoute) Handler() http.Handler {
 	log := zap.L().Named("www").Named("event")
 	queries := l.DB.Queries
 	return http.HandlerFunc(func(writer http.ResponseWriter, request *http.Request) {
+		isOrganizer := middleware.IsOrganizer(request)
+		if !isOrganizer {
+			RenderError(log, writer, http.StatusUnauthorized, "user is not authorized", nil)
+			return
+		}
 		var (
 			locationParam   = chi.URLParam(request, "location")
 			locationId, err = strconv.ParseInt(locationParam, 10, 64)

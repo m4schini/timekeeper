@@ -10,6 +10,7 @@ import (
 	"timekeeper/app/database"
 	"timekeeper/app/database/model"
 	"timekeeper/ports/www/components"
+	"timekeeper/ports/www/middleware"
 	"timekeeper/ports/www/render"
 )
 
@@ -44,6 +45,11 @@ func (l *CreateTimeslotPageRoute) Handler() http.Handler {
 	log := zap.L().Named(l.Pattern())
 	queries := l.DB.Queries
 	return http.HandlerFunc(func(writer http.ResponseWriter, request *http.Request) {
+		isOrganizer := middleware.IsOrganizer(request)
+		if !isOrganizer {
+			render.RenderError(log, writer, http.StatusUnauthorized, "user is not authorized", nil)
+			return
+		}
 		var (
 			eventParam   = request.URL.Query().Get("event")
 			eventId, err = strconv.ParseInt(eventParam, 10, 64)

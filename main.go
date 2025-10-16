@@ -54,37 +54,51 @@ func main() {
 
 	pages := []www.Route{
 		&p.LandingPageRoute{DB: db},
-		&p.LocationPageRoute{DB: db},
-		&p.CreateLocationPageRoute{DB: db},
-		&p.UpdateLocationPageRoute{DB: db},
-		&p.EventScheduleDayRoute{DB: db},
-		&p.EventPageRoute{DB: db, Nominatim: nominatimClient},
-		&p.SchedulePageRoute{DB: db},
+
 		&p.CreateEventPageRoute{DB: db},
-		&p.LoginPageRoute{Auth: authy},
-		&p.LogoutRoute{},
+		&p.EditEventPageRoute{DB: db},
+		&p.EventPageRoute{DB: db, Nominatim: nominatimClient},
+
+		&p.SchedulePageRoute{DB: db},
 		&p.CreateTimeslotPageRoute{DB: db},
 		&p.EditTimeslotPageRoute{DB: db},
 		&p.DuplicateTimeslotPageRoute{DB: db},
+
+		&p.EventScheduleDayRoute{DB: db},
 		&p.EventExportVocScheduleRoute{DB: db},
 		&p.EventExportIcalScheduleRoute{DB: db},
 		&p.EventScheduleExportMarkdownRoute{DB: db},
+
+		&p.LocationPageRoute{DB: db},
+		&p.CreateLocationPageRoute{DB: db},
+		&p.UpdateLocationPageRoute{DB: db},
+
+		&p.CreateUserPageRoute{DB: db},
+		&p.LoginPageRoute{Auth: authy},
+		&p.LogoutRoute{},
+
 		www.StaticFileRoute{},
 	}
 	components := []www.Route{
-		&c.DayRoute{DB: db},
 		&c.CreateEventRoute{DB: db},
+		&c.UpdateEventRoute{DB: db},
+		&c.DayRoute{DB: db},
+
 		&c.CreateLocationRoute{DB: db},
 		&c.EditLocationRoute{DB: db},
-		&c.CreateTimeslotRoute{DB: db},
-		&c.UpdateTimeslotRoute{DB: db},
-		&c.DeleteTimeslotRoute{DB: db},
 		&c.AddLocationToEventRoute{DB: db},
 		&c.DeleteLocationFromEventRoute{DB: db},
 		&c.UpdateEventLocationRoute{DB: db},
+
+		&c.CreateTimeslotRoute{DB: db},
+		&c.UpdateTimeslotRoute{DB: db},
+		&c.DeleteTimeslotRoute{DB: db},
+
 		&c.CreateRoomRoute{DB: db},
 		&c.UpdateRoomRoute{DB: db},
 		&c.DeleteRoomRoute{DB: db},
+
+		&c.CreateUserRoute{DB: db},
 		&p.LoginRoute{Auth: authy},
 	}
 

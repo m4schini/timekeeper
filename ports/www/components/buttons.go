@@ -90,7 +90,7 @@ func EventSchedule(eventId int) Node {
 }
 
 func EditEvent(eventId int) Node {
-	return A(Class("button"), Href(fmt.Sprintf("/event/edit/%v", eventId)), Text("Event bearbeiten"))
+	return A(Class("button"), Href(fmt.Sprintf("/event/%v/edit", eventId)), Text("Event bearbeiten"))
 }
 
 func CreateLocation() Node {

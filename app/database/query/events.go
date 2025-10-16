@@ -6,7 +6,7 @@ func (q *Queries) GetEvents(offset, limit int) (es []model.EventModel, err error
 	rows, err := q.DB.Query(`
 SELECT id, name, start 
 FROM timekeeper.events
-ORDER BY start, name
+ORDER BY start DESC, name
 LIMIT $1 OFFSET $2`, limit, offset)
 	if err != nil {
 		return nil, err

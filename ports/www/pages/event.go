@@ -63,11 +63,6 @@ func EventOrgaPage(event model.EventModel, locations []model.LocationModel, even
 	eventLocationItems := Group{}
 	for _, location := range eventLocations {
 		eventLocationItems = append(eventLocationItems, components.EventLocationCard(event, location, true))
-
-		//eventLocationItems = append(eventLocationItems, Li(
-		//	Textf("%v: %v ", location.Relationship, location.Name),
-		//	Title(fmt.Sprintf("%v (id=%v, relationship=%v)", location.Name, location.ID, location.RelationshipId)),
-		//	components.DeleteEventLocationButton(event.ID, location.RelationshipId)))
 	}
 
 	embedDays := Group{}
