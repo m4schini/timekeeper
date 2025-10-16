@@ -15,6 +15,7 @@ func Shell(children ...Node) Node {
 		Head: []Node{
 			Script(Src("/static/htmx.min.js")),
 			Link(Href("/static/style.css"), Rel("stylesheet")),
+			Link(Rel("icon"), Type("image/png"), Href("/static/jh_logo_icon.png")),
 		},
 		Body:      children,
 		HTMLAttrs: nil,
