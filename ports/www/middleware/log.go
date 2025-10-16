@@ -22,7 +22,7 @@ func Log(next http.Handler) http.Handler {
 		Namespace: "timekeeper",
 		Subsystem: "www",
 		Name:      "request_durations",
-		Buckets:   []float64{1, 5, 10, 20, 40, 60, 100, 150, 200, 250, 300, 600},
+		Buckets:   []float64{1, 5, 10, 20, 40, 60, 100, 150, 200, 250, 300, 600, 1200, 6000},
 	})
 
 	return http.HandlerFunc(func(writer http.ResponseWriter, request *http.Request) {

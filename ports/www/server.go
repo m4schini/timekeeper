@@ -14,9 +14,8 @@ import (
 func Serve(listener net.Listener, authenticator auth.Authenticator, pages []Route, components []Route) error {
 	r := chi.NewRouter()
 	r.Use(
-		middleware.AllowAllCORS,
+		http.NewCrossOriginProtection().Handler,
 		middleware.Log,
-		//middleware.UseGzip,
 		middleware.UseAuth(authenticator),
 	)
 	for _, route := range pages {
