@@ -72,7 +72,7 @@ func timeslotRoom(eventId, locationId int, r model.RoomModel) Node {
 	return Div(Class("timeslot-room"),
 		If(
 			true,
-			A(Textf("%v", r.Name), Href("#"), Title(title)), //fmt.Sprintf("/event/%v/location/%v#%v", eventId, locationId, r.ID)
+			A(Textf("%v", r.Name), Href(fmt.Sprintf("/event/%v/location/%v#room-%v", eventId, locationId, r.ID)), Title(title)), //
 		),
 	)
 }

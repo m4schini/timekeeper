@@ -7,32 +7,61 @@ import (
 	. "maragu.dev/gomponents/html"
 	"net/http"
 	"strconv"
+	"timekeeper/adapters"
 	"timekeeper/app/database"
 	"timekeeper/app/database/model"
 	"timekeeper/ports/www/components"
 	. "timekeeper/ports/www/render"
 )
 
-func LocationPage(event model.EventModel, rooms []model.RoomModel) Node {
-	boxes := make([]Box, len(rooms))
-	for i, room := range rooms {
-		boxes[i] = Box{
-			Title:  room.Name,
-			Anchor: fmt.Sprintf("%v", room.ID),
-			X:      float64(room.LocationX),
-			Y:      float64(room.LocationY),
-			W:      float64(room.LocationW),
-			H:      float64(room.LocationH),
-		}
+func OsmContainer(el model.EventLocationModel, osm adapters.LookupResponse) Node {
+	return Div(Class("osm-container"),
+		Div(ID("map"), Style("width: 600px; height: 400px")),
+		Div(
+			P(Class("location-label"), Strong(Text(el.RelationshipLabel())), Br(), Text(el.RelationshipNote)),
+			P(Class("address"), Textf(`%v
+%v %v
+%v %v`, osm.Name, osm.Address.Road, osm.Address.HouseNumber, osm.Address.Postcode, osm.Address.City)),
+		),
+	)
+}
+
+func LocationPage(event model.EventModel, location model.EventLocationModel, locationOsmData *adapters.LookupResponse, rooms []model.RoomModel) Node {
+	roomItems := Group{}
+	for _, room := range rooms {
+		roomItems = append(roomItems, Div(Class("room"), ID(fmt.Sprintf("room-%v", room.ID)),
+			H4(Text(room.Name)),
+			P(Text(room.Description)),
+		))
 	}
 
-	return Shell(event.Name,
-		Main(
+	//osmUrl := fmt.Sprintf("https://www.openstreetmap.org/export/embed.html?bbox=%v%2C52.51540800941198%2C13.480079770088198%2C52.51854508785383&amp;layer=mapnik&amp;marker=52.51697657663071%2C13.477188348770142")
+	return ShellWithHead(fmt.Sprintf("%v - %v", location.Name, event.Name),
+		[]Node{
+			Link(Rel("stylesheet"), Href("https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"), Integrity("sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="), CrossOrigin("")),
+		},
+		Group{
 			components.PageHeader(event),
-			//<iframe width="425" height="350" src="https://www.openstreetmap.org/export/embed.html?bbox=13.465826511383058%2C52.51108885548261%2C13.48895788192749%2C52.52363705879041&amp;layer=mapnik" style="border: 1px solid black"></iframe><br/><small><a href="https://www.openstreetmap.org/?#map=16/52.51736/13.47739">View Larger Map</a></small>
-			IFrame(Width("425"), Height("350"), Src("https://www.openstreetmap.org/export/embed.html?bbox=13.474296927452087%2C52.51540800941198%2C13.480079770088198%2C52.51854508785383&amp;layer=mapnik&amp;marker=52.51697657663071%2C13.477188348770142")),
-			ImageWithBoxes("/static/betahaus2.png", 3424, 2080, boxes),
-		),
+			Main(
+				H2(Text(location.Name)),
+				Iff(locationOsmData != nil, func() Node { return OsmContainer(location, *locationOsmData) }),
+				H3(Text("Räume")),
+				Div(roomItems),
+			),
+			Script(Src("https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"), Integrity("sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="), CrossOrigin("")),
+			Iff(locationOsmData != nil, func() Node {
+				return Script(Rawf(`
+var map = L.map('map').setView([%v, %v], 16);
+
+L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    maxZoom: 19,
+    attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+}).addTo(map);
+
+var marker = L.marker([%v, %v]).addTo(map);
+`, locationOsmData.Lat, locationOsmData.Lon, locationOsmData.Lat, locationOsmData.Lon))
+			}),
+		},
 	)
 }
 
@@ -81,7 +110,8 @@ func ImageWithBoxes(imgSrc string, imgWidth, imgHeight float64, boxes []Box) Nod
 }
 
 type LocationPageRoute struct {
-	DB *database.Database
+	DB        *database.Database
+	Nominatim *adapters.NominatimClient
 }
 
 func (l *LocationPageRoute) Method() string {
@@ -95,27 +125,43 @@ func (l *LocationPageRoute) Pattern() string {
 func (l *LocationPageRoute) Handler() http.Handler {
 	log := components.Logger(l)
 	queries := l.DB.Queries
+	nominatim := l.Nominatim
 	return http.HandlerFunc(func(writer http.ResponseWriter, request *http.Request) {
 		eventId, err := strconv.ParseInt(chi.URLParam(request, "event"), 10, 64)
 		if err != nil {
 			RenderError(log, writer, http.StatusBadRequest, "invalid eventId", err)
 			return
 		}
+		locationId, err := strconv.ParseInt(chi.URLParam(request, "location"), 10, 64)
+		if err != nil {
+			RenderError(log, writer, http.StatusBadRequest, "invalid locationId", err)
+			return
+		}
 
 		event, err := queries.GetEvent(int(eventId))
+		if err != nil {
+			RenderError(log, writer, http.StatusInternalServerError, "failed to get event", err)
+			return
+		}
 
-		//location, err := strconv.ParseInt(chi.URLParam(request, "location"), 10, 64)
-		//if err != nil {
-		//	RenderError(log, writer, http.StatusBadRequest, "invalid locationId", err)
-		//	return
-		//}
+		location, err := queries.GetEventLocation(int(eventId), int(locationId))
+		if err != nil {
+			RenderError(log, writer, http.StatusInternalServerError, "failed to get location", err)
+			return
+		}
 
-		rooms, _, err := queries.GetRooms(0, 100)
+		var locationOsmData *adapters.LookupResponse
+		resp, err := nominatim.Lookup(request.Context(), location.OsmId)
+		if err == nil {
+			locationOsmData = &resp
+		}
+
+		rooms, _, err := queries.GetRoomsOfLocation(int(locationId), 0, 100)
 		if err != nil {
 			RenderError(log, writer, http.StatusInternalServerError, "failed to get rooms", err)
 			return
 		}
 
-		Render(log, writer, request, LocationPage(event, rooms))
+		Render(log, writer, request, LocationPage(event, location, locationOsmData, rooms))
 	})
 }

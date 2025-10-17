@@ -54,7 +54,7 @@ func main() {
 		&p.EventExportIcalScheduleRoute{DB: db},
 		&p.EventScheduleExportMarkdownRoute{DB: db},
 
-		&p.LocationPageRoute{DB: db},
+		&p.LocationPageRoute{DB: db, Nominatim: nominatimClient},
 		&p.CreateLocationPageRoute{DB: db},
 		&p.UpdateLocationPageRoute{DB: db},
 

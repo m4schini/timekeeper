@@ -8,7 +8,6 @@ import (
 	. "maragu.dev/gomponents/html"
 	"net/http"
 	"strconv"
-	"strings"
 	"timekeeper/app/database"
 	"timekeeper/app/database/model"
 	"timekeeper/ports/www/middleware"
@@ -36,17 +35,16 @@ func SetEventLocationNote(eventId int, eventLocation model.EventLocationModel) N
 
 func EventLocationCard(event model.EventModel, eventLocation model.EventLocationModel, withActions bool) Node {
 	address := eventLocation.Address
-	var eventRole string
-	switch strings.TrimSpace(strings.ToLower(eventLocation.Relationship)) {
-	case "sleep_location":
-		eventRole = "Übernachtungsort"
-		break
-	case "event_location":
-		eventRole = "Eventort"
-		break
+	var eventRole = eventLocation.RelationshipLabel()
+
+	var container func(children ...Node) Node
+	if withActions {
+		container = Div
+	} else {
+		container = A
 	}
 
-	return Div(Class("location-card"),
+	return container(Class("location-card"), If(!withActions, Href(fmt.Sprintf("/event/%v/location/%v", event.ID, eventLocation.ID))),
 		If(!withActions, Div(Strong(Text(eventRole)))),
 		Iff(withActions, func() Node {
 			return SetEventLocationNote(event.ID, eventLocation)

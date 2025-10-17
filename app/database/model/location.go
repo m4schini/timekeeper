@@ -1,6 +1,9 @@
 package model
 
-import "timekeeper/adapters"
+import (
+	"strings"
+	"timekeeper/adapters"
+)
 
 type LocationModel struct {
 	ID    int
@@ -20,6 +23,23 @@ type EventLocationModel struct {
 	Visible          bool
 
 	Address *adapters.OsmAddress
+}
+
+func (e EventLocationModel) RelationshipLabel() (label string) {
+	el := strings.TrimSpace(strings.ToLower(e.Relationship))
+	switch el {
+	case "sleep_location":
+		label = "Übernachtungsort"
+		break
+	case "event_location":
+		label = "Eventort"
+		break
+	default:
+		label = el
+		break
+	}
+
+	return label
 }
 
 type CreateLocationModel struct {

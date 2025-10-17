@@ -23,6 +23,7 @@ type Queries interface {
 	GetLocation(id int) (l model.LocationModel, err error)
 	GetLocations(offset int, limit int) (ls []model.LocationModel, err error)
 	GetLocationsOfEvent(eventId int) (ls []model.EventLocationModel, err error)
+	GetEventLocation(eventId, locationId int) (l model.EventLocationModel, err error)
 
 	GetRoom(id int) (r model.RoomModel, err error)
 	GetRooms(offset int, limit int) (rs []model.RoomModel, total int, err error)
