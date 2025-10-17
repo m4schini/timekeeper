@@ -31,8 +31,8 @@ func AddLocationForm(eventId int, locations []model.LocationModel) Node {
 
 			Label(For("location_role"), Text("als")),
 			Select(Name("location_role"), Required(),
-				Option(Value("event_location"), Text("Event Location")),
-				Option(Value("sleep_location"), Text("Übernachtung")),
+				Option(Value("event_location"), Text("Eventort")),
+				Option(Value("sleep_location"), Text("Übernachtungsort")),
 			),
 
 			Input(Type("submit"), Value("Location hinzufügen")),

@@ -79,8 +79,6 @@ h2 > a {
 }
 
 .event-container > div {
-    width: 900px;
-
     display: flex;
     flex-direction: column;
     margin-bottom: 2rem;
@@ -110,7 +108,7 @@ h2 > a {
 
 @media screen and (min-width: 1400px) {
     .days-container {
-        grid-template-columns: repeat(auto-fit, minmax(30vw, 1fr));
+        grid-template-columns: repeat(auto-fit, minmax(470px, 1fr));
     }
 
     .timeslot-container {
@@ -277,6 +275,10 @@ h2 > a {
 
 .location-crop {
     position: relative;
+}
+
+.location-card {
+    min-width: 200px
 }
 
 .menu {
@@ -503,7 +505,7 @@ h2 {
     text-decoration: none;
     color: black;
     background-color: var(--color-soft-blue);
-    font-size: 1rem;
+    font-size: 0.7rem;
 }
 
 .compact-timeslot-container .timeslot-info {

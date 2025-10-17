@@ -16,13 +16,19 @@ import (
 )
 
 func SetEventLocationNote(eventId int, eventLocation model.EventLocationModel) Node {
-	return Form(Method("POST"), Action(fmt.Sprintf("/_/event/%v/location/%v/edit", eventId, eventLocation.RelationshipId)),
+	return Form(Style("display: flex; flex-direction: column"), Method("POST"), Action(fmt.Sprintf("/_/event/%v/location/%v/edit", eventId, eventLocation.RelationshipId)),
 		Input(Type("hidden"), Name("relationship"), Value(fmt.Sprintf("%v", eventLocation.RelationshipId))),
 		//Input(Type("text"), Name("relationship_name"), Value(eventLocation.Relationship)),
 		Select(Name("relationship_name"),
 			Option(Value("sleep_location"), Text("Übernachtungsort"), If(eventLocation.Relationship == "sleep_location", Selected())),
 			Option(Value("event_location"), Text("Eventort"), If(eventLocation.Relationship == "event_location", Selected())),
 		),
+
+		Div(
+			Input(Type("checkbox"), Name("visible"), If(eventLocation.Visible, Checked())),
+			Label(Text(" Sichtbar"), For("visible")),
+		),
+
 		Input(Type("text"), Name("relationship_note"), Value(eventLocation.RelationshipNote), Placeholder("kurze Anmerkung")),
 		Input(Type("submit"), Value("Speichern")),
 	)
@@ -33,10 +39,10 @@ func EventLocationCard(event model.EventModel, eventLocation model.EventLocation
 	var eventRole string
 	switch strings.TrimSpace(strings.ToLower(eventLocation.Relationship)) {
 	case "sleep_location":
-		eventRole = "Übernachtung"
+		eventRole = "Übernachtungsort"
 		break
 	case "event_location":
-		eventRole = "Event Location"
+		eventRole = "Eventort"
 		break
 	}
 
@@ -92,10 +98,11 @@ func (l *UpdateEventLocationRoute) Handler() http.Handler {
 		var (
 			eventId          = chi.URLParam(request, "event")
 			relationshipId   = chi.URLParam(request, "event_location")
+			visible          = request.PostFormValue("visible")
 			relationshipName = request.PostFormValue("relationship_name")
 			relationshipNote = request.PostFormValue("relationship_note")
 		)
-		model, err := ParseUpdateEventLocationModel(relationshipId, relationshipName, relationshipNote)
+		model, err := ParseUpdateEventLocationModel(relationshipId, visible, relationshipName, relationshipNote)
 		if err != nil {
 			render.RenderError(log, writer, http.StatusBadRequest, "failed to parse form", err)
 			return
@@ -113,15 +120,16 @@ func (l *UpdateEventLocationRoute) Handler() http.Handler {
 	})
 }
 
-func ParseUpdateEventLocationModel(relationship, relationshipName, relationshipNote string) (model.UpdateLocationToEventModel, error) {
+func ParseUpdateEventLocationModel(relationship, visible, relationshipName, relationshipNote string) (model.UpdateLocationToEventModel, error) {
 	relationshipId, err := strconv.ParseInt(relationship, 10, 64)
 	if err != nil {
 		return model.UpdateLocationToEventModel{}, err
 	}
 
 	return model.UpdateLocationToEventModel{
-		ID:   int(relationshipId),
-		Name: relationshipName,
-		Note: relationshipNote,
+		ID:      int(relationshipId),
+		Name:    relationshipName,
+		Note:    relationshipNote,
+		Visible: visible == "on",
 	}, nil
 }

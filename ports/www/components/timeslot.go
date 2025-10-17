@@ -1,6 +1,7 @@
 package components
 
 import (
+	"fmt"
 	"github.com/go-chi/chi/v5"
 	"go.uber.org/zap"
 	. "maragu.dev/gomponents"
@@ -67,10 +68,11 @@ func timeslotTime(date time.Time) Node {
 }
 
 func timeslotRoom(eventId, locationId int, r model.RoomModel) Node {
+	title := fmt.Sprintf("%v: %v", r.Location.Name, r.Name)
 	return Div(Class("timeslot-room"),
 		If(
 			true,
-			A(Textf("%v", r.Name), Href("#")), //fmt.Sprintf("/event/%v/location/%v#%v", eventId, locationId, r.ID)
+			A(Textf("%v", r.Name), Href("#"), Title(title)), //fmt.Sprintf("/event/%v/location/%v#%v", eventId, locationId, r.ID)
 		),
 	)
 }

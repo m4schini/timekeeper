@@ -46,7 +46,7 @@ FROM timekeeper.timeslots ts
 JOIN timekeeper.rooms r ON r.id = ts.room
 JOIN timekeeper.events e on e.id = ts.event
 JOIN timekeeper.locations l on l.id = r.location
-WHERE e.id = $1 ORDER BY ts.start LIMIT $2 OFFSET $3 `,
+WHERE e.id = $1 ORDER BY ts.start, ts.note LIMIT $2 OFFSET $3 `,
 		event, limit, offset)
 	if err != nil {
 		return nil, total, err

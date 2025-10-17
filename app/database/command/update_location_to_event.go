@@ -9,7 +9,8 @@ func (c *Commands) UpdateLocationToEvent(m model.UpdateLocationToEventModel) (er
 UPDATE timekeeper.event_has_location
 SET
     name = $1,
-    note = $2
-WHERE id = $3`, m.Name, m.Note, m.ID)
+    note = $2,
+    visible = $3
+WHERE id = $4`, m.Name, m.Note, m.Visible, m.ID)
 	return err
 }

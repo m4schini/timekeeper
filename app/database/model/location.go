@@ -17,6 +17,7 @@ type EventLocationModel struct {
 	Relationship     string
 	RelationshipId   int
 	RelationshipNote string
+	Visible          bool
 
 	Address *adapters.OsmAddress
 }
@@ -42,9 +43,10 @@ type AddLocationToEventModel struct {
 }
 
 type UpdateLocationToEventModel struct {
-	ID   int
-	Name string
-	Note string
+	ID      int
+	Name    string
+	Note    string
+	Visible bool
 }
 
 type DeleteLocationFromEventModel struct {

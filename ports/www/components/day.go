@@ -13,6 +13,7 @@ import (
 	"timekeeper/app/database"
 	"timekeeper/app/database/model"
 	"timekeeper/app/export/md"
+	"timekeeper/config"
 	"timekeeper/ports/www/middleware"
 	"timekeeper/ports/www/render"
 )
@@ -100,8 +101,13 @@ func CompactDay(timeslots []model.TimeslotModel) Node {
 		Div(Style("display: flex; flex-direction: column; gap: 1rem"),
 			t,
 		),
-		P(Textf("Generated: %v", time.Now().Format(time.RFC822)), Style("opacity: 0.5; font-size: x-small")),
+		P(Textf("Generated: %v", NowInTimezone(config.Timezone()).Format(time.RFC822)), Style("opacity: 0.5; font-size: x-small")),
 	)
+}
+
+func NowInTimezone(location *time.Location) time.Time {
+	now := time.Now()
+	return time.Date(now.Year(), now.Month(), now.Day(), now.Hour(), now.Minute(), now.Second(), now.Nanosecond(), location)
 }
 
 type DayRoute struct {

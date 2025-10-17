@@ -25,6 +25,9 @@ func EventDateRange(start time.Time, totalDays int) Node {
 func EventPublicPage(event model.EventModel, locations []model.EventLocationModel) Node {
 	eventLocationsGroup := Group{}
 	for _, location := range locations {
+		if !location.Visible {
+			continue
+		}
 		eventLocationsGroup = append(eventLocationsGroup, components.EventLocationCard(event, location, false))
 		//eventLocationsGroup = append(eventLocationsGroup, Li(Textf("%v: %v (%v)", location.Relationship, location.Name, location.Address.City)))
 	}
@@ -52,7 +55,7 @@ func EventPublicPage(event model.EventModel, locations []model.EventLocationMode
 				),
 				Div(
 					H2(Text("Orte")),
-					Div(Style("display: flex; gap: 1rem"), eventLocationsGroup),
+					Div(Style("display: flex; flex-basis: 100%; flex-wrap: wrap; gap: 1rem"), eventLocationsGroup),
 				),
 			),
 		),
