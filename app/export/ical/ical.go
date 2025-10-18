@@ -12,7 +12,7 @@ import (
 
 func ExportCalendarSchedule(event model.EventModel, timeslots []model.TimeslotModel) (string, error) {
 	cal := ics.NewCalendar()
-	cal.SetMethod(ics.MethodRequest)
+	cal.SetMethod(ics.MethodPublish)
 	cal.SetCalscale("GREGORIAN")
 	cal.SetXWRCalDesc(fmt.Sprintf("Zeitplan siehe %v", event.ScheduleURL()))
 	cal.SetXWRTimezone(config.Timezone().String())
