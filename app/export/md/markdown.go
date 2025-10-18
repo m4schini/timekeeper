@@ -26,8 +26,15 @@ var conv = converter.NewConverter(
 func ExportMarkdownTimetable(timeslots []model.TimeslotModel) (string, error) {
 	rows := Group{}
 	for _, timeslot := range timeslots {
+		start := timeslot.Start
+		timeslotStr := start.Format("15:04")
+		if timeslot.Duration > 0 {
+			end := timeslot.Start.Add(timeslot.Duration).Format("15:04")
+			timeslotStr += " - " + end
+		}
+
 		rows = append(rows, Tr(
-			Td(Text(timeslot.Start.Format("15:04"))),
+			Td(Textf("%v", timeslotStr)),
 			Td(Text(timeslot.Room.Name)),
 			Td(Text(timeslot.Title)),
 			Td(Text(timeslot.Note)),
