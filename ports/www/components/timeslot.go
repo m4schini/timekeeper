@@ -18,7 +18,7 @@ import (
 func TimeSlot(t model.TimeslotModel, withActions, active, disabled bool) Node {
 	return Div(Class("timeslot-container"), If(disabled && !active, Style("opacity: 0.5;")), If(active, Style("border-left: 8px solid var(--color-deep-green);")),
 		Div(Class("timeslot-meta"),
-			timeslotTime(t.Date()),
+			timeslotTime(t.Date(), t.Duration),
 			timeslotRoom(t.Event.ID, t.Room.Location.ID, t.Room),
 			Div(Class("timeslot-roles"), RoleTag(t.Role)),
 		),
@@ -36,7 +36,7 @@ func TimeSlot(t model.TimeslotModel, withActions, active, disabled bool) Node {
 
 func FullTimeSlot(t model.TimeslotModel, disabled bool) Node {
 	return Div(Class("full-timeslot-container"), If(disabled, Style("opacity: 0.5;")),
-		timeslotTime(t.Date()),
+		timeslotTime(t.Date(), t.Duration),
 		timeslotRoom(t.Event.ID, t.Room.Location.ID, t.Room),
 		Div(Class("timeslot-roles"), RoleTag(t.Role)),
 		Div(Class("timeslot-info"),
@@ -49,7 +49,7 @@ func FullTimeSlot(t model.TimeslotModel, disabled bool) Node {
 
 func CompactTimeSlot(t model.TimeslotModel, active, disabled bool) Node {
 	return Div(Class("compact-timeslot-container"), If(disabled && !active, Style("opacity: 0.5;")), If(active, Style("border-left: 8px solid var(--color-deep-green);")),
-		timeslotTime(t.Date()),
+		timeslotTime(t.Date(), t.Duration),
 		timeslotRoom(t.Event.ID, t.Room.Location.ID, t.Room),
 		Div(Class("timeslot-roles"), RoleTag(t.Role)),
 		Div(Class("timeslot-info"),
@@ -60,11 +60,13 @@ func CompactTimeSlot(t model.TimeslotModel, active, disabled bool) Node {
 	)
 }
 
-func timeslotTime(date time.Time) Node {
+func timeslotTime(date time.Time, duration time.Duration) Node {
+	var timeslotText = fmt.Sprintf("%v", date.Format("15:04"))
+
 	return Div(
 		Class("timeslot-time"),
-		Text(date.Format("15:04")),
-		Title(date.Format(time.RFC1123Z)))
+		Text(timeslotText),
+		Title(fmt.Sprintf("%v - %v (%v)", date.Format("15:04"), date.Add(duration).Format("15:04"), duration)))
 }
 
 func timeslotRoom(eventId, locationId int, r model.RoomModel) Node {
