@@ -1,17 +1,16 @@
 package ical
 
 import (
-	"bytes"
 	"fmt"
 	"github.com/arran4/golang-ical"
-	"io"
 	"net/url"
+	"strings"
 	"time"
 	"timekeeper/app/database/model"
 	"timekeeper/config"
 )
 
-func ExportCalendarScheduleTo(event model.EventModel, timeslots []model.TimeslotModel, writer io.Writer) error {
+func ExportCalendarSchedule(event model.EventModel, timeslots []model.TimeslotModel) (string, error) {
 	cal := ics.NewCalendar()
 	cal.SetMethod(ics.MethodRequest)
 	cal.SetCalscale("GREGORIAN")
@@ -23,7 +22,7 @@ func ExportCalendarScheduleTo(event model.EventModel, timeslots []model.Timeslot
 
 	domain, err := url.Parse(config.BaseUrl())
 	if err != nil {
-		return err
+		return "", err
 	}
 
 	for _, timeslot := range timeslots {
@@ -35,18 +34,10 @@ func ExportCalendarScheduleTo(event model.EventModel, timeslots []model.Timeslot
 		event.SetEndAt(timeslot.Date().Add(timeslot.Duration))
 		event.SetLocation(timeslot.Room.Name)
 		event.SetSummary(timeslot.Title)
-		event.SetDescription(timeslot.Note)
+		event.SetDescription(strings.ReplaceAll(timeslot.Note, string(ics.WithNewLineWindows), string(ics.WithNewLineUnix)))
 	}
 
-	return cal.SerializeTo(writer)
-}
+	calData := cal.Serialize(ics.WithNewLineUnix)
 
-func ExportCalendarSchedule(event model.EventModel, timeslots []model.TimeslotModel) (string, error) {
-	var buf bytes.Buffer
-	err := ExportCalendarScheduleTo(event, timeslots, &buf)
-	if err != nil {
-		return "", err
-	}
-
-	return buf.String(), nil
+	return calData, nil
 }

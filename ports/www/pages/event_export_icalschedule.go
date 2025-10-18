@@ -51,10 +51,13 @@ func (v *EventExportIcalScheduleRoute) Handler() http.Handler {
 
 		writer.Header().Set("Content-Type", "text/calendar; charset=utf-8")
 		writer.Header().Set("Content-Disposition", fmt.Sprintf("inline; filename=timekeeper_event_%v.ics", event.ID))
-		err = export.ExportCalendarScheduleTo(event, timeslots, writer)
+
+		cal, err := export.ExportCalendarSchedule(event, timeslots)
 		if err != nil {
 			render.RenderError(log, writer, http.StatusInternalServerError, "failed to generate ical schedule", err)
 			return
 		}
+
+		writer.Write([]byte(cal))
 	})
 }
