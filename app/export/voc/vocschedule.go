@@ -21,12 +21,15 @@ func ExportVocScheduleTo(event model.EventModel, timeslots []model.TimeslotModel
 		day := t.Day
 		room := t.Room.Name
 
+		hours := int(t.Duration.Hours())
+		minutes := int(t.Duration.Minutes()) % 60
+
 		eventDate := t.Date()
 		event := ConferenceEvent{
 			Abstract:    t.Note,
 			Description: t.Note,
 			Date:        eventDate,
-			Duration:    "01:00",
+			Duration:    fmt.Sprintf("%02d:%02d", hours, minutes),
 			Guid:        fmt.Sprintf("00000000-0000-0000-0000-%012d", t.ID),
 			Id:          t.ID,
 			Language:    "de",
