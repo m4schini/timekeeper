@@ -37,7 +37,7 @@ func ExportCalendarSchedule(event model.EventModel, timeslots []model.TimeslotMo
 		event.SetDescription(strings.ReplaceAll(timeslot.Note, string(ics.WithNewLineWindows), string(ics.WithNewLineUnix)))
 	}
 
-	calData := cal.Serialize(ics.WithNewLineUnix)
+	calData := cal.Serialize(ics.WithNewLineWindows)
 
 	return calData, nil
 }
