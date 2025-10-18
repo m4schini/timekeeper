@@ -56,15 +56,13 @@ func Day(event, day int, date time.Time, withActions bool, timeslots []model.Tim
 		}
 	}
 
-	return Div(Class("day-container"), //hx.Get("/_/day/"+day), hx.Trigger("load delay:60s"), hx.Swap("outerHTML"),
+	return Div(Class("day-container"),
 		H2(A(Text(fmt.Sprintf("Tag %v (%v)", day, md.Wochentag(date.Weekday()))), Href(fmt.Sprintf("/event/%v/schedule/%v?compact", event, day)))),
-		//If(withActions, Div(Style("display: flex; gap: 1rem"), CreateTimeslotButton(event), ExportEventDayMarkdownButton(event, day))),
 		Div(Style("display: flex; flex-direction: column; gap: 1rem"), t),
 	)
 }
 
 func CompactDay(timeslots []model.TimeslotModel) Node {
-	//log := zap.L().Named("day")
 	t := Group{}
 	now := time.Now()
 	insertedSep := false
@@ -98,7 +96,7 @@ func CompactDay(timeslots []model.TimeslotModel) Node {
 		}
 	}
 
-	return Div( //hx.Get("/_/day/"+day), hx.Trigger("load delay:60s"), hx.Swap("outerHTML"),
+	return Div(
 		Div(Style("display: flex; flex-direction: column; gap: 1rem"),
 			t,
 		),
@@ -123,10 +121,6 @@ func (d *DayRoute) Pattern() string {
 	return "/event/{event}/{day}"
 }
 
-func (d *DayRoute) UseCache() bool {
-	return false
-}
-
 func (d *DayRoute) Handler() http.Handler {
 	log := Logger(d)
 	queries := d.DB.Queries
@@ -139,24 +133,24 @@ func (d *DayRoute) Handler() http.Handler {
 		log.Debug("rendering day", zap.Bool("isOrganizer", isOrganizer), zap.String("eventParam", eventParam), zap.String("dayParam", dayParam))
 		eventId, err := strconv.ParseInt(eventParam, 10, 64)
 		if err != nil {
-			render.RenderError(log, writer, http.StatusBadRequest, "invalid eventId", err)
+			render.Error(log, writer, http.StatusBadRequest, "invalid eventId", err)
 			return
 		}
 		day, err := strconv.ParseInt(dayParam, 10, 64)
 		if err != nil {
-			render.RenderError(log, writer, http.StatusBadRequest, "invalid day", err)
+			render.Error(log, writer, http.StatusBadRequest, "invalid day", err)
 			return
 		}
 
 		event, err := queries.GetEvent(int(eventId))
 		if err != nil {
-			render.RenderError(log, writer, http.StatusInternalServerError, "failed to retrieve event", err)
+			render.Error(log, writer, http.StatusInternalServerError, "failed to retrieve event", err)
 			return
 		}
 
 		timeslots, _, err := queries.GetTimeslotsOfEvent(int(eventId), 0, 100)
 		if err != nil {
-			render.RenderError(log, writer, http.StatusInternalServerError, "failed to retrieve day", err)
+			render.Error(log, writer, http.StatusInternalServerError, "failed to retrieve day", err)
 			return
 		}
 
@@ -167,6 +161,6 @@ func (d *DayRoute) Handler() http.Handler {
 			}
 		}
 
-		render.Render(log, writer, request, Day(event.ID, int(day), event.Start, isOrganizer, dayData))
+		render.HTML(log, writer, request, Day(event.ID, int(day), event.Start, isOrganizer, dayData))
 	})
 }

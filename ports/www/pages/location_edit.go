@@ -11,7 +11,7 @@ import (
 	"timekeeper/app/database/model"
 	"timekeeper/ports/www/components"
 	"timekeeper/ports/www/middleware"
-	. "timekeeper/ports/www/render"
+	"timekeeper/ports/www/render"
 )
 
 func EditLocationPage(locationModel model.LocationModel, rooms []model.RoomModel) Node {
@@ -50,7 +50,7 @@ func (l *UpdateLocationPageRoute) Handler() http.Handler {
 	return http.HandlerFunc(func(writer http.ResponseWriter, request *http.Request) {
 		isOrganizer := middleware.IsOrganizer(request)
 		if !isOrganizer {
-			RenderError(log, writer, http.StatusUnauthorized, "user is not authorized", nil)
+			render.Error(log, writer, http.StatusUnauthorized, "user is not authorized", nil)
 			return
 		}
 		var (
@@ -58,24 +58,24 @@ func (l *UpdateLocationPageRoute) Handler() http.Handler {
 			locationId, err = strconv.ParseInt(locationParam, 10, 64)
 		)
 		if err != nil {
-			RenderError(log, writer, http.StatusBadRequest, "invalid locationId", err)
+			render.Error(log, writer, http.StatusBadRequest, "invalid locationId", err)
 			return
 		}
 
 		location, err := queries.GetLocation(int(locationId))
 		if err != nil {
-			RenderError(log, writer, http.StatusInternalServerError, "failed to get location", err)
+			render.Error(log, writer, http.StatusInternalServerError, "failed to get location", err)
 			return
 		}
 		log.Debug("retrieved location", zap.Any("model", location))
 
 		rooms, total, err := queries.GetRoomsOfLocation(location.ID, 0, 100)
 		if err != nil {
-			RenderError(log, writer, http.StatusInternalServerError, "failed to get rooms of location", err)
+			render.Error(log, writer, http.StatusInternalServerError, "failed to get rooms of location", err)
 			return
 		}
 		log.Debug("retrieved rooms of location", zap.Int("total", total), zap.Int("rooms", len(rooms)))
 
-		Render(log, writer, request, EditLocationPage(location, rooms))
+		render.HTML(log, writer, request, EditLocationPage(location, rooms))
 	})
 }

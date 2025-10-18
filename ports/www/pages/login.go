@@ -37,17 +37,11 @@ func (l *LoginPageRoute) Pattern() string {
 	return "/login"
 }
 
-func (l *LoginPageRoute) UseCache() bool {
-	return true
-}
-
 func (l *LoginPageRoute) Handler() http.Handler {
 	log := zap.L().Named(l.Pattern())
-	authenticator := l.Auth
+	page := LoginPage()
 	return http.HandlerFunc(func(writer http.ResponseWriter, request *http.Request) {
-		_ = authenticator
-
-		render.Render(log, writer, request, LoginPage())
+		render.HTML(log, writer, request, page)
 	})
 }
 
@@ -64,12 +58,12 @@ func (l *LoginRoute) Pattern() string {
 }
 
 func (l *LoginRoute) Handler() http.Handler {
-	log := zap.L().Named(l.Pattern())
+	log := components.Logger(l)
 	authy := l.Auth
 	return http.HandlerFunc(func(writer http.ResponseWriter, request *http.Request) {
 		err := request.ParseForm()
 		if err != nil {
-			render.RenderError(log, writer, http.StatusBadRequest, "failed to parse form", err)
+			render.Error(log, writer, http.StatusBadRequest, "failed to parse form", err)
 			return
 		}
 
@@ -112,16 +106,12 @@ func (l *LogoutRoute) Pattern() string {
 	return "/logout"
 }
 
-func (l *LogoutRoute) UseCache() bool {
-	return false
-}
-
 func (l *LogoutRoute) Handler() http.Handler {
-	log := zap.L().Named(l.Pattern())
+	log := components.Logger(l)
 	return http.HandlerFunc(func(writer http.ResponseWriter, request *http.Request) {
 		err := request.ParseForm()
 		if err != nil {
-			render.RenderError(log, writer, http.StatusBadRequest, "failed to parse form", err)
+			render.Error(log, writer, http.StatusBadRequest, "failed to parse form", err)
 			return
 		}
 

@@ -25,39 +25,38 @@ func (v *EventExportIcalScheduleRoute) Pattern() string {
 }
 
 func (v *EventExportIcalScheduleRoute) Handler() http.Handler {
-	queries := v.DB.Queries
 	log := components.Logger(v)
+	queries := v.DB.Queries
 	return http.HandlerFunc(func(writer http.ResponseWriter, request *http.Request) {
 		eventParam := chi.URLParam(request, "event")
 		eventId, err := strconv.ParseInt(eventParam, 10, 64)
 		if err != nil {
-			render.RenderError(log, writer, http.StatusBadRequest, "invalid event id", err)
+			render.Error(log, writer, http.StatusBadRequest, "invalid event id", err)
 			return
 		}
 		roles, _ := ParseRolesQuery(request.URL.Query(), false)
 
 		event, err := queries.GetEvent(int(eventId))
 		if err != nil {
-			render.RenderError(log, writer, http.StatusInternalServerError, "failed to get event", err)
+			render.Error(log, writer, http.StatusInternalServerError, "failed to get event", err)
 			return
 		}
 
 		timeslots, _, err := queries.GetTimeslotsOfEvent(int(eventId), 0, 1000)
 		if err != nil {
-			render.RenderError(log, writer, http.StatusInternalServerError, "failed to get timeslots of event", err)
+			render.Error(log, writer, http.StatusInternalServerError, "failed to get timeslots of event", err)
 			return
 		}
 		timeslots = model.FilterTimeslotRoles(timeslots, roles)
 
-		writer.Header().Set("Content-Type", "text/calendar; charset=utf-8")
-		writer.Header().Set("Content-Disposition", fmt.Sprintf("inline; filename=timekeeper_event_%v.ics", event.ID))
-
 		cal, err := export.ExportCalendarSchedule(event, timeslots)
 		if err != nil {
-			render.RenderError(log, writer, http.StatusInternalServerError, "failed to generate ical schedule", err)
+			render.Error(log, writer, http.StatusInternalServerError, "failed to generate ical schedule", err)
 			return
 		}
 
+		writer.Header().Set("Content-Type", "text/calendar; charset=utf-8")
+		writer.Header().Set("Content-Disposition", fmt.Sprintf("inline; filename=timekeeper_event_%v.ics", event.ID))
 		writer.Write([]byte(cal))
 	})
 }

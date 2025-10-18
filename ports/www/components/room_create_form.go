@@ -43,13 +43,13 @@ func (l *CreateRoomRoute) Handler() http.Handler {
 	commands := l.DB.Commands
 	return http.HandlerFunc(func(writer http.ResponseWriter, request *http.Request) {
 		if !middleware.IsOrganizer(request) {
-			render.RenderError(log, writer, http.StatusUnauthorized, "unauthorized request detected", nil)
+			render.Error(log, writer, http.StatusUnauthorized, "unauthorized request detected", nil)
 			return
 		}
 
 		err := request.ParseForm()
 		if err != nil {
-			render.RenderError(log, writer, http.StatusBadRequest, "failed to parse form", err)
+			render.Error(log, writer, http.StatusBadRequest, "failed to parse form", err)
 			return
 		}
 
@@ -59,14 +59,14 @@ func (l *CreateRoomRoute) Handler() http.Handler {
 		)
 		model, err := ParseCreateRoomModel(locationParam, nameParam)
 		if err != nil {
-			render.RenderError(log, writer, http.StatusBadRequest, "failed to parse form", err)
+			render.Error(log, writer, http.StatusBadRequest, "failed to parse form", err)
 			return
 		}
 		log.Debug("parsed create room form", zap.Any("model", model))
 
 		id, err := commands.CreateRoom(model)
 		if err != nil {
-			render.RenderError(log, writer, http.StatusInternalServerError, "failed to create room", err)
+			render.Error(log, writer, http.StatusInternalServerError, "failed to create room", err)
 			return
 		}
 		log.Debug("created room to event", zap.Int("id", id), zap.Int("location", model.Location))
@@ -104,19 +104,19 @@ func (l *DeleteRoomRoute) Handler() http.Handler {
 	commands := l.DB.Commands
 	return http.HandlerFunc(func(writer http.ResponseWriter, request *http.Request) {
 		if !middleware.IsOrganizer(request) {
-			render.RenderError(log, writer, http.StatusUnauthorized, "unauthorized request detected", nil)
+			render.Error(log, writer, http.StatusUnauthorized, "unauthorized request detected", nil)
 			return
 		}
 
 		roomId, err := strconv.ParseInt(chi.URLParam(request, "room"), 10, 64)
 		if err != nil {
-			render.RenderError(log, writer, http.StatusBadRequest, "invalid roomid", err)
+			render.Error(log, writer, http.StatusBadRequest, "invalid roomid", err)
 			return
 		}
 
 		err = commands.DeleteRoom(int(roomId))
 		if err != nil {
-			render.RenderError(log, writer, http.StatusInternalServerError, "failed to delete room", err)
+			render.Error(log, writer, http.StatusInternalServerError, "failed to delete room", err)
 			return
 		}
 		log.Debug("deleted room to event", zap.Int64("room", roomId))

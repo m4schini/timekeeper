@@ -61,13 +61,13 @@ func (l *CreateEventRoute) Handler() http.Handler {
 	commands := l.DB.Commands
 	return http.HandlerFunc(func(writer http.ResponseWriter, request *http.Request) {
 		if !middleware.IsOrganizer(request) {
-			render.RenderError(log, writer, http.StatusUnauthorized, "unauthorized request detected", nil)
+			render.Error(log, writer, http.StatusUnauthorized, "unauthorized request detected", nil)
 			return
 		}
 
 		err := request.ParseForm()
 		if err != nil {
-			render.RenderError(log, writer, http.StatusBadRequest, "failed to parse form", err)
+			render.Error(log, writer, http.StatusBadRequest, "failed to parse form", err)
 			return
 		}
 
@@ -77,14 +77,14 @@ func (l *CreateEventRoute) Handler() http.Handler {
 		)
 		model, err := ParseCreateEventModel(nameParam, startParam)
 		if err != nil {
-			render.RenderError(log, writer, http.StatusBadRequest, "failed to parse form", err)
+			render.Error(log, writer, http.StatusBadRequest, "failed to parse form", err)
 			return
 		}
 		log.Debug("parsed create event form", zap.Any("model", model))
 
 		id, err := commands.CreateEvent(model)
 		if err != nil {
-			render.RenderError(log, writer, http.StatusInternalServerError, "failed to create event", err)
+			render.Error(log, writer, http.StatusInternalServerError, "failed to create event", err)
 			return
 		}
 		log.Debug("created event", zap.Int("id", id))
@@ -122,13 +122,13 @@ func (l *UpdateEventRoute) Handler() http.Handler {
 	commands := l.DB.Commands
 	return http.HandlerFunc(func(writer http.ResponseWriter, request *http.Request) {
 		if !middleware.IsOrganizer(request) {
-			render.RenderError(log, writer, http.StatusUnauthorized, "unauthorized request detected", nil)
+			render.Error(log, writer, http.StatusUnauthorized, "unauthorized request detected", nil)
 			return
 		}
 
 		err := request.ParseForm()
 		if err != nil {
-			render.RenderError(log, writer, http.StatusBadRequest, "failed to parse form", err)
+			render.Error(log, writer, http.StatusBadRequest, "failed to parse form", err)
 			return
 		}
 
@@ -139,14 +139,14 @@ func (l *UpdateEventRoute) Handler() http.Handler {
 		)
 		model, err := ParseUpdateEventModel(eventParam, nameParam, startParam)
 		if err != nil {
-			render.RenderError(log, writer, http.StatusBadRequest, "failed to parse form", err)
+			render.Error(log, writer, http.StatusBadRequest, "failed to parse form", err)
 			return
 		}
 		log.Debug("parsed create event form", zap.Any("model", model))
 
 		err = commands.UpdateEvent(model)
 		if err != nil {
-			render.RenderError(log, writer, http.StatusInternalServerError, "failed to create event", err)
+			render.Error(log, writer, http.StatusInternalServerError, "failed to create event", err)
 			return
 		}
 		log.Debug("updated event", zap.String("id", eventParam))

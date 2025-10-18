@@ -10,7 +10,7 @@ import (
 	"timekeeper/app/database/model"
 	"timekeeper/ports/www/components"
 	"timekeeper/ports/www/middleware"
-	. "timekeeper/ports/www/render"
+	"timekeeper/ports/www/render"
 )
 
 func EditEventPage(event model.EventModel) Node {
@@ -41,7 +41,7 @@ func (l *EditEventPageRoute) Handler() http.Handler {
 	return http.HandlerFunc(func(writer http.ResponseWriter, request *http.Request) {
 		isOrganizer := middleware.IsOrganizer(request)
 		if !isOrganizer {
-			RenderError(log, writer, http.StatusUnauthorized, "user is not authorized", nil)
+			render.Error(log, writer, http.StatusUnauthorized, "user is not authorized", nil)
 			return
 		}
 
@@ -50,16 +50,16 @@ func (l *EditEventPageRoute) Handler() http.Handler {
 			eventId, err = strconv.ParseInt(eventParam, 10, 64)
 		)
 		if err != nil {
-			RenderError(log, writer, http.StatusBadRequest, "invalid eventId", err)
+			render.Error(log, writer, http.StatusBadRequest, "invalid eventId", err)
 			return
 		}
 
 		event, err := queries.GetEvent(int(eventId))
 		if err != nil {
-			RenderError(log, writer, http.StatusInternalServerError, "failed to get event", err)
+			render.Error(log, writer, http.StatusInternalServerError, "failed to get event", err)
 			return
 		}
 
-		Render(log, writer, request, EditEventPage(event))
+		render.HTML(log, writer, request, EditEventPage(event))
 	})
 }

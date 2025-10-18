@@ -43,13 +43,13 @@ func (l *UpdateRoomRoute) Handler() http.Handler {
 	commands := l.DB.Commands
 	return http.HandlerFunc(func(writer http.ResponseWriter, request *http.Request) {
 		if !middleware.IsOrganizer(request) {
-			render.RenderError(log, writer, http.StatusUnauthorized, "unauthorized request detected", nil)
+			render.Error(log, writer, http.StatusUnauthorized, "unauthorized request detected", nil)
 			return
 		}
 
 		err := request.ParseForm()
 		if err != nil {
-			render.RenderError(log, writer, http.StatusBadRequest, "failed to parse form", err)
+			render.Error(log, writer, http.StatusBadRequest, "failed to parse form", err)
 			return
 		}
 
@@ -62,14 +62,14 @@ func (l *UpdateRoomRoute) Handler() http.Handler {
 		model, err := ParseEditRoomModel(roomParam, nameParam, descriptionParam)
 		if err != nil {
 			log.Sugar().Debug("failed to parse", roomParam, locationParam, nameParam, descriptionParam)
-			render.RenderError(log, writer, http.StatusBadRequest, "failed to parse form", err)
+			render.Error(log, writer, http.StatusBadRequest, "failed to parse form", err)
 			return
 		}
 		log.Debug("parsed update room form", zap.Any("model", model))
 
 		err = commands.UpdateRoom(model)
 		if err != nil {
-			render.RenderError(log, writer, http.StatusInternalServerError, "failed to update room", err)
+			render.Error(log, writer, http.StatusInternalServerError, "failed to update room", err)
 			return
 		}
 		log.Debug("updated room", zap.String("id", roomParam))

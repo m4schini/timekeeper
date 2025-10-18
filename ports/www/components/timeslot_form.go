@@ -93,13 +93,13 @@ func (l *CreateTimeslotRoute) Handler() http.Handler {
 	commands := l.DB.Commands
 	return http.HandlerFunc(func(writer http.ResponseWriter, request *http.Request) {
 		if !middleware.IsOrganizer(request) {
-			render.RenderError(log, writer, http.StatusUnauthorized, "unauthorized request detected", nil)
+			render.Error(log, writer, http.StatusUnauthorized, "unauthorized request detected", nil)
 			return
 		}
 
 		err := request.ParseForm()
 		if err != nil {
-			render.RenderError(log, writer, http.StatusBadRequest, "failed to parse form", err)
+			render.Error(log, writer, http.StatusBadRequest, "failed to parse form", err)
 			return
 		}
 
@@ -115,14 +115,14 @@ func (l *CreateTimeslotRoute) Handler() http.Handler {
 		)
 		model, err := ParseCreateTimeslotModel(eventParam, roleParam, dayParam, timeslotParam, durationParam, titleParam, noteParam, roomParam)
 		if err != nil {
-			render.RenderError(log, writer, http.StatusBadRequest, "failed to parse form", err)
+			render.Error(log, writer, http.StatusBadRequest, "failed to parse form", err)
 			return
 		}
 		log.Debug("parsed create timeslot form", zap.Any("model", model))
 
 		id, err := commands.CreateTimeslot(model)
 		if err != nil {
-			render.RenderError(log, writer, http.StatusInternalServerError, "failed to create timeslot", err)
+			render.Error(log, writer, http.StatusInternalServerError, "failed to create timeslot", err)
 			return
 		}
 		log.Debug("created timeslot", zap.Int("id", id))
@@ -177,22 +177,18 @@ func (l *UpdateTimeslotRoute) Pattern() string {
 	return "/edit/timeslot/{timeslot}"
 }
 
-func (l *UpdateTimeslotRoute) UseCache() bool {
-	return false
-}
-
 func (l *UpdateTimeslotRoute) Handler() http.Handler {
 	log := zap.L().Named(l.Pattern())
 	commands := l.DB.Commands
 	return http.HandlerFunc(func(writer http.ResponseWriter, request *http.Request) {
 		if !middleware.IsOrganizer(request) {
-			render.RenderError(log, writer, http.StatusUnauthorized, "unauthorized request detected", nil)
+			render.Error(log, writer, http.StatusUnauthorized, "unauthorized request detected", nil)
 			return
 		}
 
 		err := request.ParseForm()
 		if err != nil {
-			render.RenderError(log, writer, http.StatusBadRequest, "failed to parse form", err)
+			render.Error(log, writer, http.StatusBadRequest, "failed to parse form", err)
 			return
 		}
 
@@ -209,14 +205,14 @@ func (l *UpdateTimeslotRoute) Handler() http.Handler {
 		)
 		model, err := ParseUpdateTimeslotModel(timeslotIdParam, eventParam, roleParam, dayParam, timeslotParam, durationParam, titleParam, noteParam, roomParam)
 		if err != nil {
-			render.RenderError(log, writer, http.StatusBadRequest, "failed to parse form", err)
+			render.Error(log, writer, http.StatusBadRequest, "failed to parse form", err)
 			return
 		}
 		log.Debug("parsed create timeslot form", zap.Any("model", model))
 
 		err = commands.UpdateTimeslot(model)
 		if err != nil {
-			render.RenderError(log, writer, http.StatusInternalServerError, "failed to update timeslot", err)
+			render.Error(log, writer, http.StatusInternalServerError, "failed to update timeslot", err)
 			return
 		}
 		log.Debug("updated timeslot", zap.Int("id", model.ID))

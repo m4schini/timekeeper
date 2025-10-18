@@ -9,7 +9,7 @@ import (
 	"timekeeper/app/database/model"
 	"timekeeper/ports/www/components"
 	"timekeeper/ports/www/middleware"
-	. "timekeeper/ports/www/render"
+	"timekeeper/ports/www/render"
 )
 
 func LandingPage(events []model.EventModel) Node {
@@ -39,8 +39,8 @@ func (l *LandingPageRoute) Pattern() string {
 }
 
 func (l *LandingPageRoute) Handler() http.Handler {
-	queries := l.DB.Queries
 	log := components.Logger(l)
+	queries := l.DB.Queries
 	return http.HandlerFunc(func(writer http.ResponseWriter, request *http.Request) {
 		if !middleware.IsOrganizer(request) {
 			http.Redirect(writer, request, "/login", http.StatusTemporaryRedirect)
@@ -49,10 +49,10 @@ func (l *LandingPageRoute) Handler() http.Handler {
 
 		events, err := queries.GetEvents(0, 100)
 		if err != nil {
-			RenderError(log, writer, http.StatusInternalServerError, "failed to get events", err)
+			render.Error(log, writer, http.StatusInternalServerError, "failed to get events", err)
 			return
 		}
 
-		Render(log, writer, request, LandingPage(events))
+		render.HTML(log, writer, request, LandingPage(events))
 	})
 }

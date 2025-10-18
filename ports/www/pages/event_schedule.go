@@ -12,7 +12,7 @@ import (
 	"timekeeper/app/database/model"
 	"timekeeper/ports/www/components"
 	"timekeeper/ports/www/middleware"
-	. "timekeeper/ports/www/render"
+	"timekeeper/ports/www/render"
 )
 
 func SchedulePage(event model.EventModel, withActions bool, days [][]model.TimeslotModel) Node {
@@ -71,7 +71,7 @@ func (l *SchedulePageRoute) Handler() http.Handler {
 		eventParam := chi.URLParam(request, "event")
 		eventId, err := strconv.ParseInt(eventParam, 10, 64)
 		if err != nil {
-			RenderError(log, writer, http.StatusBadRequest, "invalid event id", err)
+			render.Error(log, writer, http.StatusBadRequest, "invalid event id", err)
 			return
 		}
 		isOrganizer := middleware.IsOrganizer(request)
@@ -79,13 +79,13 @@ func (l *SchedulePageRoute) Handler() http.Handler {
 
 		event, err := queries.GetEvent(int(eventId))
 		if err != nil {
-			RenderError(log, writer, http.StatusInternalServerError, "failed to get event", err)
+			render.Error(log, writer, http.StatusInternalServerError, "failed to get event", err)
 			return
 		}
 
 		timeslots, _, err := queries.GetTimeslotsOfEvent(int(eventId), 0, 1000)
 		if err != nil {
-			RenderError(log, writer, http.StatusInternalServerError, "failed to get timeslots", err)
+			render.Error(log, writer, http.StatusInternalServerError, "failed to get timeslots", err)
 			return
 		}
 
@@ -95,6 +95,6 @@ func (l *SchedulePageRoute) Handler() http.Handler {
 			renderData[day] = model.FilterTimeslotRoles(timeslotsOfDay, roles)
 		}
 
-		Render(log, writer, request, SchedulePage(event, isOrganizer, renderData))
+		render.HTML(log, writer, request, SchedulePage(event, isOrganizer, renderData))
 	})
 }

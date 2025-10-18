@@ -101,7 +101,7 @@ func (l *DeleteTimeslotRoute) Handler() http.Handler {
 	commands := l.DB.Commands
 	return http.HandlerFunc(func(writer http.ResponseWriter, request *http.Request) {
 		if !middleware.IsOrganizer(request) {
-			render.RenderError(log, writer, http.StatusUnauthorized, "unauthorized request detected", nil)
+			render.Error(log, writer, http.StatusUnauthorized, "unauthorized request detected", nil)
 			return
 		}
 
@@ -110,13 +110,13 @@ func (l *DeleteTimeslotRoute) Handler() http.Handler {
 			timeslot, err = strconv.ParseInt(timeslotParam, 10, 64)
 		)
 		if err != nil {
-			render.RenderError(log, writer, http.StatusBadRequest, "invalid timeslot", err)
+			render.Error(log, writer, http.StatusBadRequest, "invalid timeslot", err)
 			return
 		}
 
 		err = commands.DeleteTimeslot(int(timeslot))
 		if err != nil {
-			render.RenderError(log, writer, http.StatusInternalServerError, "failed to delete timeslot", err)
+			render.Error(log, writer, http.StatusInternalServerError, "failed to delete timeslot", err)
 			return
 		}
 		log.Debug("deleted timeslot", zap.Int64("id", timeslot))

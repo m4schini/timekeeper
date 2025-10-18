@@ -8,7 +8,7 @@ import (
 	"timekeeper/app/database/model"
 	"timekeeper/ports/www/components"
 	"timekeeper/ports/www/middleware"
-	. "timekeeper/ports/www/render"
+	"timekeeper/ports/www/render"
 )
 
 func CreateUserPage() Node {
@@ -35,14 +35,14 @@ func (l *CreateUserPageRoute) Pattern() string {
 
 func (l *CreateUserPageRoute) Handler() http.Handler {
 	log := components.Logger(l)
-	//queries := l.DB.Queries
+	page := CreateUserPage()
 	return http.HandlerFunc(func(writer http.ResponseWriter, request *http.Request) {
 		isOrganizer := middleware.IsOrganizer(request)
 		if !isOrganizer {
-			RenderError(log, writer, http.StatusUnauthorized, "user is not authorized", nil)
+			render.Error(log, writer, http.StatusUnauthorized, "user is not authorized", nil)
 			return
 		}
 
-		Render(log, writer, request, CreateUserPage())
+		render.HTML(log, writer, request, page)
 	})
 }

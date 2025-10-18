@@ -9,7 +9,7 @@ import (
 	"timekeeper/ports/www/middleware"
 )
 
-func Render(log *zap.Logger, w http.ResponseWriter, r *http.Request, node gomponents.Node) {
+func HTML(log *zap.Logger, w http.ResponseWriter, r *http.Request, node gomponents.Node) {
 	if !middleware.IsOrganizer(r) {
 		revalidate := 30 * time.Second
 		SetCache(w, 15*time.Second, &revalidate)
@@ -32,7 +32,7 @@ func SetCache(w http.ResponseWriter, maxAge time.Duration, revalidate *time.Dura
 	w.Header().Set("Expires", time.Now().Add(maxAge).Format(http.TimeFormat))
 }
 
-func RenderError(log *zap.Logger, w http.ResponseWriter, code int, message string, err error) {
+func Error(log *zap.Logger, w http.ResponseWriter, code int, message string, err error) {
 	log.Error(message, zap.Error(err), zap.Int("status", code))
 	http.Error(w, message, code)
 }

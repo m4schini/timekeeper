@@ -42,7 +42,7 @@ func (l *EditTimeslotPageRoute) Handler() http.Handler {
 	return http.HandlerFunc(func(writer http.ResponseWriter, request *http.Request) {
 		isOrganizer := middleware.IsOrganizer(request)
 		if !isOrganizer {
-			render.RenderError(log, writer, http.StatusUnauthorized, "user is not authorized", nil)
+			render.Error(log, writer, http.StatusUnauthorized, "user is not authorized", nil)
 			return
 		}
 		var (
@@ -50,22 +50,22 @@ func (l *EditTimeslotPageRoute) Handler() http.Handler {
 			timeslotId, err = strconv.ParseInt(timeslotParam, 10, 64)
 		)
 		if err != nil {
-			render.RenderError(log, writer, http.StatusBadRequest, "invalid timeslotId", err)
+			render.Error(log, writer, http.StatusBadRequest, "invalid timeslotId", err)
 			return
 		}
 
 		timeslot, err := queries.GetTimeslot(int(timeslotId))
 		if err != nil {
-			render.RenderError(log, writer, http.StatusInternalServerError, "failed to retrieve timeslot", err)
+			render.Error(log, writer, http.StatusInternalServerError, "failed to retrieve timeslot", err)
 			return
 		}
 
 		rooms, err := queries.GetRoomsOfEventLocations(timeslot.Event.ID)
 		if err != nil {
-			render.RenderError(log, writer, http.StatusInternalServerError, "failed to retrieve rooms", err)
+			render.Error(log, writer, http.StatusInternalServerError, "failed to retrieve rooms", err)
 			return
 		}
 
-		render.Render(log, writer, request, EditTimeslotPage(timeslot, timeslot.Event, rooms))
+		render.HTML(log, writer, request, EditTimeslotPage(timeslot, timeslot.Event, rooms))
 	})
 }

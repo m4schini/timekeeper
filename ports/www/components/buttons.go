@@ -114,8 +114,7 @@ func ExportEventIcalScheduleButton(eventId int) Node {
 }
 
 func CreateTimeslotButton(eventId int) Node {
-	return AButton(ColorDefault, fmt.Sprintf("/timeslot/create?event=%v", eventId), "Create Timeslot")
-	//return A(Href(fmt.Sprintf("/timeslot/create?event=%v", eventId)), Text("Create Timeslot"))
+	return AButton(ColorDefault, fmt.Sprintf("/timeslot/new?event=%v", eventId), "Create Timeslot")
 }
 
 func EditTimeslotButton(timeslotId int) Node {

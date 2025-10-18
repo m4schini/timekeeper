@@ -48,29 +48,29 @@ func (l *EventScheduleDayRoute) Handler() http.Handler {
 
 		eventId, err := strconv.ParseInt(eventParam, 10, 64)
 		if err != nil {
-			render.RenderError(log, writer, http.StatusBadRequest, "invalid eventId", err)
+			render.Error(log, writer, http.StatusBadRequest, "invalid eventId", err)
 			return
 		}
 		day, err := strconv.ParseInt(dayParam, 10, 64)
 		if err != nil {
-			render.RenderError(log, writer, http.StatusBadRequest, "invalid day", err)
+			render.Error(log, writer, http.StatusBadRequest, "invalid day", err)
 			return
 		}
 
 		event, err := queries.GetEvent(int(eventId))
 		if err != nil {
-			render.RenderError(log, writer, http.StatusInternalServerError, "failed to get event", err)
+			render.Error(log, writer, http.StatusInternalServerError, "failed to get event", err)
 			return
 		}
 
 		timeslots, _, err := queries.GetTimeslotsOfEvent(int(eventId), 0, 100)
 		if err != nil {
-			render.RenderError(log, writer, http.StatusInternalServerError, "failed to retrieve day", err)
+			render.Error(log, writer, http.StatusInternalServerError, "failed to retrieve day", err)
 			return
 		}
 		timeslots = model.FilterTimeslotDay(timeslots, int(day))
 		timeslots = model.FilterTimeslotRoles(timeslots, roles)
 
-		render.Render(log, writer, request, CompactDayPage(event, timeslots))
+		render.HTML(log, writer, request, CompactDayPage(event, timeslots))
 	})
 }

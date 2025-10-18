@@ -21,24 +21,23 @@ func (v *EventsExportIcalRoute) Pattern() string {
 }
 
 func (v *EventsExportIcalRoute) Handler() http.Handler {
-	queries := v.DB.Queries
 	log := components.Logger(v)
+	queries := v.DB.Queries
 	return http.HandlerFunc(func(writer http.ResponseWriter, request *http.Request) {
 		events, err := queries.GetEvents(0, 100)
 		if err != nil {
-			render.RenderError(log, writer, http.StatusInternalServerError, "failed to get events", err)
+			render.Error(log, writer, http.StatusInternalServerError, "failed to get events", err)
+			return
+		}
+
+		cal, err := export.ExportEventCalendar(events)
+		if err != nil {
+			render.Error(log, writer, http.StatusInternalServerError, "failed to generate ical schedule", err)
 			return
 		}
 
 		writer.Header().Set("Content-Type", "text/calendar; charset=utf-8")
 		writer.Header().Set("Content-Disposition", "inline; filename=timekeeper_events.ics")
-
-		cal, err := export.ExportEventCalendar(events)
-		if err != nil {
-			render.RenderError(log, writer, http.StatusInternalServerError, "failed to generate ical schedule", err)
-			return
-		}
-
 		writer.Write([]byte(cal))
 	})
 }

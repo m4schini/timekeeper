@@ -11,7 +11,7 @@ import (
 	"timekeeper/app/database"
 	"timekeeper/app/database/model"
 	"timekeeper/ports/www/components"
-	. "timekeeper/ports/www/render"
+	"timekeeper/ports/www/render"
 )
 
 func OsmContainer(el model.EventLocationModel, osm adapters.LookupResponse) Node {
@@ -129,24 +129,24 @@ func (l *LocationPageRoute) Handler() http.Handler {
 	return http.HandlerFunc(func(writer http.ResponseWriter, request *http.Request) {
 		eventId, err := strconv.ParseInt(chi.URLParam(request, "event"), 10, 64)
 		if err != nil {
-			RenderError(log, writer, http.StatusBadRequest, "invalid eventId", err)
+			render.Error(log, writer, http.StatusBadRequest, "invalid eventId", err)
 			return
 		}
 		locationId, err := strconv.ParseInt(chi.URLParam(request, "location"), 10, 64)
 		if err != nil {
-			RenderError(log, writer, http.StatusBadRequest, "invalid locationId", err)
+			render.Error(log, writer, http.StatusBadRequest, "invalid locationId", err)
 			return
 		}
 
 		event, err := queries.GetEvent(int(eventId))
 		if err != nil {
-			RenderError(log, writer, http.StatusInternalServerError, "failed to get event", err)
+			render.Error(log, writer, http.StatusInternalServerError, "failed to get event", err)
 			return
 		}
 
 		location, err := queries.GetEventLocation(int(eventId), int(locationId))
 		if err != nil {
-			RenderError(log, writer, http.StatusInternalServerError, "failed to get location", err)
+			render.Error(log, writer, http.StatusInternalServerError, "failed to get location", err)
 			return
 		}
 
@@ -158,10 +158,10 @@ func (l *LocationPageRoute) Handler() http.Handler {
 
 		rooms, _, err := queries.GetRoomsOfLocation(int(locationId), 0, 100)
 		if err != nil {
-			RenderError(log, writer, http.StatusInternalServerError, "failed to get rooms", err)
+			render.Error(log, writer, http.StatusInternalServerError, "failed to get rooms", err)
 			return
 		}
 
-		Render(log, writer, request, LocationPage(event, location, locationOsmData, rooms))
+		render.HTML(log, writer, request, LocationPage(event, location, locationOsmData, rooms))
 	})
 }

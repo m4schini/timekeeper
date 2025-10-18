@@ -15,68 +15,23 @@ import (
 	"timekeeper/config"
 	"timekeeper/ports/www/components"
 	"timekeeper/ports/www/middleware"
-	. "timekeeper/ports/www/render"
+	"timekeeper/ports/www/render"
 )
 
-func EventDateRange(start time.Time, totalDays int) Node {
-	return H3(Style("margin: 0"), Textf("%v - %v", start.Format("02.01.2006"), start.AddDate(0, 0, totalDays-1).Format("02.01.2006")))
-}
-
 func EventPublicPage(event model.EventModel, locations []model.EventLocationModel) Node {
-	eventLocationsGroup := Group{}
-	for _, location := range locations {
-		if !location.Visible {
-			continue
-		}
-		eventLocationsGroup = append(eventLocationsGroup, components.EventLocationCard(event, location, false))
-		//eventLocationsGroup = append(eventLocationsGroup, Li(Textf("%v: %v (%v)", location.Relationship, location.Name, location.Address.City)))
-	}
-
 	return Shell(event.Name,
 		components.PageHeader(event),
 		Main(
 			Div(Class("event-container"),
-				Div(Style("display: flex; flex-direction: column"),
-					EventDateRange(event.Start, event.TotalDays),
-				),
-
-				Div(
-					H2(Text("Zeitplan")),
-					Div(Style("display: flex; justify-content: space-between"),
-						Div(
-							components.EventSchedule(event.ID),
-						),
-						Div(
-							Span(Text("Export:"), Style("margin-right: 1rem")),
-							components.ExportEventMarkdownButton(event.ID),
-							components.ExportEventIcalScheduleButton(event.ID),
-							components.ExportEventVocScheduleButton(event.ID),
-						),
-					),
-				),
-				Div(
-					H2(Text("Orte")),
-					Div(Style("display: flex; flex-basis: 100%; flex-wrap: wrap; gap: 1rem"), eventLocationsGroup),
-				),
+				EventSectionHeader(event),
+				EventSectionSchedule(event, false),
+				EventSectionPublicLocations(event, locations),
 			),
 		),
 	)
 }
 
 func EventOrgaPage(event model.EventModel, locations []model.LocationModel, eventLocations []model.EventLocationModel) Node {
-	eventLocationItems := Group{}
-	for _, location := range eventLocations {
-		eventLocationItems = append(eventLocationItems, components.EventLocationCard(event, location, true))
-	}
-
-	embedDays := Group{}
-	for i := 0; i < event.TotalDays; i++ {
-		embedDays = append(embedDays, Div(Style("display: flex"),
-			Div(Style("max-width: 400px"), components.CopyTextBox(fmt.Sprintf("copy_embed_day_%v", i), fmt.Sprintf("Tag %v: ", i), components.IFrameCompactDay(event.ID, i))),
-			Div(Style("max-width: 400px"), components.CopyTextBox(fmt.Sprintf("copy_embed_day_%v_r", i), " Für Mentor*innen: ", components.IFrameCompactDay(event.ID, i, model.RoleParticipant, model.RoleMentor))),
-		))
-	}
-
 	return Shell(event.Name,
 		components.PageHeader(event),
 		Main(
@@ -86,20 +41,46 @@ func EventOrgaPage(event model.EventModel, locations []model.LocationModel, even
 					components.EditEvent(event.ID),
 					EventDateRange(event.Start, event.TotalDays),
 				),
+				EventSectionSchedule(event, true),
+				EventSectionLocations(event, locations, eventLocations),
+			),
+		),
+	)
+}
 
-				Div(
-					H2(Text("Zeitplan")),
-					Div(Style("display: flex; justify-content: space-between"),
-						Div(
-							components.EventSchedule(event.ID),
-						),
-						Div(
-							Span(Text("Export:"), Style("margin-right: 1rem")),
-							components.ExportEventMarkdownButton(event.ID),
-							components.ExportEventIcalScheduleButton(event.ID),
-							components.ExportEventVocScheduleButton(event.ID),
-						),
-					),
+func EventDateRange(start time.Time, totalDays int) Node {
+	return H3(Style("margin: 0"), Textf("%v - %v", start.Format("02.01.2006"), start.AddDate(0, 0, totalDays-1).Format("02.01.2006")))
+}
+
+func EventSectionHeader(event model.EventModel) Node {
+	return Div(Style("display: flex; flex-direction: column"),
+		EventDateRange(event.Start, event.TotalDays),
+	)
+}
+
+func EventSectionSchedule(event model.EventModel, withCopyBoxes bool) Node {
+	return Div(
+		H2(Text("Zeitplan")),
+		Div(Style("display: flex; justify-content: space-between"),
+			Div(
+				components.EventSchedule(event.ID),
+			),
+			Div(
+				Span(Text("Export:"), Style("margin-right: 1rem")),
+				components.ExportEventMarkdownButton(event.ID),
+				components.ExportEventIcalScheduleButton(event.ID),
+				components.ExportEventVocScheduleButton(event.ID),
+			),
+			Iff(withCopyBoxes, func() Node {
+				embedDays := Group{}
+				for i := 0; i < event.TotalDays; i++ {
+					embedDays = append(embedDays, Div(Style("display: flex"),
+						Div(Style("max-width: 400px"), components.CopyTextBox(fmt.Sprintf("copy_embed_day_%v", i), fmt.Sprintf("Tag %v: ", i), components.IFrameCompactDay(event.ID, i))),
+						Div(Style("max-width: 400px"), components.CopyTextBox(fmt.Sprintf("copy_embed_day_%v_r", i), " Für Mentor*innen: ", components.IFrameCompactDay(event.ID, i, model.RoleParticipant, model.RoleMentor))),
+					))
+				}
+
+				return Group{
 					Div(Style("display: flex; flex-direction: column; margin-top: 1rem"),
 						Strong(Text("Links zum teilen")),
 						components.CopyTextBox("copy_tn", "Link für Teilnehmer*innen", fmt.Sprintf("%v%v", config.BaseUrl(), components.UrlScheduleWithRoles(event.ID))),
@@ -112,17 +93,40 @@ func EventOrgaPage(event model.EventModel, locations []model.LocationModel, even
 						Strong(Text("Links zum im Pad einbetten (einfach ins pad kopieren)")),
 						embedDays,
 					),
-				),
-				Div(
-					H2(Text("Ort der Veranstaltung")),
-					Div(Style("display: flex; gap: 1rem; align-items: center; justify-content: space-between"),
-						components.AddLocationForm(event.ID, locations),
-						components.CreateLocation(),
-					),
-					Div(Style("display: flex; gap: 1rem; margin-top: 2rem"), eventLocationItems),
-				),
-			),
+				}
+			}),
 		),
+	)
+}
+
+func EventSectionPublicLocations(event model.EventModel, locations []model.EventLocationModel) Node {
+	eventLocationsGroup := Group{}
+	for _, location := range locations {
+		if !location.Visible {
+			continue
+		}
+		eventLocationsGroup = append(eventLocationsGroup, components.EventLocationCard(event, location, false))
+	}
+
+	return Div(
+		H2(Text("Orte der Veranstaltung")),
+		Div(Style("display: flex; flex-basis: 100%; flex-wrap: wrap; gap: 1rem"), eventLocationsGroup),
+	)
+}
+
+func EventSectionLocations(event model.EventModel, locations []model.LocationModel, eventLocations []model.EventLocationModel) Node {
+	eventLocationItems := Group{}
+	for _, location := range eventLocations {
+		eventLocationItems = append(eventLocationItems, components.EventLocationCard(event, location, true))
+	}
+
+	return Div(
+		H2(Text("Orte der Veranstaltung")),
+		Div(Style("display: flex; gap: 1rem; align-items: center; justify-content: space-between"),
+			components.AddLocationForm(event.ID, locations),
+			components.CreateLocation(),
+		),
+		Div(Style("display: flex; gap: 1rem; margin-top: 2rem"), eventLocationItems),
 	)
 }
 
@@ -147,13 +151,13 @@ func (l *EventPageRoute) Handler() http.Handler {
 		eventParam := chi.URLParam(request, "event")
 		eventId, err := strconv.ParseInt(eventParam, 10, 64)
 		if err != nil {
-			RenderError(log, writer, http.StatusBadRequest, "invalid event id", err)
+			render.Error(log, writer, http.StatusBadRequest, "invalid event id", err)
 			return
 		}
 
 		event, err := queries.GetEvent(int(eventId))
 		if err != nil {
-			RenderError(log, writer, http.StatusInternalServerError, "failed to get event", err)
+			render.Error(log, writer, http.StatusInternalServerError, "failed to get event", err)
 			return
 		}
 
@@ -187,6 +191,6 @@ func (l *EventPageRoute) Handler() http.Handler {
 			page = EventPublicPage(event, eventLocations)
 		}
 
-		Render(log, writer, request, page)
+		render.HTML(log, writer, request, page)
 	})
 }

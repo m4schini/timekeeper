@@ -32,10 +32,6 @@ func (l *EventScheduleExportMarkdownRoute) Pattern() string {
 	return "/event/{event}/export/schedule.md"
 }
 
-func (l *EventScheduleExportMarkdownRoute) UseCache() bool {
-	return true
-}
-
 func (l *EventScheduleExportMarkdownRoute) Handler() http.Handler {
 	log := components.Logger(l)
 	queries := l.DB.Queries
@@ -46,20 +42,20 @@ func (l *EventScheduleExportMarkdownRoute) Handler() http.Handler {
 		log.Debug("export event markdown", zap.String("event", eventParam))
 		eventId, err := strconv.ParseInt(eventParam, 10, 64)
 		if err != nil {
-			render.RenderError(log, writer, http.StatusBadRequest, "invalid eventId", err)
+			render.Error(log, writer, http.StatusBadRequest, "invalid eventId", err)
 			return
 		}
 		roles, _ := ParseRolesQuery(request.URL.Query(), false)
 
 		event, err := queries.GetEvent(int(eventId))
 		if err != nil {
-			render.RenderError(log, writer, http.StatusInternalServerError, "failed to get event", err)
+			render.Error(log, writer, http.StatusInternalServerError, "failed to get event", err)
 			return
 		}
 
 		timeslots, _, err := queries.GetTimeslotsOfEvent(int(eventId), 0, 100)
 		if err != nil {
-			render.RenderError(log, writer, http.StatusInternalServerError, "failed to retrieve day", err)
+			render.Error(log, writer, http.StatusInternalServerError, "failed to retrieve day", err)
 			return
 		}
 		timeslots = model.FilterTimeslotRoles(timeslots, roles)
@@ -80,7 +76,7 @@ func (l *EventScheduleExportMarkdownRoute) Handler() http.Handler {
 		for _, day := range days {
 			table, err := export.ExportMarkdownTimetable(day.Timeslots)
 			if err != nil {
-				render.RenderError(log, writer, http.StatusInternalServerError, "failed to render markdown", err)
+				render.Error(log, writer, http.StatusInternalServerError, "failed to render markdown", err)
 				return
 			}
 

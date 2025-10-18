@@ -57,13 +57,13 @@ func (l *AddLocationToEventRoute) Handler() http.Handler {
 	commands := l.DB.Commands
 	return http.HandlerFunc(func(writer http.ResponseWriter, request *http.Request) {
 		if !middleware.IsOrganizer(request) {
-			render.RenderError(log, writer, http.StatusUnauthorized, "unauthorized request detected", nil)
+			render.Error(log, writer, http.StatusUnauthorized, "unauthorized request detected", nil)
 			return
 		}
 
 		err := request.ParseForm()
 		if err != nil {
-			render.RenderError(log, writer, http.StatusBadRequest, "failed to parse form", err)
+			render.Error(log, writer, http.StatusBadRequest, "failed to parse form", err)
 			return
 		}
 
@@ -74,14 +74,14 @@ func (l *AddLocationToEventRoute) Handler() http.Handler {
 		)
 		model, err := ParseAddLocationToEventModel(eventParam, locationRoleParam, locationParam)
 		if err != nil {
-			render.RenderError(log, writer, http.StatusBadRequest, "failed to parse form", err)
+			render.Error(log, writer, http.StatusBadRequest, "failed to parse form", err)
 			return
 		}
 		log.Debug("parsed add location to event form", zap.Any("model", model))
 
 		id, err := commands.AddLocationToEvent(model)
 		if err != nil {
-			render.RenderError(log, writer, http.StatusInternalServerError, "failed to add location to event", err)
+			render.Error(log, writer, http.StatusInternalServerError, "failed to add location to event", err)
 			return
 		}
 		log.Debug("added location to event", zap.Int("id", id))
@@ -124,7 +124,7 @@ func (l *DeleteLocationFromEventRoute) Handler() http.Handler {
 	commands := l.DB.Commands
 	return http.HandlerFunc(func(writer http.ResponseWriter, request *http.Request) {
 		if !middleware.IsOrganizer(request) {
-			render.RenderError(log, writer, http.StatusUnauthorized, "unauthorized request detected", nil)
+			render.Error(log, writer, http.StatusUnauthorized, "unauthorized request detected", nil)
 			return
 		}
 
@@ -133,13 +133,13 @@ func (l *DeleteLocationFromEventRoute) Handler() http.Handler {
 			eventLocationId, err = strconv.ParseInt(eventLocationParam, 10, 64)
 		)
 		if err != nil {
-			render.RenderError(log, writer, http.StatusBadRequest, "invalid event_location", err)
+			render.Error(log, writer, http.StatusBadRequest, "invalid event_location", err)
 			return
 		}
 
 		err = commands.DeleteLocationFromEvent(int(eventLocationId))
 		if err != nil {
-			render.RenderError(log, writer, http.StatusInternalServerError, "failed to delete location from event", err)
+			render.Error(log, writer, http.StatusInternalServerError, "failed to delete location from event", err)
 			return
 		}
 		log.Debug("deleted location from event", zap.Int64("id", eventLocationId))

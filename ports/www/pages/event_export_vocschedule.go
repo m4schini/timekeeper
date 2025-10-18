@@ -24,26 +24,26 @@ func (v *EventExportVocScheduleRoute) Pattern() string {
 }
 
 func (v *EventExportVocScheduleRoute) Handler() http.Handler {
-	queries := v.DB.Queries
 	log := components.Logger(v)
+	queries := v.DB.Queries
 	return http.HandlerFunc(func(writer http.ResponseWriter, request *http.Request) {
 		eventParam := chi.URLParam(request, "event")
 		eventId, err := strconv.ParseInt(eventParam, 10, 64)
 		if err != nil {
-			render.RenderError(log, writer, http.StatusBadRequest, "invalid event id", err)
+			render.Error(log, writer, http.StatusBadRequest, "invalid event id", err)
 			return
 		}
 		roles, _ := ParseRolesQuery(request.URL.Query(), false)
 
 		event, err := queries.GetEvent(int(eventId))
 		if err != nil {
-			render.RenderError(log, writer, http.StatusInternalServerError, "failed to get event", err)
+			render.Error(log, writer, http.StatusInternalServerError, "failed to get event", err)
 			return
 		}
 
 		timeslots, _, err := queries.GetTimeslotsOfEvent(int(eventId), 0, 1000)
 		if err != nil {
-			render.RenderError(log, writer, http.StatusInternalServerError, "failed to get timeslots of event", err)
+			render.Error(log, writer, http.StatusInternalServerError, "failed to get timeslots of event", err)
 			return
 		}
 		timeslots = model.FilterTimeslotRoles(timeslots, roles)
@@ -51,7 +51,7 @@ func (v *EventExportVocScheduleRoute) Handler() http.Handler {
 		writer.Header().Set("Content-Type", "application/json")
 		err = export.ExportVocScheduleTo(event, timeslots, writer)
 		if err != nil {
-			render.RenderError(log, writer, http.StatusInternalServerError, "failed to generate voc schedule", err)
+			render.Error(log, writer, http.StatusInternalServerError, "failed to generate voc schedule", err)
 			return
 		}
 	})

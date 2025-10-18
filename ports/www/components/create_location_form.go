@@ -50,13 +50,13 @@ func (l *CreateLocationRoute) Handler() http.Handler {
 	commands := l.DB.Commands
 	return http.HandlerFunc(func(writer http.ResponseWriter, request *http.Request) {
 		if !middleware.IsOrganizer(request) {
-			render.RenderError(log, writer, http.StatusUnauthorized, "unauthorized request detected", nil)
+			render.Error(log, writer, http.StatusUnauthorized, "unauthorized request detected", nil)
 			return
 		}
 
 		err := request.ParseForm()
 		if err != nil {
-			render.RenderError(log, writer, http.StatusBadRequest, "failed to parse form", err)
+			render.Error(log, writer, http.StatusBadRequest, "failed to parse form", err)
 			return
 		}
 
@@ -67,14 +67,14 @@ func (l *CreateLocationRoute) Handler() http.Handler {
 		)
 		model, err := ParseCreateLocationModel(nameParam, mapFileParam, osmIdParam)
 		if err != nil {
-			render.RenderError(log, writer, http.StatusBadRequest, "failed to parse form", err)
+			render.Error(log, writer, http.StatusBadRequest, "failed to parse form", err)
 			return
 		}
 		log.Debug("parsed create location form", zap.Any("model", model))
 
 		id, err := commands.CreateLocation(model)
 		if err != nil {
-			render.RenderError(log, writer, http.StatusInternalServerError, "failed to create location", err)
+			render.Error(log, writer, http.StatusInternalServerError, "failed to create location", err)
 			return
 		}
 		log.Debug("created location", zap.Int("id", id))
