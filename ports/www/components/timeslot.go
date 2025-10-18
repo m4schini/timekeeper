@@ -18,7 +18,7 @@ import (
 func TimeSlot(t model.TimeslotModel, withActions, active, disabled bool) Node {
 	return Div(Class("timeslot-container"), If(disabled && !active, Style("opacity: 0.5;")), If(active, Style("border-left: 8px solid var(--color-deep-green);")),
 		Div(Class("timeslot-meta"),
-			timeslotTime(t.Date(), t.Duration),
+			timeslotTime(t.Date(), t.Duration, false),
 			timeslotRoom(t.Event.ID, t.Room.Location.ID, t.Room),
 			Div(Class("timeslot-roles"), RoleTag(t.Role)),
 		),
@@ -34,22 +34,9 @@ func TimeSlot(t model.TimeslotModel, withActions, active, disabled bool) Node {
 	)
 }
 
-func FullTimeSlot(t model.TimeslotModel, disabled bool) Node {
-	return Div(Class("full-timeslot-container"), If(disabled, Style("opacity: 0.5;")),
-		timeslotTime(t.Date(), t.Duration),
-		timeslotRoom(t.Event.ID, t.Room.Location.ID, t.Room),
-		Div(Class("timeslot-roles"), RoleTag(t.Role)),
-		Div(Class("timeslot-info"),
-			Div(Class("timeslot-info-title"), Text(t.Title)),
-			Div(Class("full-timeslot-info-notes"), Text(t.Note)),
-		),
-		Div(Class("timeslot-map")), //LocationCrop(t.Location.X, t.Location.Y, t.Location.Width, t.Location.Height, 100),
-	)
-}
-
 func CompactTimeSlot(t model.TimeslotModel, active, disabled bool) Node {
 	return Div(Class("compact-timeslot-container"), If(disabled && !active, Style("opacity: 0.5;")), If(active, Style("border-left: 8px solid var(--color-deep-green);")),
-		timeslotTime(t.Date(), t.Duration),
+		timeslotTime(t.Date(), t.Duration, true),
 		timeslotRoom(t.Event.ID, t.Room.Location.ID, t.Room),
 		Div(Class("timeslot-roles"), RoleTag(t.Role)),
 		Div(Class("timeslot-info"),
@@ -60,8 +47,13 @@ func CompactTimeSlot(t model.TimeslotModel, active, disabled bool) Node {
 	)
 }
 
-func timeslotTime(date time.Time, duration time.Duration) Node {
-	var timeslotText = fmt.Sprintf("%v", date.Format("15:04"))
+func timeslotTime(date time.Time, duration time.Duration, withEnd bool) Node {
+	var timeslotText string
+	if withEnd {
+		timeslotText = fmt.Sprintf("%v-%v", date.Format("15:04"), date.Add(duration).Format("15:04"))
+	} else {
+		timeslotText = fmt.Sprintf("%v", date.Format("15:04"))
+	}
 
 	return Div(
 		Class("timeslot-time"),

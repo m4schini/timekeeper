@@ -14,16 +14,6 @@ import (
 	"timekeeper/ports/www/render"
 )
 
-func DayPage(day int, event model.EventModel, data []model.TimeslotModel) Node {
-	return Shell(event.Name,
-		Main(
-			components.PageHeader(event),
-			components.FullDay(day+1, event.Day(day), data),
-			components.ScriptScrollSeperatorIntoView(),
-			components.ScriptReloadPageEveryMinute(),
-		))
-}
-
 func CompactDayPage(event model.EventModel, data []model.TimeslotModel) Node {
 	return Shell(event.Name,
 		Main(
@@ -54,7 +44,6 @@ func (l *EventScheduleDayRoute) Handler() http.Handler {
 			dayParam    = strings.ToLower(chi.URLParam(request, "day"))
 			isOrganizer = middleware.IsOrganizer(request)
 			roles, _    = ParseRolesQuery(request.URL.Query(), isOrganizer)
-			useCompact  = request.URL.Query().Has("compact")
 		)
 
 		eventId, err := strconv.ParseInt(eventParam, 10, 64)
@@ -82,13 +71,6 @@ func (l *EventScheduleDayRoute) Handler() http.Handler {
 		timeslots = model.FilterTimeslotDay(timeslots, int(day))
 		timeslots = model.FilterTimeslotRoles(timeslots, roles)
 
-		var page Node
-		if useCompact {
-			page = CompactDayPage(event, timeslots)
-		} else {
-			page = DayPage(int(day), event, timeslots)
-		}
-
-		render.Render(log, writer, request, page)
+		render.Render(log, writer, request, CompactDayPage(event, timeslots))
 	})
 }
