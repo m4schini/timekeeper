@@ -53,7 +53,7 @@ func ExportVocScheduleTo(event model.EventModel, timeslots []model.TimeslotModel
 
 	conf.Tracks = tracks
 
-	schedule := NewSchedule(event.URL(), fmt.Sprintf("0.0.%v", time.Now().Unix()), event.URL(), conf)
+	schedule := NewSchedule(event.EventURL(), fmt.Sprintf("0.0.%v", time.Now().Unix()), event.EventURL(), conf)
 	return json.NewEncoder(writer).Encode(schedule)
 }
 

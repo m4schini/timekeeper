@@ -13,8 +13,12 @@ type EventModel struct {
 	Start     time.Time
 }
 
-func (e EventModel) URL() string {
+func (e EventModel) EventURL() string {
 	return fmt.Sprintf("%v/event/%v", config.BaseUrl(), e.ID)
+}
+
+func (e EventModel) ScheduleURL() string {
+	return fmt.Sprintf("%v/event/%v/schedule", config.BaseUrl(), e.ID)
 }
 
 func (e EventModel) Day(day int) time.Time {
