@@ -49,6 +49,7 @@ func EventPublicPage(event model.EventModel, locations []model.EventLocationMode
 						Div(
 							Span(Text("Export:"), Style("margin-right: 1rem")),
 							components.ExportEventMarkdownButton(event.ID),
+							components.ExportEventIcalScheduleButton(event.ID),
 							components.ExportEventVocScheduleButton(event.ID),
 						),
 					),
@@ -95,7 +96,7 @@ func EventOrgaPage(event model.EventModel, locations []model.LocationModel, even
 						Div(
 							Span(Text("Export:"), Style("margin-right: 1rem")),
 							components.ExportEventMarkdownButton(event.ID),
-							//components.ExportEventIcalScheduleButton(event.ID),
+							components.ExportEventIcalScheduleButton(event.ID),
 							components.ExportEventVocScheduleButton(event.ID),
 						),
 					),
@@ -105,7 +106,7 @@ func EventOrgaPage(event model.EventModel, locations []model.LocationModel, even
 						components.CopyTextBox("copy_men", "Link für Mentor*innen", fmt.Sprintf("%v%v", config.BaseUrl(), components.UrlScheduleWithRoles(event.ID, model.RoleParticipant, model.RoleMentor))),
 						components.CopyTextBox("copy_org", "Link für Orga", fmt.Sprintf("%v%v", config.BaseUrl(), components.UrlScheduleWithRoles(event.ID, model.RoleParticipant, model.RoleMentor, model.RoleOrganizer))),
 						components.CopyTextBox("copy_voc", "Link für VOC/Info-Beamer", fmt.Sprintf("%v%v", config.BaseUrl(), components.UrlExportVocSchedule(event.ID))),
-						//components.CopyTextBox("copy_ical", "Link für Calendar", fmt.Sprintf("%v%v", config.BaseUrl(), components.UrlExportIcalSchedule(event.ID))),
+						components.CopyTextBox("copy_ical", "Link für Calendar", fmt.Sprintf("%v%v", config.BaseUrl(), components.UrlExportIcalSchedule(event.ID))),
 					),
 					Div(Style("display: flex; flex-direction: column; margin-top: 1rem"),
 						Strong(Text("Links zum im Pad einbetten (einfach ins pad kopieren)")),

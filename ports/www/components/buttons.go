@@ -18,8 +18,8 @@ const (
 	ColorSoftGrey  = "var(--color-soft-grey)"
 )
 
-func AButton(color PaletteColor, href, text string, a ...any) Node {
-	return A(If(color != ColorDefault, Style("background-color: "+string(color))), Class("button"), Href(href), Textf(text, a...))
+func AButton(color PaletteColor, href, text string, attrs ...Node) Node {
+	return A(If(color != ColorDefault, Style("background-color: "+string(color))), Class("button"), Href(href), Text(text), append(Group{}, attrs...))
 
 }
 
@@ -110,7 +110,7 @@ func ExportEventVocScheduleButton(eventId int) Node {
 }
 
 func ExportEventIcalScheduleButton(eventId int) Node {
-	return AButton(ColorDefault, UrlExportIcalSchedule(eventId), "Calendar")
+	return AButton(ColorDefault, UrlExportIcalSchedule(eventId), "Calendar", Title("Kopiere den Link um zu subscriben"))
 }
 
 func CreateTimeslotButton(eventId int) Node {
