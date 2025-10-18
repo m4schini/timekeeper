@@ -65,7 +65,7 @@ func (l *DuplicateTimeslotPageRoute) Handler() http.Handler {
 			return
 		}
 
-		rooms, _, err := queries.GetRooms(0, 100)
+		rooms, err := queries.GetRoomsOfEventLocations(timeslot.Event.ID)
 		if err != nil {
 			render.RenderError(log, writer, http.StatusInternalServerError, "failed to retrieve rooms", err)
 			return

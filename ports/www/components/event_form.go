@@ -53,7 +53,7 @@ func (l *CreateEventRoute) Method() string {
 }
 
 func (l *CreateEventRoute) Pattern() string {
-	return "/create/event"
+	return "/event"
 }
 
 func (l *CreateEventRoute) Handler() http.Handler {

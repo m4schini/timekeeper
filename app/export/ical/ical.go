@@ -63,7 +63,7 @@ func ExportCalendarSchedule(event model.EventModel, timeslots []model.TimeslotMo
 		event.SetDtStampTime(now)
 		event.SetStartAt(timeslot.Date())
 		event.SetEndAt(timeslot.Date().Add(timeslot.Duration))
-		event.SetLocation(timeslot.Room.Name)
+		event.SetLocation(fmt.Sprintf("%v: %v", timeslot.Room.Location.Name, timeslot.Room.Name))
 		event.SetSummary(timeslot.Title)
 		event.SetDescription(strings.ReplaceAll(timeslot.Note, string(ics.WithNewLineWindows), string(ics.WithNewLineUnix)))
 	}

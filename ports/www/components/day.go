@@ -18,26 +18,42 @@ import (
 	"timekeeper/ports/www/render"
 )
 
+func Separator(minutes float64) Node {
+	return Div(Class("separator"), ID("separator"), Text(fmt.Sprintf("In %.0f Minuten", minutes)))
+}
+
 func Day(event, day int, date time.Time, withActions bool, timeslots []model.TimeslotModel) Node {
 	t := Group{}
 	now := time.Now()
 	insertedSep := false
+	activeTimeSlots := Group{}
+
 	for _, timeslot := range timeslots {
 		ts := timeslot.Date()
 		tsDay := ts.YearDay()
 		nowDay := now.YearDay()
 		until := now.Sub(ts)
 		active := now.After(ts) && now.Before(ts.Add(timeslot.Duration))
+
+		tsNode := TimeSlot(timeslot, withActions, active, until > 0 && !insertedSep)
+
 		if tsDay == nowDay {
+			if active {
+				activeTimeSlots = append(activeTimeSlots, tsNode)
+			}
 			if until <= 0 && !insertedSep {
 				until = until * (-1)
 				minutes := until.Minutes()
 
-				t = append(t, Div(Class("separator"), ID("separator"), Text(fmt.Sprintf("In %.0f Minuten", minutes))))
+				t = append(t,
+					append(activeTimeSlots, Separator(minutes)),
+				)
 				insertedSep = true
 			}
 		}
-		t = append(t, TimeSlot(timeslot, withActions, active, until > 0 && !insertedSep))
+		if !active {
+			t = append(t, tsNode)
+		}
 	}
 
 	return Div(Class("day-container"), //hx.Get("/_/day/"+day), hx.Trigger("load delay:60s"), hx.Swap("outerHTML"),
@@ -52,22 +68,34 @@ func CompactDay(timeslots []model.TimeslotModel) Node {
 	t := Group{}
 	now := time.Now()
 	insertedSep := false
+	activeTimeSlots := Group{}
+
 	for _, timeslot := range timeslots {
 		ts := timeslot.Date()
 		tsDay := ts.YearDay()
 		nowDay := now.YearDay()
 		until := now.Sub(ts)
 		active := now.After(ts) && now.Before(ts.Add(timeslot.Duration))
+
+		tsNode := CompactTimeSlot(timeslot, active, until > 0 && !insertedSep)
+
 		if tsDay == nowDay {
+			if active {
+				activeTimeSlots = append(activeTimeSlots, tsNode)
+			}
 			if until <= 0 && !insertedSep {
 				until = until * (-1)
 				minutes := until.Minutes()
 
-				t = append(t, Div(Class("separator"), ID("separator"), Text(fmt.Sprintf("In %.0f Minuten", minutes))))
+				t = append(t,
+					append(activeTimeSlots, Separator(minutes)),
+				)
 				insertedSep = true
 			}
 		}
-		t = append(t, CompactTimeSlot(timeslot, active, until > 0 && !insertedSep))
+		if !active {
+			t = append(t, tsNode)
+		}
 	}
 
 	return Div( //hx.Get("/_/day/"+day), hx.Trigger("load delay:60s"), hx.Swap("outerHTML"),

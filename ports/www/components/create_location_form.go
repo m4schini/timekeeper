@@ -13,7 +13,7 @@ import (
 )
 
 func CreateLocationForm() Node {
-	return Form(Method("POST"), Action("/_/event"), Class("form"),
+	return Form(Method("POST"), Action("/_/location"), Class("form"),
 		Div(Class("param"),
 			Label(For("name"), Text("Name")),
 			Input(Type("text"), Name("name"), Placeholder("Location Name"), Required()),
@@ -42,7 +42,7 @@ func (l *CreateLocationRoute) Method() string {
 }
 
 func (l *CreateLocationRoute) Pattern() string {
-	return "/event"
+	return "/location"
 }
 
 func (l *CreateLocationRoute) Handler() http.Handler {
