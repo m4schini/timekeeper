@@ -15,9 +15,9 @@ func ExportCalendarScheduleTo(event model.EventModel, timeslots []model.Timeslot
 	cal := ics.NewCalendar()
 	cal.SetMethod(ics.MethodRequest)
 	cal.SetCalscale("GREGORIAN")
+	cal.SetXWRCalDesc(fmt.Sprintf("Zeitplan siehe %v", event.ScheduleURL()))
 	cal.SetXWRTimezone(config.Timezone().String())
-	cal.SetName(event.Name)
-	cal.SetUrl(event.ScheduleURL())
+	cal.SetXWRCalName(event.Name)
 	cal.SetRefreshInterval("PT5M")
 	cal.SetXPublishedTTL("PT5M")
 
@@ -27,8 +27,10 @@ func ExportCalendarScheduleTo(event model.EventModel, timeslots []model.Timeslot
 	}
 
 	for _, timeslot := range timeslots {
+		now := time.Now()
 		event := cal.AddEvent(fmt.Sprintf("%v@%v", timeslot.ID, domain.Host))
-		event.SetCreatedTime(time.Now())
+		event.SetCreatedTime(now)
+		event.SetDtStampTime(now)
 		event.SetStartAt(timeslot.Date())
 		event.SetEndAt(timeslot.Date().Add(timeslot.Duration))
 		event.SetLocation(timeslot.Room.Name)
