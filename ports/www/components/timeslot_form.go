@@ -51,6 +51,11 @@ func TimeslotForm(ts *model.TimeslotModel, event model.EventModel, rooms []model
 		),
 
 		Div(Class("param"),
+			Label(For("duration"), Text("Dauer in Minuten")),
+			Input(Type("number"), Name("duration"), Placeholder("60"), Min("0"), Max("1440"), Required(), If(hasTs, Value(fmt.Sprintf("%v", ts.Duration.Minutes())))),
+		),
+
+		Div(Class("param"),
 			Label(For("title"), Text("Titel")),
 			Input(Type("text"), Name("title"), Placeholder("Title"), Required(), If(hasTs, Value(ts.Title))),
 		),
@@ -103,11 +108,12 @@ func (l *CreateTimeslotRoute) Handler() http.Handler {
 			roleParam     = request.PostFormValue("role")
 			dayParam      = request.PostFormValue("day")
 			timeslotParam = request.PostFormValue("timeslot")
+			durationParam = request.PostFormValue("duration")
 			titleParam    = request.PostFormValue("title")
 			noteParam     = request.PostFormValue("note")
 			roomParam     = request.PostFormValue("room")
 		)
-		model, err := ParseCreateTimeslotModel(eventParam, roleParam, dayParam, timeslotParam, titleParam, noteParam, roomParam)
+		model, err := ParseCreateTimeslotModel(eventParam, roleParam, dayParam, timeslotParam, durationParam, titleParam, noteParam, roomParam)
 		if err != nil {
 			render.RenderError(log, writer, http.StatusBadRequest, "failed to parse form", err)
 			return
@@ -125,7 +131,7 @@ func (l *CreateTimeslotRoute) Handler() http.Handler {
 	})
 }
 
-func ParseCreateTimeslotModel(event, role, day, timeslot, title, note, room string) (model.CreateTimeslotModel, error) {
+func ParseCreateTimeslotModel(event, role, day, timeslot, duration, title, note, room string) (model.CreateTimeslotModel, error) {
 	eventId, err := strconv.ParseInt(event, 10, 64)
 	if err != nil {
 		return model.CreateTimeslotModel{}, err
@@ -142,12 +148,17 @@ func ParseCreateTimeslotModel(event, role, day, timeslot, title, note, room stri
 	if err != nil {
 		return model.CreateTimeslotModel{}, err
 	}
+	durationValue, err := strconv.ParseInt(duration, 10, 64)
+	if err != nil {
+		return model.CreateTimeslotModel{}, err
+	}
 
 	return model.CreateTimeslotModel{
 		Event:    int(eventId),
 		Role:     model.RoleFrom(role),
 		Day:      int(dayValue),
 		Timeslot: timeslotValue,
+		Duration: time.Duration(durationValue) * time.Minute,
 		Title:    title,
 		Note:     note,
 		Room:     int(roomValue),
@@ -191,11 +202,12 @@ func (l *UpdateTimeslotRoute) Handler() http.Handler {
 			roleParam       = request.PostFormValue("role")
 			dayParam        = request.PostFormValue("day")
 			timeslotParam   = request.PostFormValue("timeslot")
+			durationParam   = request.PostFormValue("duration")
 			titleParam      = request.PostFormValue("title")
 			noteParam       = request.PostFormValue("note")
 			roomParam       = request.PostFormValue("room")
 		)
-		model, err := ParseUpdateTimeslotModel(timeslotIdParam, eventParam, roleParam, dayParam, timeslotParam, titleParam, noteParam, roomParam)
+		model, err := ParseUpdateTimeslotModel(timeslotIdParam, eventParam, roleParam, dayParam, timeslotParam, durationParam, titleParam, noteParam, roomParam)
 		if err != nil {
 			render.RenderError(log, writer, http.StatusBadRequest, "failed to parse form", err)
 			return
@@ -213,7 +225,7 @@ func (l *UpdateTimeslotRoute) Handler() http.Handler {
 	})
 }
 
-func ParseUpdateTimeslotModel(timeslotId, event, role, day, timeslot, title, note, room string) (model.UpdateTimeslotModel, error) {
+func ParseUpdateTimeslotModel(timeslotId, event, role, day, timeslot, duration, title, note, room string) (model.UpdateTimeslotModel, error) {
 	timeslotIdValue, err := strconv.ParseInt(timeslotId, 10, 64)
 	if err != nil {
 		return model.UpdateTimeslotModel{}, err
@@ -235,6 +247,10 @@ func ParseUpdateTimeslotModel(timeslotId, event, role, day, timeslot, title, not
 	if err != nil {
 		return model.UpdateTimeslotModel{}, err
 	}
+	durationValue, err := strconv.ParseInt(duration, 10, 64)
+	if err != nil {
+		return model.UpdateTimeslotModel{}, err
+	}
 
 	return model.UpdateTimeslotModel{
 		ID:       int(timeslotIdValue),
@@ -242,6 +258,7 @@ func ParseUpdateTimeslotModel(timeslotId, event, role, day, timeslot, title, not
 		Role:     model.RoleFrom(role),
 		Day:      int(dayValue),
 		Timeslot: timeslotValue,
+		Duration: time.Duration(durationValue) * time.Minute,
 		Title:    title,
 		Note:     note,
 		Room:     int(roomValue),

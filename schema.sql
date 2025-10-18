@@ -53,5 +53,6 @@ CREATE TABLE timekeeper.timeslots (
     day INT NOT NULL ,
     start TIME NOT NULL,
     room INT REFERENCES timekeeper.rooms(id),
-    role EVENT_ROLE NOT NULL DEFAULT 'Organizer'
+    role EVENT_ROLE NOT NULL DEFAULT 'Organizer',
+    duration INTERVAL SECOND(0) NOT NULL
 )

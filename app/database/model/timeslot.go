@@ -6,14 +6,15 @@ import (
 )
 
 type TimeslotModel struct {
-	ID    int
-	Event EventModel
-	Title string
-	Note  string
-	Day   int
-	Start time.Time
-	Room  RoomModel
-	Role  Role
+	ID       int
+	Event    EventModel
+	Title    string
+	Note     string
+	Day      int
+	Start    time.Time
+	Duration time.Duration
+	Room     RoomModel
+	Role     Role
 }
 
 func (t *TimeslotModel) Date() time.Time {
@@ -68,6 +69,7 @@ type CreateTimeslotModel struct {
 	Role     Role
 	Day      int
 	Timeslot time.Time
+	Duration time.Duration
 	Title    string
 	Note     string
 	Room     int
@@ -79,6 +81,7 @@ type UpdateTimeslotModel struct {
 	Role     Role
 	Day      int
 	Timeslot time.Time
+	Duration time.Duration
 	Title    string
 	Note     string
 	Room     int

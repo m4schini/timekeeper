@@ -15,8 +15,8 @@ import (
 	"timekeeper/ports/www/render"
 )
 
-func TimeSlot(t model.TimeslotModel, withActions, disabled bool) Node {
-	return Div(Class("timeslot-container"), If(disabled, Style("opacity: 0.5;")),
+func TimeSlot(t model.TimeslotModel, withActions, active, disabled bool) Node {
+	return Div(Class("timeslot-container"), If(disabled && !active, Style("opacity: 0.5;")), If(active, Style("border-left: 8px solid var(--color-deep-green);")),
 		Div(Class("timeslot-meta"),
 			timeslotTime(t.Date()),
 			timeslotRoom(t.Event.ID, t.Room.Location.ID, t.Room),
@@ -47,8 +47,8 @@ func FullTimeSlot(t model.TimeslotModel, disabled bool) Node {
 	)
 }
 
-func CompactTimeSlot(t model.TimeslotModel, disabled bool) Node {
-	return Div(Class("compact-timeslot-container"), If(disabled, Style("opacity: 0.5;")),
+func CompactTimeSlot(t model.TimeslotModel, active, disabled bool) Node {
+	return Div(Class("compact-timeslot-container"), If(disabled && !active, Style("opacity: 0.5;")), If(active, Style("border-left: 8px solid var(--color-deep-green);")),
 		timeslotTime(t.Date()),
 		timeslotRoom(t.Event.ID, t.Room.Location.ID, t.Room),
 		Div(Class("timeslot-roles"), RoleTag(t.Role)),

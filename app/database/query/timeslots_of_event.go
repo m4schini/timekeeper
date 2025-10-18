@@ -1,6 +1,7 @@
 package query
 
 import (
+	"time"
 	. "timekeeper/app/database/model"
 	"timekeeper/config"
 )
@@ -25,6 +26,7 @@ SELECT ts.id as id,
        day,
        ts.start as start,
        role,
+       FLOOR(EXTRACT(EPOCH FROM duration)) AS total_seconds,
 
        e.id as event_id,
        e.name as event_name,
@@ -58,10 +60,12 @@ WHERE e.id = $1 ORDER BY ts.start, ts.note LIMIT $2 OFFSET $3 `,
 		var r RoomModel
 		var l LocationModel
 		var t TimeslotModel
-		err = rows.Scan(&t.ID, &t.Title, &t.Note, &t.Day, &t.Start, &t.Role, &e.ID, &e.Name, &e.Start, &r.ID, &r.Name, &r.LocationX, &r.LocationY, &r.LocationW, &r.LocationH, &l.ID, &l.Name, &l.File)
+		var durationInSeconds int
+		err = rows.Scan(&t.ID, &t.Title, &t.Note, &t.Day, &t.Start, &t.Role, &durationInSeconds, &e.ID, &e.Name, &e.Start, &r.ID, &r.Name, &r.LocationX, &r.LocationY, &r.LocationW, &r.LocationH, &l.ID, &l.Name, &l.File)
 		if err != nil {
 			return nil, 0, err
 		}
+		t.Duration = time.Duration(durationInSeconds) * time.Second
 		e.Start = e.Start.In(config.Timezone())
 		t.Event = e
 		r.Location = l

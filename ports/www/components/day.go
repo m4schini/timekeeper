@@ -27,6 +27,7 @@ func Day(event, day int, date time.Time, withActions bool, timeslots []model.Tim
 		tsDay := ts.YearDay()
 		nowDay := now.YearDay()
 		until := now.Sub(ts)
+		active := now.After(ts) && now.Before(ts.Add(timeslot.Duration))
 		if tsDay == nowDay {
 			if until <= 0 && !insertedSep {
 				until = until * (-1)
@@ -36,7 +37,7 @@ func Day(event, day int, date time.Time, withActions bool, timeslots []model.Tim
 				insertedSep = true
 			}
 		}
-		t = append(t, TimeSlot(timeslot, withActions, until > 0 && !insertedSep))
+		t = append(t, TimeSlot(timeslot, withActions, active, until > 0 && !insertedSep))
 	}
 
 	return Div(Class("day-container"), //hx.Get("/_/day/"+day), hx.Trigger("load delay:60s"), hx.Swap("outerHTML"),
@@ -85,6 +86,7 @@ func CompactDay(timeslots []model.TimeslotModel) Node {
 		tsDay := ts.YearDay()
 		nowDay := now.YearDay()
 		until := now.Sub(ts)
+		active := now.After(ts) && now.Before(ts.Add(timeslot.Duration))
 		if tsDay == nowDay {
 			if until <= 0 && !insertedSep {
 				until = until * (-1)
@@ -94,7 +96,7 @@ func CompactDay(timeslots []model.TimeslotModel) Node {
 				insertedSep = true
 			}
 		}
-		t = append(t, CompactTimeSlot(timeslot, until > 0 && !insertedSep))
+		t = append(t, CompactTimeSlot(timeslot, active, until > 0 && !insertedSep))
 	}
 
 	return Div( //hx.Get("/_/day/"+day), hx.Trigger("load delay:60s"), hx.Swap("outerHTML"),
