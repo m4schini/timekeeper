@@ -52,6 +52,7 @@ func main() {
 		&p.EventScheduleDayRoute{DB: db},
 		&p.EventExportVocScheduleRoute{DB: db},
 		&p.EventExportIcalScheduleRoute{DB: db},
+		&p.EventsExportIcalRoute{DB: db},
 		&p.EventScheduleExportMarkdownRoute{DB: db},
 
 		&p.LocationPageRoute{DB: db, Nominatim: nominatimClient},
