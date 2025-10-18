@@ -17,8 +17,8 @@ func ExportCalendarSchedule(event model.EventModel, timeslots []model.TimeslotMo
 	cal.SetXWRCalDesc(fmt.Sprintf("Zeitplan siehe %v", event.ScheduleURL()))
 	cal.SetXWRTimezone(config.Timezone().String())
 	cal.SetXWRCalName(event.Name)
-	cal.SetRefreshInterval("PT5M")
-	cal.SetXPublishedTTL("PT5M")
+	cal.SetRefreshInterval("PT30M")
+	cal.SetXPublishedTTL("PT30M")
 
 	domain, err := url.Parse(config.BaseUrl())
 	if err != nil {
