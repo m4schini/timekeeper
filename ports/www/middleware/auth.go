@@ -54,6 +54,8 @@ func LoadUser(r *http.Request) (userId int, role model.Role, isAuthenticated boo
 		if !ok {
 			return -1, model.RoleParticipant, false
 		}
+	} else {
+		return -1, model.RoleParticipant, false
 	}
 
 	// get role
@@ -62,6 +64,8 @@ func LoadUser(r *http.Request) (userId int, role model.Role, isAuthenticated boo
 		if !ok {
 			return -1, model.RoleParticipant, false
 		}
+	} else {
+		return -1, model.RoleParticipant, false
 	}
 
 	return userId, role, true
