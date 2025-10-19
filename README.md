@@ -15,9 +15,13 @@ It can also export schedules as Calendar (ical), [VOC Schedule](https://github.c
 <img src="ports/www/static/pixelhack/flag_pride.svg" width="69">
 <img src="ports/www/static/pixelhack/resistor_pride.svg" width="45">
 <img src="ports/www/static/pixelhack/flag_nonbinary.svg" width="69">
-<img src="ports/www/static/pixelhack/resistor_trans.svg" width="45">
+<img src="ports/www/static/pixelhack/resitor_nonbinary.svg" width="45">
 <img src="ports/www/static/pixelhack/flag_trans.svg" width="69">
 <img src="ports/www/static/pixelhack/resistor_trans.svg" width="45">
+<img src="ports/www/static/pixelhack/reisealpaka.svg" width="50">
+<img src="ports/www/static/pixelhack/resistor_trans.svg" width="45">
+<img src="ports/www/static/pixelhack/flag_trans.svg" width="69">
+<img src="ports/www/static/pixelhack/resitor_nonbinary.svg" width="45">
 <img src="ports/www/static/pixelhack/flag_nonbinary.svg" width="69">
 <img src="ports/www/static/pixelhack/resistor_pride.svg" width="45">
 <img src="ports/www/static/pixelhack/flag_pride.svg" width="69">

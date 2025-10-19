@@ -6,10 +6,12 @@ on:
     branches: [ "main" ]
     paths-ignore:
       - helm
+      - README.md
   pull_request:
     branches: [ "main" ]
     paths-ignore:
       - helm
+      - README.md
 
 
 env:
