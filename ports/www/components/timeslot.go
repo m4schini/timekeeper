@@ -2,18 +2,32 @@ package components
 
 import (
 	"fmt"
-	"github.com/go-chi/chi/v5"
-	"go.uber.org/zap"
 	. "maragu.dev/gomponents"
+	hx "maragu.dev/gomponents-htmx"
 	. "maragu.dev/gomponents/html"
-	"net/http"
-	"strconv"
 	"time"
-	"timekeeper/app/database"
 	"timekeeper/app/database/model"
-	"timekeeper/ports/www/middleware"
-	"timekeeper/ports/www/render"
 )
+
+func CreateTimeslotButton(eventId int) Node {
+	return AButton(ColorDefault, fmt.Sprintf("/timeslot/new?event=%v", eventId), "Create Timeslot")
+}
+
+func EditTimeslotButton(timeslotId int) Node {
+	return A(Class("button"), Text("edit"), Href(fmt.Sprintf("/timeslot/edit/%v", timeslotId)))
+}
+
+func DuplicateTimeslotButton(timeslotId int) Node {
+	return A(Class("button"), Text("duplicate"), Href(fmt.Sprintf("/timeslot/duplicate/%v", timeslotId)))
+}
+
+func DeleteTimeslotButton(timeslotId int) Node {
+	return A(Class("button"), Style("background-color: var(--color-soft-red)"), Text("delete"), Href("#"),
+		hx.Delete(fmt.Sprintf("/_/timeslot/%v", timeslotId)),
+		hx.Target("closest .timeslot-container"),
+		hx.Swap("outerHTML swap:1s"),
+	)
+}
 
 func TimeSlot(t model.TimeslotModel, withActions, active, disabled bool) Node {
 	return Div(Class("timeslot-container"), If(disabled && !active, Style("opacity: 0.5;")), If(active, Style("border-left: 8px solid var(--color-deep-green);")),
@@ -69,57 +83,4 @@ func timeslotRoom(eventId, locationId int, r model.RoomModel) Node {
 			A(Textf("%v", r.Name), Href(fmt.Sprintf("/event/%v/location/%v#room-%v", eventId, locationId, r.ID)), Title(title)), //
 		),
 	)
-}
-
-func RoleTag(role model.Role) Node {
-	switch role {
-	case model.RoleOrganizer:
-		return Span(Class("role role-o"), Text("Orga"))
-	case model.RoleMentor:
-		return Span(Class("role role-m"), Text("Mentor*innen"))
-	case model.RoleParticipant:
-		return Span(Class("role role-t"), Text("Teilnehmer*innen"))
-	default:
-		return Span(Class("role role-o"), Text("Orga"))
-	}
-}
-
-type DeleteTimeslotRoute struct {
-	DB *database.Database
-}
-
-func (l *DeleteTimeslotRoute) Method() string {
-	return http.MethodDelete
-}
-
-func (l *DeleteTimeslotRoute) Pattern() string {
-	return "/timeslot/{timeslot}"
-}
-
-func (l *DeleteTimeslotRoute) Handler() http.Handler {
-	log := Logger(l)
-	commands := l.DB.Commands
-	return http.HandlerFunc(func(writer http.ResponseWriter, request *http.Request) {
-		if !middleware.IsOrganizer(request) {
-			render.Error(log, writer, http.StatusUnauthorized, "unauthorized request detected", nil)
-			return
-		}
-
-		var (
-			timeslotParam = chi.URLParam(request, "timeslot")
-			timeslot, err = strconv.ParseInt(timeslotParam, 10, 64)
-		)
-		if err != nil {
-			render.Error(log, writer, http.StatusBadRequest, "invalid timeslot", err)
-			return
-		}
-
-		err = commands.DeleteTimeslot(int(timeslot))
-		if err != nil {
-			render.Error(log, writer, http.StatusInternalServerError, "failed to delete timeslot", err)
-			return
-		}
-		log.Debug("deleted timeslot", zap.Int64("id", timeslot))
-		writer.Write([]byte{})
-	})
 }

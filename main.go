@@ -2,6 +2,7 @@ package main
 
 import (
 	"go.uber.org/zap"
+	"golang.org/x/time/rate"
 	"net"
 	"timekeeper/adapters"
 	"timekeeper/app/auth"
@@ -85,7 +86,7 @@ func main() {
 		&c.DeleteRoomRoute{DB: db},
 
 		&c.CreateUserRoute{Auth: authy},
-		&p.LoginRoute{Auth: authy},
+		&p.LoginRoute{Auth: authy, RateLimiter: rate.NewLimiter(1, 1)},
 	}
 
 	l, err := net.Listen("tcp", ":"+config.Port())
@@ -94,5 +95,8 @@ func main() {
 	}
 
 	logger.Debug("serving timekeeper :" + config.Port())
-	logger.Warn("failed to serve", zap.Error(www.Serve(l, authy, pages, components)))
+	err = www.Serve(l, authy, pages, components)
+	if err != nil {
+		logger.Warn("failed to serve www", zap.Error(err))
+	}
 }

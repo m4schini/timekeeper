@@ -16,7 +16,7 @@ func CreateEventPage() Node {
 		components.PageHeader(model.EventModel{}),
 		Main(
 			H2(Text("Create Event")),
-			components.EventForm(nil, "POST", "/_/event", "Create"),
+			components.EventCreateForm(),
 		),
 	)
 }

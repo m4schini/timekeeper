@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
+	"go.uber.org/zap"
 	"io"
 	"time"
 	"timekeeper/app/database/model"
@@ -11,8 +12,10 @@ import (
 )
 
 func ExportVocScheduleTo(event model.EventModel, timeslots []model.TimeslotModel, writer io.Writer) error {
-	conf := NewConference(fmt.Sprintf("timekeeper_event_%v", event.ID), event.Name, event.Start, event.TotalDays)
+	log := zap.L().Named("export").Named("vocschedule").With(zap.Int("event", event.ID), zap.Int("timeslots_count", len(timeslots)))
+	log.Debug("exporting schedule as voc-schedule")
 
+	conf := NewConference(fmt.Sprintf("timekeeper_event_%v", event.ID), event.Name, event.Start, event.TotalDays)
 	tracksSet := make(map[model.Role]Track)
 
 	for _, t := range timeslots {
@@ -53,6 +56,7 @@ func ExportVocScheduleTo(event model.EventModel, timeslots []model.TimeslotModel
 
 	conf.Tracks = tracks
 
+	log.Debug("exported schedule as voc-schedule")
 	schedule := NewSchedule(event.EventURL(), fmt.Sprintf("0.0.%v", time.Now().Unix()), event.EventURL(), conf)
 	return json.NewEncoder(writer).Encode(schedule)
 }

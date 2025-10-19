@@ -5,6 +5,7 @@ import (
 	"github.com/JohannesKaufmann/html-to-markdown/v2/plugin/base"
 	"github.com/JohannesKaufmann/html-to-markdown/v2/plugin/commonmark"
 	"github.com/JohannesKaufmann/html-to-markdown/v2/plugin/table"
+	"go.uber.org/zap"
 	. "maragu.dev/gomponents"
 	. "maragu.dev/gomponents/html"
 	"timekeeper/app/database/model"
@@ -24,6 +25,9 @@ var conv = converter.NewConverter(
 )
 
 func ExportMarkdownTimetable(timeslots []model.TimeslotModel) (string, error) {
+	log := zap.L().Named("export").Named("markdown")
+
+	log.Debug("exporting schedule as markdown tables")
 	rows := Group{}
 	for _, timeslot := range timeslots {
 		start := timeslot.Start
@@ -63,5 +67,6 @@ func ExportMarkdownTimetable(timeslots []model.TimeslotModel) (string, error) {
 		return "", err
 	}
 
+	log.Info("exported schedule as markdown tables", zap.Int("bytes", len(markdown)))
 	return markdown, nil
 }

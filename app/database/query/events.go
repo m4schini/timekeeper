@@ -33,6 +33,5 @@ func (q *Queries) GetEvents(offset, limit int) (es []model.EventModel, err error
 
 		es = append(es, r)
 	}
-
 	return es, nil
 }

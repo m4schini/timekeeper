@@ -22,6 +22,5 @@ LIMIT $1 OFFSET $2`, limit, offset)
 
 		ls = append(ls, l)
 	}
-
 	return ls, nil
 }

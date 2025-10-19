@@ -18,7 +18,7 @@ func EditEventPage(event model.EventModel) Node {
 		components.PageHeader(model.EventModel{}),
 		Main(
 			H2(Text("Edit Event")),
-			components.EventForm(&event, "POST", "/_/event/edit", "Update"),
+			components.EventUpdateForm(event),
 		),
 	)
 }

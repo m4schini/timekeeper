@@ -12,6 +12,9 @@ import (
 )
 
 func ExportEventCalendar(events []model.EventModel) (string, error) {
+	log := zap.L().Named("export").Named("ical")
+
+	log.Debug("exporting events calendar")
 	cal := ics.NewCalendar()
 	cal.SetMethod(ics.MethodPublish)
 	cal.SetCalscale("GREGORIAN")
@@ -28,7 +31,6 @@ func ExportEventCalendar(events []model.EventModel) (string, error) {
 	for _, event := range events {
 		start := event.Start
 		end := event.Start.AddDate(0, 0, event.TotalDays)
-		zap.L().Debug("event", zap.Any("start", start), zap.Any("end", end), zap.Int("total_days", event.TotalDays))
 		now := time.Now()
 		e := cal.AddEvent(fmt.Sprintf("%v@%v", event.ID, domain.Host))
 		e.SetCreatedTime(now)
@@ -38,10 +40,14 @@ func ExportEventCalendar(events []model.EventModel) (string, error) {
 		e.SetSummary(event.Name)
 	}
 
+	log.Info("exported events calendar")
 	return cal.Serialize(ics.WithNewLineWindows), nil
 }
 
 func ExportCalendarSchedule(event model.EventModel, timeslots []model.TimeslotModel) (string, error) {
+	log := zap.L().Named("export").Named("ical").With(zap.Int("event", event.ID), zap.Int("timeslots_count", len(timeslots)))
+
+	log.Debug("exporting schedule as calendar (ical)")
 	cal := ics.NewCalendar()
 	cal.SetMethod(ics.MethodPublish)
 	cal.SetCalscale("GREGORIAN")
@@ -68,7 +74,7 @@ func ExportCalendarSchedule(event model.EventModel, timeslots []model.TimeslotMo
 		event.SetDescription(strings.ReplaceAll(timeslot.Note, string(ics.WithNewLineWindows), string(ics.WithNewLineUnix)))
 	}
 
+	log.Info("exported schedule as calendar (ical)")
 	calData := cal.Serialize(ics.WithNewLineWindows)
-
 	return calData, nil
 }

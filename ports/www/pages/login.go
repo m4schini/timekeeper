@@ -2,6 +2,7 @@ package pages
 
 import (
 	"go.uber.org/zap"
+	"golang.org/x/time/rate"
 	. "maragu.dev/gomponents"
 	. "maragu.dev/gomponents/html"
 	"net/http"
@@ -46,7 +47,8 @@ func (l *LoginPageRoute) Handler() http.Handler {
 }
 
 type LoginRoute struct {
-	Auth auth.Authenticator
+	Auth        auth.Authenticator
+	RateLimiter *rate.Limiter
 }
 
 func (l *LoginRoute) Method() string {
@@ -60,8 +62,14 @@ func (l *LoginRoute) Pattern() string {
 func (l *LoginRoute) Handler() http.Handler {
 	log := components.Logger(l)
 	authy := l.Auth
+	rateLimiter := l.RateLimiter
 	return http.HandlerFunc(func(writer http.ResponseWriter, request *http.Request) {
-		err := request.ParseForm()
+		err := rateLimiter.Wait(request.Context())
+		if err != nil {
+			log.Debug("login was cancelled while waiting on rate limiter")
+			return
+		}
+		err = request.ParseForm()
 		if err != nil {
 			render.Error(log, writer, http.StatusBadRequest, "failed to parse form", err)
 			return

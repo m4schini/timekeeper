@@ -12,6 +12,10 @@ import (
 	"timekeeper/ports/www/render"
 )
 
+func CreateLocation() Node {
+	return AButton(ColorSoftGrey, "/location/new", "Location erstellen")
+}
+
 func CreateLocationForm() Node {
 	return Form(Method("POST"), Action("/_/location"), Class("form"),
 		Div(Class("param"),

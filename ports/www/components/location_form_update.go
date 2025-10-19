@@ -13,6 +13,10 @@ import (
 	"timekeeper/ports/www/render"
 )
 
+func EditLocationButton(locationId int) Node {
+	return A(Class("button"), Text("edit"), Href(fmt.Sprintf("/location/edit/%v", locationId)))
+}
+
 func EditLocationForm(location model.LocationModel) Node {
 	return Form(Method("POST"), Action("/_/location/edit"), Class("form"),
 		Input(Type("hidden"), Name("location"), Value(fmt.Sprintf("%v", location.ID))),

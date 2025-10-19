@@ -3,7 +3,6 @@ package components
 import (
 	"fmt"
 	. "maragu.dev/gomponents"
-	hx "maragu.dev/gomponents-htmx"
 	. "maragu.dev/gomponents/html"
 	"strings"
 	"timekeeper/app/database/model"
@@ -89,14 +88,6 @@ func EventSchedule(eventId int) Node {
 	return A(Class("button"), Href(UrlScheduleWithRoles(eventId)), Text("Zeitplan öffnen"))
 }
 
-func EditEvent(eventId int) Node {
-	return A(Class("button"), Href(fmt.Sprintf("/event/%v/edit", eventId)), Text("Event bearbeiten"))
-}
-
-func CreateLocation() Node {
-	return AButton(ColorSoftGrey, "/location/new", "Location erstellen")
-}
-
 func EventViewOnlyRole(text string, eventId int, roles ...model.Role) Node {
 	return A(Href(UrlScheduleWithRoles(eventId, roles...)), Text(text))
 }
@@ -111,44 +102,4 @@ func ExportEventVocScheduleButton(eventId int) Node {
 
 func ExportEventIcalScheduleButton(eventId int) Node {
 	return AButton(ColorDefault, UrlExportIcalSchedule(eventId), "Calendar", Title("Kopiere den Link um zu subscriben"))
-}
-
-func CreateTimeslotButton(eventId int) Node {
-	return AButton(ColorDefault, fmt.Sprintf("/timeslot/new?event=%v", eventId), "Create Timeslot")
-}
-
-func EditTimeslotButton(timeslotId int) Node {
-	return A(Class("button"), Text("edit"), Href(fmt.Sprintf("/timeslot/edit/%v", timeslotId)))
-}
-
-func DuplicateTimeslotButton(timeslotId int) Node {
-	return A(Class("button"), Text("duplicate"), Href(fmt.Sprintf("/timeslot/duplicate/%v", timeslotId)))
-}
-
-func DeleteTimeslotButton(timeslotId int) Node {
-	return A(Class("button"), Style("background-color: var(--color-soft-red)"), Text("delete"), Href("#"),
-		hx.Delete(fmt.Sprintf("/_/timeslot/%v", timeslotId)),
-		hx.Target("closest .timeslot-container"),
-		hx.Swap("outerHTML swap:1s"),
-	)
-}
-
-func EditLocationButton(locationId int) Node {
-	return A(Class("button"), Text("edit"), Href(fmt.Sprintf("/location/edit/%v", locationId)))
-}
-
-func DeleteEventLocationButton(eventId, relationshipId int) Node {
-	return A(Class("button"), Style("background-color: var(--color-soft-red)"), Text("remove"), Href("#"),
-		hx.Delete(fmt.Sprintf("/_/event/%v/location/%v", eventId, relationshipId)),
-		hx.Target("closest .location-card"),
-		hx.Swap("outerHTML swap:1s"),
-	)
-}
-
-func DeleteRoomButton(roomId int) Node {
-	return A(Class("button"), Style("background-color: var(--color-soft-red)"), Text("remove"), Href("#"),
-		hx.Delete(fmt.Sprintf("/_/room/%v", roomId)),
-		hx.Target("closest li"),
-		hx.Swap("outerHTML swap:1s"),
-	)
 }
