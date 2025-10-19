@@ -9,7 +9,7 @@ import (
 	"net/http"
 	"strconv"
 	"time"
-	"timekeeper/adapters"
+	"timekeeper/adapters/nominatim"
 	"timekeeper/app/database"
 	"timekeeper/app/database/model"
 	"timekeeper/config"
@@ -132,7 +132,7 @@ func EventSectionLocations(event model.EventModel, locations []model.LocationMod
 
 type EventPageRoute struct {
 	DB        *database.Database
-	Nominatim *adapters.NominatimClient
+	Nominatim *nominatim.Client
 }
 
 func (l *EventPageRoute) Method() string {

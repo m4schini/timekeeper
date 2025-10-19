@@ -7,14 +7,14 @@ import (
 	. "maragu.dev/gomponents/html"
 	"net/http"
 	"strconv"
-	"timekeeper/adapters"
+	"timekeeper/adapters/nominatim"
 	"timekeeper/app/database"
 	"timekeeper/app/database/model"
 	"timekeeper/ports/www/components"
 	"timekeeper/ports/www/render"
 )
 
-func OsmContainer(el model.EventLocationModel, osm adapters.LookupResponse) Node {
+func OsmContainer(el model.EventLocationModel, osm nominatim.LookupResponse) Node {
 	return Div(Class("osm-container"),
 		Div(ID("map"), Style("width: 600px; height: 400px")),
 		Div(
@@ -26,7 +26,7 @@ func OsmContainer(el model.EventLocationModel, osm adapters.LookupResponse) Node
 	)
 }
 
-func LocationPage(event model.EventModel, location model.EventLocationModel, locationOsmData *adapters.LookupResponse, rooms []model.RoomModel) Node {
+func LocationPage(event model.EventModel, location model.EventLocationModel, locationOsmData *nominatim.LookupResponse, rooms []model.RoomModel) Node {
 	roomItems := Group{}
 	for _, room := range rooms {
 		roomItems = append(roomItems, Div(Class("room"), ID(fmt.Sprintf("room-%v", room.ID)),
@@ -111,7 +111,7 @@ func ImageWithBoxes(imgSrc string, imgWidth, imgHeight float64, boxes []Box) Nod
 
 type LocationPageRoute struct {
 	DB        *database.Database
-	Nominatim *adapters.NominatimClient
+	Nominatim *nominatim.Client
 }
 
 func (l *LocationPageRoute) Method() string {
@@ -125,7 +125,7 @@ func (l *LocationPageRoute) Pattern() string {
 func (l *LocationPageRoute) Handler() http.Handler {
 	log := components.Logger(l)
 	queries := l.DB.Queries
-	nominatim := l.Nominatim
+	osm := l.Nominatim
 	return http.HandlerFunc(func(writer http.ResponseWriter, request *http.Request) {
 		eventId, err := strconv.ParseInt(chi.URLParam(request, "event"), 10, 64)
 		if err != nil {
@@ -150,8 +150,8 @@ func (l *LocationPageRoute) Handler() http.Handler {
 			return
 		}
 
-		var locationOsmData *adapters.LookupResponse
-		resp, err := nominatim.Lookup(request.Context(), location.OsmId)
+		var locationOsmData *nominatim.LookupResponse
+		resp, err := osm.Lookup(request.Context(), location.OsmId)
 		if err == nil {
 			locationOsmData = &resp
 		}

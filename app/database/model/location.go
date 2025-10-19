@@ -2,7 +2,7 @@ package model
 
 import (
 	"strings"
-	"timekeeper/adapters"
+	"timekeeper/adapters/nominatim"
 )
 
 type LocationModel struct {
@@ -22,7 +22,7 @@ type EventLocationModel struct {
 	RelationshipNote string
 	Visible          bool
 
-	Address *adapters.OsmAddress
+	Address *nominatim.Address
 }
 
 func (e EventLocationModel) RelationshipLabel() (label string) {

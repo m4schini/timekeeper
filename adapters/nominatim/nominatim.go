@@ -1,4 +1,4 @@
-package adapters
+package nominatim
 
 import (
 	"context"
@@ -10,24 +10,24 @@ import (
 )
 
 type LookupResponse struct {
-	PlaceId     int        `json:"place_id"`
-	Licence     string     `json:"licence"`
-	OsmType     string     `json:"osm_type"`
-	OsmId       int        `json:"osm_id"`
-	Lat         string     `json:"lat"`
-	Lon         string     `json:"lon"`
-	Class       string     `json:"class"`
-	Type        string     `json:"type"`
-	PlaceRank   int        `json:"place_rank"`
-	Importance  float64    `json:"importance"`
-	Addresstype string     `json:"addresstype"`
-	Name        string     `json:"name"`
-	DisplayName string     `json:"display_name"`
-	Address     OsmAddress `json:"address"`
-	Boundingbox []string   `json:"boundingbox"`
+	PlaceId     int      `json:"place_id"`
+	Licence     string   `json:"licence"`
+	OsmType     string   `json:"osm_type"`
+	OsmId       int      `json:"osm_id"`
+	Lat         string   `json:"lat"`
+	Lon         string   `json:"lon"`
+	Class       string   `json:"class"`
+	Type        string   `json:"type"`
+	PlaceRank   int      `json:"place_rank"`
+	Importance  float64  `json:"importance"`
+	Addresstype string   `json:"addresstype"`
+	Name        string   `json:"name"`
+	DisplayName string   `json:"display_name"`
+	Address     Address  `json:"address"`
+	Boundingbox []string `json:"boundingbox"`
 }
 
-type OsmAddress struct {
+type Address struct {
 	Amenity      string `json:"amenity"`
 	HouseNumber  string `json:"house_number"`
 	Road         string `json:"road"`
@@ -40,7 +40,7 @@ type OsmAddress struct {
 	CountryCode  string `json:"country_code"`
 }
 
-type NominatimClient struct {
+type Client struct {
 	log       *zap.Logger
 	client    *http.Client
 	rateLimit *rate.Limiter
@@ -48,12 +48,12 @@ type NominatimClient struct {
 	lookupCache map[string]LookupResponse
 }
 
-func NewNominatimClient() *NominatimClient {
+func New() *Client {
 	client := &http.Client{
 		Transport: &http.Transport{},
 	}
 
-	return &NominatimClient{
+	return &Client{
 		log:    zap.L().Named("nominatim"),
 		client: client,
 		// 1 call per second: https://operations.osmfoundation.org/policies/nominatim/
@@ -62,7 +62,7 @@ func NewNominatimClient() *NominatimClient {
 	}
 }
 
-func (n *NominatimClient) get(ctx context.Context, url string) (resp *http.Response, err error) {
+func (n *Client) get(ctx context.Context, url string) (resp *http.Response, err error) {
 	r, err := http.NewRequest(http.MethodGet, url, nil)
 	if err != nil {
 		return nil, err
@@ -78,7 +78,7 @@ func (n *NominatimClient) get(ctx context.Context, url string) (resp *http.Respo
 	return n.client.Do(r)
 }
 
-func (n *NominatimClient) Lookup(ctx context.Context, osmId string) (response LookupResponse, err error) {
+func (n *Client) Lookup(ctx context.Context, osmId string) (response LookupResponse, err error) {
 	if osmId == "" {
 		return response, fmt.Errorf("invalid osmId")
 	}

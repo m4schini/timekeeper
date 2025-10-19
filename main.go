@@ -5,6 +5,7 @@ import (
 	"golang.org/x/time/rate"
 	"net"
 	"timekeeper/adapters"
+	"timekeeper/adapters/nominatim"
 	"timekeeper/app/auth"
 	"timekeeper/app/database"
 	"timekeeper/config"
@@ -18,7 +19,7 @@ func main() {
 	zap.ReplaceGlobals(logger)
 
 	// init adapters
-	nominatimClient := adapters.NewNominatimClient()
+	nominatimClient := nominatim.New()
 	dbAdapter, err := adapters.NewPostgresqlDatabase()
 	if err != nil {
 		logger.Fatal("failed to create postgresql adapter", zap.Error(err))
@@ -94,7 +95,7 @@ func main() {
 		logger.Fatal("failed to listen", zap.Error(err))
 	}
 
-	logger.Debug("serving timekeeper :" + config.Port())
+	logger.Info("serving timekeeper :" + config.Port())
 	err = www.Serve(l, authy, pages, components)
 	if err != nil {
 		logger.Warn("failed to serve www", zap.Error(err))
