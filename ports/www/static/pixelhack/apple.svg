@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" viewBox="0 0 64 64" version="1.1" xml:space="preserve" style="fill-rule:evenodd;clip-rule:evenodd;stroke-linejoin:round;stroke-miterlimit:2;" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns" xmlns:cc="http://creativecommons.org/ns" xmlns:dc="http://purl.org/dc/elements/1.1/">
+  <g id="Pizza">
+    <path d="M54,-56l2,0l0,8l-2,0l0,-8Zm-40,-2l0,-2l6,0l0,-2l26,0l0,2l-24,0l0,2l-8,0Zm32,-2l2,0l0,2l6,0l0,2l-8,0l0,-4Zm-32,2l0,6l-2,0l0,-6l2,0Zm22,54l0,-6l2,0l0,-2l2,0l0,-2l2,0l0,-2l2,0l0,-2l2,0l0,-8l2,0l0,-4l2,0l0,-2l2,0l0,-10l4,0l0,2l-2,0l0,10l-2,0l0,2l-2,0l0,4l-2,0l0,8l-2,0l0,2l-2,0l0,2l-2,0l0,2l-2,0l0,2l-2,0l0,4l-2,0Zm-2,2l0,-2l2,0l0,2l-2,0Zm-14,-20l2,0l0,2l2,0l0,8l2,0l0,2l2,0l0,6l-2,0l0,-4l-2,0l0,-2l-2,0l0,-8l-2,0l0,-4Zm10,20l4,0l0,2l-4,0l0,-2Zm-2,-2l2,0l0,2l-2,0l0,-2Zm-12,-26l-2,0l0,-6l2,0l0,4l2,0l0,2l2,0l0,8l-2,0l0,-6l-2,0l0,-2Zm-2,-10l0,2l-2,0l0,-2l2,0Z" style="fill:#a0673e;" />
+  </g>
+  <g id="Apple">
+    <g>
+      <path d="M2,50l0,-32l2,0l0,-2l4,0l0,2l-2,0l0,2l-2,0l0,28l2,0l0,2l2,0l0,2l2,0l0,2l2,0l0,2l2,0l0,2l2,0l0,2l32,0l0,-2l2,0l0,-2l2,0l0,-2l2,0l0,-2l2,0l0,-2l2,0l0,-2l2,0l0,-20l-2,0l0,-2l-2,0l0,-6l-2,0l0,-2l-2,0l0,-2l-18,0l0,-2l20,0l0,2l2,0l0,2l2,0l0,6l2,0l0,2l2,0l0,24l-2,0l0,2l-2,0l0,2l-2,0l0,2l-2,0l0,2l-2,0l0,2l-2,0l0,2l-36,0l0,-2l-2,0l0,-2l-2,0l0,-2l-2,0l0,-2l-2,0l0,-2l-2,0l0,-2l-2,0Z" />
+      <g>
+        <path d="M6,48l-2,0l0,-28l2,0l0,-2l8,0l0,2l14,0l0,2l2,0l0,2l4,0l0,-2l2,0l0,-2l-2,0l0,-4l18,0l0,2l2,0l0,2l2,0l0,6l2,0l0,2l2,0l0,20l-2,0l0,2l-2,0l0,2l-2,0l0,2l-2,0l0,2l-2,0l0,2l-2,0l0,2l-32,0l0,-2l-2,0l0,-2l-2,0l0,-2l-2,0l0,-2l-2,0l0,-2l-2,0l0,-2Zm18,-26l-12,0l0,2l-2,0l0,2l2,0l0,2l12,0l0,-2l2,0l0,-2l-2,0l0,-2Z" style="fill:#e52320;" />
+        <g>
+          <path d="M12,26l-2,0l0,-2l2,0l0,-2l12,0l0,2l2,0l0,2l-2,0l0,2l-12,0l0,-2Zm2,-2l0,2l8,0l0,-2l-8,0Z" style="fill:#e6414a;" />
+          <rect x="14" y="24" width="8" height="2" style="fill:#fff;" />
+        </g>
+      </g>
+    </g>
+    <g>
+      <path d="M18,6l4,0l0,2l-4,0l0,-2Zm10,8l2,0l0,2l-2,0l0,-2Zm-16,-10l6,0l0,2l-6,0l0,-2Zm14,8l2,0l0,2l-2,0l0,-2Zm-4,-4l2,0l0,2l-2,0l0,-2Zm2,2l2,0l0,2l-2,0l0,-2Zm-12,-6l-12,0l0,-2l12,0l0,2Zm8,12l4,0l0,2l-4,0l0,-2Zm-16,-8l4,0l0,2l-4,0l0,-2Zm4,2l4,0l0,2l-4,0l0,-2Zm8,4l4,0l0,2l-4,0l0,-2Zm8,4l4,0l0,2l-4,0l0,-2Zm-20,-10l-4,0l0,-2l4,0l0,2Zm8,4l4,0l0,2l-4,0l0,-2Z" style="fill:#09aa24;" />
+      <path d="M12,10l4,0l0,2l-4,0l0,-2Zm-8,-4l4,0l0,2l-4,0l0,-2Zm0,0l-4,0l0,-2l4,0l0,2Zm24,12l2,0l0,-16l2,0l0,20l-2,0l0,-2l-2,0l0,-2Zm-4,-2l4,0l0,2l-4,0l0,-2Zm-4,-2l4,0l0,2l-4,0l0,-2Zm-4,-2l4,0l0,2l-4,0l0,-2Zm-8,-4l4,0l0,2l-4,0l0,-2Z" style="fill:#5d473d;" />
+      <path d="M32,22l0,-20l8,0l0,2l-2,0l0,2l-4,0l0,16l-2,0Z" style="fill:#a0673e;" />
+      <path d="M8,6l-4,0l0,-2l8,0l0,2l6,0l0,2l4,0l0,2l2,0l0,2l2,0l0,2l2,0l0,2l-4,0l0,-2l-4,0l0,-2l-4,0l0,-2l-4,0l0,-2l-4,0l0,-2Zm20,10l2,0l0,2l-2,0l0,-2Zm-26,-4l-2,0l0,-4l4,0l0,2l4,0l0,2l4,0l0,2l4,0l0,2l4,0l0,2l4,0l0,2l-10,0l0,-2l-6,0l0,-2l-4,0l0,-2l-2,0l0,-2Z" style="fill:#29e400;" />
+      <path d="M30,22l4,0l0,2l-4,0l0,-2Zm0,0l-2,0l0,-2l2,0l0,2Zm4,0l0,-2l2,0l0,2l-2,0Z" style="fill:#ca006a;" />
+    </g>
+  </g>
+  <metadata>
+    <rdf:RDF>
+      <cc:Work rdf:about="">
+        <cc:License rdf:resource="http://creativecommons.org/licenses/by-sa/4.0/" />
+        <dc:right>
+          <cc:Agent>
+            <dc:title>CC-BY-SA 4.0 Jugend Hackt</dc:title>
+          </cc:Agent>
+        </dc:right>
+        <dc:title>
+          <cc:Agent>
+            <dc:title>Pixelhack</dc:title>
+          </cc:Agent>
+        </dc:title>
+        <dc:contributor>
+          <cc:Agent>
+            <dc:title>Hanno Sternberg</dc:title>
+          </cc:Agent>
+        </dc:contributor>
+        <dc:creator>
+          <cc:Agent>
+            <dc:title>Jugend Hackt</dc:title>
+          </cc:Agent>
+        </dc:creator>
+        <dc:date>
+          <cc:Agent>
+            <dc:title>2013</dc:title>
+          </cc:Agent>
+        </dc:date>
+      </cc:Work>
+      <cc:License rdf:about="http://creativecommons.org/licenses/by-sa/4.0/">
+        <cc:permits rdf:resource="http://creativecommons.org/ns#DerivativeWorks" />
+        <cc:requires rdf:resource="http://creativecommons.org/ns#ShareAlike" />
+      </cc:License>
+    </rdf:RDF>
+  </metadata>
+</svg>

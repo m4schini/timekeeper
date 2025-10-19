@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" viewBox="0 0 64 64" version="1.1" xml:space="preserve" style="fill-rule:evenodd;clip-rule:evenodd;stroke-linejoin:round;stroke-miterlimit:2;" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns" xmlns:cc="http://creativecommons.org/ns" xmlns:dc="http://purl.org/dc/elements/1.1/">
+  <g id="Creatures">
+    <g id="Octopi">
+      <g>
+        <path d="M46,52l0,-2l2,0l0,2l-2,0Zm-32,-20l-4,0l0,-10l4,0l0,-2l2,0l0,-2l2,0l0,-2l2,0l0,-2l2,0l0,-2l2,0l0,-4l16,0l0,4l2,0l0,2l2,0l0,2l2,0l0,2l2,0l0,2l2,0l0,2l2,0l0,10l-2,0l0,2l-4,0l0,4l-2,0l0,2l-4,0l0,4l-2,0l0,-2l-2,0l0,2l-2,0l0,2l-4,0l0,-2l-2,0l0,-2l-2,0l0,2l-2,0l0,-4l-4,0l0,-2l-2,0l0,-4l-4,0l0,-2Zm24,12l0,2l-2,0l0,-2l2,0Zm0,2l2,0l0,2l-2,0l0,-2Zm0,2l0,2l-2,0l0,-2l2,0Zm0,2l2,0l0,2l-2,0l0,-2Zm2,2l2,0l0,2l-2,0l0,-2Zm2,2l2,0l0,2l-2,0l0,-2Zm0,2l0,2l-2,0l0,-2l2,0Zm-2,0l-2,0l0,-2l2,0l0,2Zm-2,0l0,2l-2,0l0,-2l2,0Zm-2,0l-2,0l0,-2l2,0l0,2Zm-2,0l0,2l-4,0l0,-2l4,0Zm-4,0l-2,0l0,-2l2,0l0,2Zm-2,0l0,2l-2,0l0,-2l2,0Zm-2,0l-2,0l0,-2l2,0l0,2Zm-2,0l0,2l-2,0l0,-2l2,0Zm-2,0l-2,0l0,-2l2,0l0,2Zm0,-2l0,-2l2,0l0,2l-2,0Zm2,-2l0,-2l2,0l0,2l-2,0Zm2,-2l0,-2l2,0l0,2l-2,0Zm0,-2l-2,0l0,-2l2,0l0,2Zm0,-2l0,-2l2,0l0,2l-2,0Zm10,0l0,2l-2,0l0,-2l2,0Zm0,4l0,2l-2,0l0,-2l2,0Zm0,2l2,0l0,2l-2,0l0,-2Zm-2,-4l0,2l-4,0l0,-2l4,0Zm0,6l-4,0l0,-2l4,0l0,2Zm-6,0l-2,0l0,-2l2,0l0,2Zm2,-2l-2,0l0,-2l2,0l0,2Zm-2,-4l0,-2l2,0l0,2l-2,0Zm-12,2l-2,0l0,-2l2,0l0,2Zm4,4l-2,0l0,-2l2,0l0,2Zm-2,-2l-2,0l0,-2l2,0l0,2Zm26,2l0,-2l2,0l0,2l-2,0Zm4,-4l0,-2l2,0l0,2l-2,0Z" style="fill:#8000ff;" />
+        <path d="M30,12l0,-4l4,0l0,4l-4,0Zm10,6l2,0l0,2l-2,0l0,-2Zm-16,0l0,-2l2,0l0,2l-2,0Zm2,-2l0,-2l2,0l0,2l-2,0Zm-2,2l0,2l-2,0l0,-2l2,0Zm10,-6l2,0l0,2l-2,0l0,-2Zm2,2l2,0l0,2l-2,0l0,-2Zm2,2l2,0l0,2l-2,0l0,-2Zm-10,-2l0,-2l2,0l0,2l-2,0Z" style="fill:#fefffe;" />
+        <path d="M22,24l0,2l-2,0l0,-2l2,0Zm6,4l0,4l-6,0l0,-4l6,0Zm14,0l0,4l-6,0l0,-4l6,0Zm2,-4l0,2l-2,0l0,-2l2,0Z" style="fill:#010001;" />
+        <rect x="30" y="36" width="4" height="2" style="fill:#fefffe;" />
+      </g>
+    </g>
+  </g>
+  <metadata>
+    <rdf:RDF>
+      <cc:Work rdf:about="">
+        <cc:License rdf:resource="http://creativecommons.org/licenses/by-sa/4.0/" />
+        <dc:right>
+          <cc:Agent>
+            <dc:title>CC-BY-SA 4.0 Jugend Hackt</dc:title>
+          </cc:Agent>
+        </dc:right>
+        <dc:title>
+          <cc:Agent>
+            <dc:title>Pixelhack</dc:title>
+          </cc:Agent>
+        </dc:title>
+        <dc:contributor>
+          <cc:Agent>
+            <dc:title>Hanno Sternberg</dc:title>
+          </cc:Agent>
+        </dc:contributor>
+        <dc:creator>
+          <cc:Agent>
+            <dc:title>Jugend Hackt</dc:title>
+          </cc:Agent>
+        </dc:creator>
+        <dc:date>
+          <cc:Agent>
+            <dc:title>2013</dc:title>
+          </cc:Agent>
+        </dc:date>
+      </cc:Work>
+      <cc:License rdf:about="http://creativecommons.org/licenses/by-sa/4.0/">
+        <cc:permits rdf:resource="http://creativecommons.org/ns#DerivativeWorks" />
+        <cc:requires rdf:resource="http://creativecommons.org/ns#ShareAlike" />
+      </cc:License>
+    </rdf:RDF>
+  </metadata>
+</svg>

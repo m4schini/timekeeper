@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:serif="http://www.serif.com/" width="100%" height="100%" viewBox="0 0 128 96" version="1.1" xml:space="preserve" style="fill-rule:evenodd;clip-rule:evenodd;stroke-linejoin:round;stroke-miterlimit:2;" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns" xmlns:cc="http://creativecommons.org/ns" xmlns:dc="http://purl.org/dc/elements/1.1/">
+  <g id="Friends--moving-" serif:id="Friends (moving)">
+    <g>
+      <path d="M24,18l0,4l-4,0l0,-8l4,0l0,-4l4,0l0,-4l8,0l0,4l4,0l0,4l4,0l0,8l-4,0l0,-4l-16,0Z" />
+      <path d="M10,62l-8,0l0,-12l2,0l0,4l4,0l0,-4l2,0l0,12Z" />
+      <path d="M8,80l0,-12l8,0l0,8l-4,0l0,4l-4,0Z" />
+      <path d="M26,92l0,-12l6,0l0,8l-2,0l0,4l-4,0Z" />
+      <rect x="28" y="22" width="2" height="2" />
+      <rect x="36" y="22" width="2" height="2" />
+      <path d="M24,30l0,-12l16,0l0,12l-4,0l0,2l-8,0l0,-2l-4,0Zm14,-8l-4,0l0,2l4,0l0,-2Zm-8,0l-4,0l0,2l4,0l0,-2Zm4,8l0,-2l-4,0l0,2l4,0Zm-26,20l0,4l-4,0l0,-4l4,0Zm56,2l0,4l-4,0l0,-4l4,0Z" style="fill:#e1bb95;" />
+      <rect x="26" y="22" width="2" height="2" style="fill:#fff;" />
+      <rect x="34" y="22" width="2" height="2" style="fill:#fff;" />
+      <rect x="30" y="28" width="4" height="2" style="fill:#e6414a;" />
+      <path d="M8,48l0,2l-4,0l0,-6l4,0l0,-4l4,0l0,-4l4,0l0,-4l32,0l0,4l4,0l0,4l4,0l0,4l4,0l0,4l4,0l0,4l-8,0l0,-4l-4,0l0,-4l-4,0l0,-4l-4,0l0,28l-24,0l0,-28l-4,0l0,4l-4,0l0,4l-4,0Z" style="fill:#16a6de;" />
+      <path d="M16,76l0,-8l12,0l0,4l-4,0l0,4l-8,0Zm20,8l0,4l-4,0l0,-12l4,0l0,-8l8,0l0,12l-4,0l0,4l-4,0Z" style="fill:#00b48d;" />
+    </g>
+    <g>
+      <path d="M116,36l0,-10l8,0l0,10l-2,0l0,-4l-4,0l0,4l-2,0Z" />
+      <rect x="84" y="14" width="4" height="12" />
+      <rect x="104" y="18" width="4" height="8" />
+      <rect x="92" y="20" width="2" height="2" />
+      <rect x="100" y="20" width="2" height="2" />
+      <rect x="72" y="72" width="4" height="8" />
+      <rect x="88" y="84" width="4" height="8" />
+      <rect x="88" y="10" width="16" height="8" style="fill:#10498c;" />
+      <rect x="104" y="14" width="4" height="4" style="fill:#10498c;" />
+      <path d="M88,28l0,-10l16,0l0,10l-4,0l0,4l-8,0l0,-4l-4,0Zm14,-8l-4,0l0,2l4,0l0,-2Zm-8,0l-4,0l0,2l4,0l0,-2Zm4,8l0,-2l-4,0l0,2l4,0Zm22,8l0,4l-4,0l0,-4l2,0l0,-4l4,0l0,4l-2,0Zm-52,16l0,4l-4,0l0,-4l4,0Z" style="fill:#a0673e;" />
+      <rect x="90" y="20" width="2" height="2" style="fill:#fff;" />
+      <rect x="98" y="20" width="2" height="2" style="fill:#fff;" />
+      <rect x="94" y="26" width="4" height="2" style="fill:#10498c;" />
+      <path d="M72,52l-8,0l0,-4l4,0l0,-4l4,0l0,-4l4,0l0,-4l4,0l0,-4l32,0l0,4l4,0l0,4l4,0l0,-4l4,0l0,8l-4,0l0,4l-4,0l0,-4l-4,0l0,-4l-4,0l0,18l-24,0l0,-18l-4,0l0,4l-4,0l0,4l-4,0l0,4Z" style="fill:#ea680d;" />
+      <path d="M86,76l-10,0l0,-8l8,0l0,-10l24,0l0,22l-4,0l0,4l-4,0l0,4l-8,0l0,-8l4,0l0,-4l4,0l0,-10l-8,0l0,6l-6,0l0,4Z" style="fill:#fcd009;" />
+    </g>
+  </g>
+  <metadata>
+    <rdf:RDF>
+      <cc:Work rdf:about="">
+        <cc:License rdf:resource="http://creativecommons.org/licenses/by-sa/4.0/" />
+        <dc:right>
+          <cc:Agent>
+            <dc:title>CC-BY-SA 4.0 Jugend Hackt</dc:title>
+          </cc:Agent>
+        </dc:right>
+        <dc:title>
+          <cc:Agent>
+            <dc:title>Pixelhack</dc:title>
+          </cc:Agent>
+        </dc:title>
+        <dc:contributor>
+          <cc:Agent>
+            <dc:title>Hanno Sternberg</dc:title>
+          </cc:Agent>
+        </dc:contributor>
+        <dc:creator>
+          <cc:Agent>
+            <dc:title>Jugend Hackt</dc:title>
+          </cc:Agent>
+        </dc:creator>
+        <dc:date>
+          <cc:Agent>
+            <dc:title>2013</dc:title>
+          </cc:Agent>
+        </dc:date>
+      </cc:Work>
+      <cc:License rdf:about="http://creativecommons.org/licenses/by-sa/4.0/">
+        <cc:permits rdf:resource="http://creativecommons.org/ns#DerivativeWorks" />
+        <cc:requires rdf:resource="http://creativecommons.org/ns#ShareAlike" />
+      </cc:License>
+    </rdf:RDF>
+  </metadata>
+</svg>

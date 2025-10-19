@@ -19,12 +19,12 @@
 
 @font-face {
     font-family: atkinson-hyperlegible-next; /* set name */
-    src: url(/static/AtkinsonHyperlegibleNext-Regular.otf); /* url of the font */
+    src: url(/static/font/AtkinsonHyperlegibleNext-Regular.otf); /* url of the font */
     font-weight: normal;
 }
 @font-face {
     font-family: atkinson-hyperlegible-next; /* set name */
-    src: url(/static/AtkinsonHyperlegibleNext-Bold.otf); /* url of the font */
+    src: url(/static/font/AtkinsonHyperlegibleNext-Bold.otf); /* url of the font */
     font-weight: bold;
 }
 
@@ -36,6 +36,49 @@
     width: 100%;
     margin: 0;
     padding: 0;
+
+    /*background-image: url(/static/pixelhack/backgrpund_pattern_a_gray.svg);*/
+    /*background-blend-mode: overlay;*/
+    /*background-size: 50px;*/
+}
+
+.footer {
+    height: 72px;
+    padding: 4px;
+
+    margin-top: 1rem;
+
+    display: flex;
+    gap: 4px;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center
+}
+
+.footer > div {
+    display: flex;
+    height: 24px;
+    gap: 4px;
+}
+
+@media screen and (min-width: 800px) {
+    .footer {
+        height: 24px;
+        flex-direction: row;
+    }
+}
+
+.pixelhack-spritesheet {
+    background-image: url('/static/pixelhack.png');
+    /* size of the whole sheet */
+    background-size: 2048px 2048px;
+
+    /*!* size of one frame *!*/
+    /*width: 100px;*/
+    /*height: 100px;*/
+
+    /*!* coordinates of the desired frame (negated) *!*/
+    /*background-position: -500px 0px;*/
 }
 
 a.button {

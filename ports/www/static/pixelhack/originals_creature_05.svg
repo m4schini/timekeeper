@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" viewBox="0 0 64 64" version="1.1" xml:space="preserve" style="fill-rule:evenodd;clip-rule:evenodd;stroke-linejoin:round;stroke-miterlimit:2;" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns" xmlns:cc="http://creativecommons.org/ns" xmlns:dc="http://purl.org/dc/elements/1.1/">
+  <g>
+    <g>
+      <rect x="24" y="16" width="4" height="14" style="fill:#10498c;" />
+      <rect x="36" y="16" width="4" height="14" style="fill:#10498c;" />
+      <rect x="20" y="20" width="4" height="24" style="fill:#10498c;" />
+      <rect x="28" y="20" width="8" height="24" style="fill:#10498c;" />
+      <rect x="40" y="20" width="4" height="24" style="fill:#10498c;" />
+      <rect x="16" y="24" width="4" height="10" style="fill:#10498c;" />
+      <rect x="44" y="24" width="4" height="10" style="fill:#10498c;" />
+      <rect x="12" y="30" width="4" height="14" style="fill:#10498c;" />
+      <rect x="48" y="30" width="4" height="14" style="fill:#10498c;" />
+      <rect x="24" y="34" width="4" height="18" style="fill:#10498c;" />
+      <rect x="36" y="34" width="4" height="18" style="fill:#10498c;" />
+      <rect x="20" y="48" width="4" height="4" style="fill:#10498c;" />
+      <rect x="40" y="48" width="4" height="4" style="fill:#10498c;" />
+    </g>
+  </g>
+  <metadata>
+    <rdf:RDF>
+      <cc:Work rdf:about="">
+        <cc:License rdf:resource="http://creativecommons.org/licenses/by-sa/4.0/" />
+        <dc:right>
+          <cc:Agent>
+            <dc:title>CC-BY-SA 4.0 Jugend Hackt</dc:title>
+          </cc:Agent>
+        </dc:right>
+        <dc:title>
+          <cc:Agent>
+            <dc:title>Pixelhack</dc:title>
+          </cc:Agent>
+        </dc:title>
+        <dc:contributor>
+          <cc:Agent>
+            <dc:title>Hanno Sternberg</dc:title>
+          </cc:Agent>
+        </dc:contributor>
+        <dc:creator>
+          <cc:Agent>
+            <dc:title>Jugend Hackt</dc:title>
+          </cc:Agent>
+        </dc:creator>
+        <dc:date>
+          <cc:Agent>
+            <dc:title>2013</dc:title>
+          </cc:Agent>
+        </dc:date>
+      </cc:Work>
+      <cc:License rdf:about="http://creativecommons.org/licenses/by-sa/4.0/">
+        <cc:permits rdf:resource="http://creativecommons.org/ns#DerivativeWorks" />
+        <cc:requires rdf:resource="http://creativecommons.org/ns#ShareAlike" />
+      </cc:License>
+    </rdf:RDF>
+  </metadata>
+</svg>

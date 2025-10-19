@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:serif="http://www.serif.com/" width="100%" height="100%" viewBox="0 0 64 128" version="1.1" xml:space="preserve" style="fill-rule:evenodd;clip-rule:evenodd;stroke-linejoin:round;stroke-miterlimit:2;" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns" xmlns:cc="http://creativecommons.org/ns" xmlns:dc="http://purl.org/dc/elements/1.1/">
+  <g id="Monster1" serif:id="Monster">
+    <rect x="14" y="8" width="4" height="8" />
+    <rect x="18" y="8" width="32" height="10" style="fill:#00b48d;" />
+    <rect x="2" y="16" width="4" height="100" />
+    <rect x="6" y="16" width="12" height="50" style="fill:#00b48d;" />
+    <rect x="50" y="16" width="12" height="50" style="fill:#00b48d;" />
+    <rect x="18" y="18" width="10" height="4" style="fill:#00b48d;" />
+    <rect x="28" y="18" width="14" height="2" />
+    <rect x="42" y="18" width="8" height="4" style="fill:#00b48d;" />
+    <rect x="28" y="20" width="2" height="4" />
+    <rect x="30" y="20" width="10" height="6" style="fill:#fff;" />
+    <rect x="40" y="20" width="2" height="4" />
+    <rect x="18" y="22" width="6" height="44" style="fill:#00b48d;" />
+    <rect x="24" y="22" width="4" height="2" />
+    <rect x="42" y="22" width="4" height="2" />
+    <rect x="46" y="22" width="4" height="44" style="fill:#00b48d;" />
+    <rect x="24" y="24" width="2" height="32" />
+    <rect x="26" y="24" width="4" height="30" style="fill:#fff;" />
+    <rect x="40" y="24" width="4" height="30" style="fill:#fff;" />
+    <rect x="44" y="24" width="2" height="32" />
+    <rect x="30" y="26" width="2" height="32" style="fill:#fff;" />
+    <rect x="32" y="26" width="6" height="10" style="fill:#16a6de;" />
+    <rect x="38" y="26" width="2" height="32" style="fill:#fff;" />
+    <rect x="32" y="36" width="2" height="6" />
+    <rect x="34" y="36" width="2" height="2" style="fill:#fff;" />
+    <rect x="36" y="36" width="2" height="6" />
+    <rect x="34" y="38" width="2" height="4" />
+    <rect x="32" y="42" width="6" height="8" style="fill:#16a6de;" />
+    <rect x="32" y="50" width="6" height="8" style="fill:#fff;" />
+    <rect x="26" y="54" width="4" height="2" />
+    <rect x="40" y="54" width="4" height="2" />
+    <rect x="24" y="56" width="4" height="10" style="fill:#00b48d;" />
+    <rect x="28" y="56" width="2" height="4" />
+    <rect x="40" y="56" width="2" height="4" />
+    <rect x="42" y="56" width="4" height="10" style="fill:#00b48d;" />
+    <rect x="30" y="58" width="10" height="2" />
+    <rect x="28" y="60" width="14" height="6" style="fill:#00b48d;" />
+    <rect x="6" y="66" width="10" height="4" style="fill:#00b48d;" />
+    <rect x="16" y="66" width="38" height="4" style="fill:#fcd009;" />
+    <rect x="54" y="66" width="8" height="4" style="fill:#00b48d;" />
+    <rect x="6" y="70" width="6" height="46" style="fill:#00b48d;" />
+    <rect x="12" y="70" width="4" height="10" style="fill:#fcd009;" />
+    <rect x="16" y="70" width="2" height="10" />
+    <rect x="18" y="70" width="4" height="2" style="fill:#fff;" />
+    <rect x="22" y="70" width="2" height="10" />
+    <rect x="24" y="70" width="4" height="2" style="fill:#fff;" />
+    <rect x="28" y="70" width="2" height="10" />
+    <rect x="30" y="70" width="4" height="2" style="fill:#fff;" />
+    <rect x="34" y="70" width="2" height="10" />
+    <rect x="36" y="70" width="4" height="2" style="fill:#fff;" />
+    <rect x="40" y="70" width="2" height="10" />
+    <rect x="42" y="70" width="4" height="2" style="fill:#fff;" />
+    <rect x="46" y="70" width="2" height="10" />
+    <rect x="48" y="70" width="4" height="2" style="fill:#fff;" />
+    <rect x="52" y="70" width="2" height="10" />
+    <rect x="54" y="70" width="4" height="10" style="fill:#fcd009;" />
+    <rect x="58" y="70" width="4" height="46" style="fill:#00b48d;" />
+    <rect x="18" y="72" width="4" height="6" />
+    <rect x="24" y="72" width="4" height="6" />
+    <rect x="30" y="72" width="4" height="6" />
+    <rect x="36" y="72" width="4" height="6" />
+    <rect x="42" y="72" width="4" height="6" />
+    <rect x="48" y="72" width="4" height="6" />
+    <rect x="18" y="78" width="4" height="2" style="fill:#fff;" />
+    <rect x="24" y="78" width="4" height="2" style="fill:#fff;" />
+    <rect x="30" y="78" width="4" height="2" style="fill:#fff;" />
+    <rect x="36" y="78" width="4" height="2" style="fill:#fff;" />
+    <rect x="42" y="78" width="4" height="2" style="fill:#fff;" />
+    <rect x="48" y="78" width="4" height="2" style="fill:#fff;" />
+    <rect x="12" y="80" width="4" height="16" style="fill:#00b48d;" />
+    <rect x="16" y="80" width="38" height="4" style="fill:#fcd009;" />
+    <rect x="54" y="80" width="4" height="16" style="fill:#00b48d;" />
+    <rect x="16" y="84" width="38" height="8" style="fill:#00b48d;" />
+    <rect x="16" y="92" width="38" height="4" style="fill:#fcd009;" />
+    <rect x="12" y="96" width="4" height="10" style="fill:#fcd009;" />
+    <rect x="16" y="96" width="2" height="10" />
+    <rect x="18" y="96" width="4" height="2" style="fill:#fff;" />
+    <rect x="22" y="96" width="2" height="10" />
+    <rect x="24" y="96" width="4" height="2" style="fill:#fff;" />
+    <rect x="28" y="96" width="2" height="10" />
+    <rect x="30" y="96" width="4" height="2" style="fill:#fff;" />
+    <rect x="34" y="96" width="2" height="10" />
+    <rect x="36" y="96" width="4" height="2" style="fill:#fff;" />
+    <rect x="40" y="96" width="2" height="10" />
+    <rect x="42" y="96" width="4" height="2" style="fill:#fff;" />
+    <rect x="46" y="96" width="2" height="10" />
+    <rect x="48" y="96" width="4" height="2" style="fill:#fff;" />
+    <rect x="52" y="96" width="2" height="10" />
+    <rect x="54" y="96" width="4" height="10" style="fill:#fcd009;" />
+    <rect x="18" y="98" width="4" height="6" />
+    <rect x="24" y="98" width="4" height="6" />
+    <rect x="30" y="98" width="4" height="6" />
+    <rect x="36" y="98" width="4" height="6" />
+    <rect x="42" y="98" width="4" height="6" />
+    <rect x="48" y="98" width="4" height="6" />
+    <rect x="18" y="104" width="4" height="2" style="fill:#fff;" />
+    <rect x="24" y="104" width="4" height="2" style="fill:#fff;" />
+    <rect x="30" y="104" width="4" height="2" style="fill:#fff;" />
+    <rect x="36" y="104" width="4" height="2" style="fill:#fff;" />
+    <rect x="42" y="104" width="4" height="2" style="fill:#fff;" />
+    <rect x="48" y="104" width="4" height="2" style="fill:#fff;" />
+    <rect x="12" y="106" width="4" height="10" style="fill:#00b48d;" />
+    <rect x="16" y="106" width="38" height="4" style="fill:#fcd009;" />
+    <rect x="54" y="106" width="4" height="10" style="fill:#00b48d;" />
+    <rect x="16" y="110" width="38" height="6" style="fill:#00b48d;" />
+    <rect x="14" y="116" width="4" height="8" />
+    <rect x="18" y="116" width="34" height="8" style="fill:#00b48d;" />
+  </g>
+  <metadata>
+    <rdf:RDF>
+      <cc:Work rdf:about="">
+        <cc:License rdf:resource="http://creativecommons.org/licenses/by-sa/4.0/" />
+        <dc:right>
+          <cc:Agent>
+            <dc:title>CC-BY-SA 4.0 Jugend Hackt</dc:title>
+          </cc:Agent>
+        </dc:right>
+        <dc:title>
+          <cc:Agent>
+            <dc:title>Pixelhack</dc:title>
+          </cc:Agent>
+        </dc:title>
+        <dc:contributor>
+          <cc:Agent>
+            <dc:title>Hanno Sternberg</dc:title>
+          </cc:Agent>
+        </dc:contributor>
+        <dc:creator>
+          <cc:Agent>
+            <dc:title>Jugend Hackt</dc:title>
+          </cc:Agent>
+        </dc:creator>
+        <dc:date>
+          <cc:Agent>
+            <dc:title>2013</dc:title>
+          </cc:Agent>
+        </dc:date>
+      </cc:Work>
+      <cc:License rdf:about="http://creativecommons.org/licenses/by-sa/4.0/">
+        <cc:permits rdf:resource="http://creativecommons.org/ns#DerivativeWorks" />
+        <cc:requires rdf:resource="http://creativecommons.org/ns#ShareAlike" />
+      </cc:License>
+    </rdf:RDF>
+  </metadata>
+</svg>

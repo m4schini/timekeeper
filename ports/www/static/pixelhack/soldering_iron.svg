@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:serif="http://www.serif.com/" width="100%" height="100%" viewBox="0 0 96 64" version="1.1" xml:space="preserve" style="fill-rule:evenodd;clip-rule:evenodd;stroke-linejoin:round;stroke-miterlimit:2;" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns" xmlns:cc="http://creativecommons.org/ns" xmlns:dc="http://purl.org/dc/elements/1.1/">
+  <g id="Solder-Iron" serif:id="Solder Iron">
+    <g>
+      <path d="M52,56l0,-2l2,-0l0,2l-2,-0Zm-2,2l0,-2l2,-0l0,2l-2,-0Zm-2,2l0,-2l2,-0l0,2l-2,-0Zm8,-8l0,-2l2,-0l0,2l-2,-0Zm-8,8l0,2l-44,-0l0,-2l44,-0Zm6,-6l0,-2l2,-0l0,2l-2,-0Z" style="fill:#006661;" />
+      <path d="M58,34l0,16l-2,-0l0,2l-2,-0l0,2l-2,-0l0,2l-2,-0l0,2l-2,-0l0,2l-44,-0l0,-14l2,-0l0,-2l2,-0l0,-2l2,-0l0,-2l2,-0l0,-2l2,-0l0,-2l2,-0l0,-2l42,-0Z" style="fill:#09aa24;" />
+      <g>
+        <path d="M24,54l-2,-0l0,-6l2,-0l0,-2l6,-0l0,2l2,-0l0,6l-2,-0l0,2l-6,-0l0,-2Z" style="fill:#fcd009;" />
+        <rect x="14" y="56" width="2" height="4" style="fill:#fcd009;" />
+        <path d="M50,42l0,10l-18,-0l0,-2l16,-0l0,-10l10,-0l0,2l-8,-0Z" style="fill:#fcd009;" />
+        <path d="M44,44l-36,0l0,-2l34,0l0,-8l2,0l0,10Z" style="fill:#fcd009;" />
+        <path d="M12,54l-2,-0l0,-6l2,-0l0,-2l6,-0l0,2l2,-0l0,6l-2,-0l0,2l-6,-0l0,-2Z" style="fill:#fcd009;" />
+      </g>
+      <path d="M26,52l-2,-0l0,-2l2,-0l0,-2l2,-0l0,2l2,-0l0,2l-2,-0l0,2l-2,-0l0,-2Z" style="fill:#010001;" />
+      <rect x="14" y="60" width="2" height="2" style="fill:#f3971a;" />
+      <path d="M14,52l-2,-0l0,-2l2,-0l0,-2l2,-0l0,2l2,-0l0,2l-2,-0l0,2l-2,-0l0,-2Z" style="fill:#010001;" />
+    </g>
+    <g>
+      <rect x="26" y="48" width="2" height="4" style="fill:#52575b;" />
+      <rect x="14" y="48" width="2" height="4" style="fill:#52575b;" />
+      <path d="M28,40l0,8l-14,-0l0,-10l2,-0l0,-4l2,-0l0,-4l2,-0l0,-2l2,-0l0,2l2,-0l0,4l2,-0l0,6l2,-0Z" style="fill:#10498c;" />
+    </g>
+    <g>
+      <path d="M32,48l0,2l-4,-0l0,-4l2,-0l0,-2l2,-0l0,-2l2,-0l0,-2l2,-0l0,-2l2,-0l0,-2l2,-0l0,-2l2,-0l0,2l2,-0l0,2l-2,-0l0,2l-2,-0l0,2l-2,-0l0,2l-2,-0l0,2l-2,-0l0,2l-2,-0Z" style="fill:#d1d6da;" />
+      <path d="M46,26l2,-0l0,-2l2,-0l0,-2l2,-0l0,-2l2,-0l0,-2l2,-0l0,-2l2,-0l0,-2l2,-0l0,-2l2,-0l0,-2l2,-0l0,-2l2,-0l0,-2l2,-0l0,-2l2,-0l0,2l2,-0l0,2l2,-0l0,2l-2,-0l0,2l-2,-0l0,2l-2,-0l0,2l-2,-0l0,2l-2,-0l0,2l-2,-0l0,2l-2,-0l0,2l-2,-0l0,2l-2,-0l0,2l-2,-0l0,2l-2,-0l0,2l-2,-0l0,2l-2,-0l0,2l-2,-0l0,2l-2,-0l0,-2l-2,-0l0,-2l-2,-0l0,-2l2,-0l0,-2l2,-0l0,-2l2,-0l0,-2Z" style="fill:#010001;" />
+      <path d="M46,26l2,-0l0,-2l2,-0l0,-2l2,-0l0,2l2,-0l0,2l2,-0l0,2l-2,-0l0,2l-2,-0l0,2l-2,-0l0,2l-2,-0l0,2l-2,-0l0,-2l-2,-0l0,-2l-2,-0l0,-4l4,-0l0,-2Z" style="fill:#09b48d;" />
+      <path d="M30,44l0,-6l2,-0l0,6l-2,-0Zm-4,-2l2,-0l0,2l-2,-0l0,-2Zm0,-16l0,-6l2,-0l0,6l-2,-0Zm-2,6l0,-6l2,-0l0,6l-2,-0Zm0,6l-2,-0l0,-6l2,-0l0,6Zm4,6l2,-0l0,2l-2,-0l0,-2Zm6,-22l0,-6l2,-0l0,6l-2,-0Zm-2,6l0,-6l2,-0l0,6l-2,-0Zm-2,6l0,-6l2,-0l0,6l-2,-0Zm0,4l-2,-0l0,-4l2,-0l0,4Zm-6,-0l2,-0l0,4l-2,-0l0,-4Z" style="fill:#fefffe;" />
+    </g>
+  </g>
+  <g id="Brain">
+    <path d="M-62,40l-2,0l0,-20l2,0l0,14l2,0l0,2l-2,0l0,2l2,0l0,2l2,0l0,2l14,0l0,-4l2,0l0,6l2,0l0,2l2,0l0,-2l2,0l0,4l-6,0l0,-2l-2,0l0,-2l-16,0l0,-2l-2,0l0,-2Zm0,-20l0,-2l2,0l0,2l-2,0Zm2,-2l0,-2l2,0l0,2l-2,0Zm2,-2l0,-2l2,0l0,2l-2,0Zm2,-2l0,-2l2,0l0,2l-2,0Zm2,-2l0,-2l2,0l0,2l-2,0Zm2,-2l0,-2l32,0l0,2l-14,0l0,2l-2,0l0,-2l-16,0Zm32,0l4,0l0,2l4,0l0,2l-6,0l0,-2l-2,0l0,-2Zm8,4l2,0l0,2l2,0l0,2l2,0l0,4l-2,0l0,-2l-2,0l0,-2l-20,0l0,-2l18,0l0,-2Zm6,8l2,0l0,2l2,0l0,4l-2,0l0,-2l-2,0l0,-4Zm4,6l2,0l0,16l-2,0l0,2l-2,0l0,2l-8,0l0,2l-2,0l0,-2l-8,0l0,2l-2,0l0,2l-2,0l0,-4l2,0l0,-2l18,0l0,-2l2,0l0,-2l2,0l0,-14Zm-12,22l0,2l-2,0l0,-2l2,0Zm-2,2l0,2l-2,0l0,-2l2,0Zm-2,2l0,2l-2,0l0,-2l2,0Zm-2,2l0,2l-2,0l0,-2l2,0Zm-2,2l0,2l-8,0l0,-4l2,0l0,2l6,0Zm-8,-2l-2,0l0,-4l2,0l0,4Zm-2,-4l-2,0l0,-2l2,0l0,2Zm-2,-2l-2,0l0,-2l2,0l0,2Zm-26,-16l0,-2l2,0l0,2l-2,0Zm2,-2l0,-2l2,0l0,2l-2,0Zm2,-2l0,-2l2,0l0,2l-2,0Zm2,-2l0,-2l2,0l0,2l-2,0Zm2,-2l0,-2l10,0l0,2l-10,0Zm10,12l0,-2l2,0l0,2l-2,0Zm2,-2l0,-2l2,0l0,2l-2,0Zm2,-2l0,-2l2,0l0,2l-2,0Zm2,-2l0,-2l2,0l0,2l-2,0Zm2,-2l0,-2l2,0l0,2l-2,0Zm2,0l2,0l0,2l-2,0l0,-2Zm2,2l2,0l0,2l-2,0l0,-2Zm2,2l12,0l0,2l-12,0l0,-2Zm12,0l0,-2l2,0l0,2l-2,0Zm2,-2l0,-2l2,0l0,2l-2,0Zm2,-2l0,-2l2,0l0,2l-2,0Zm-16,6l0,2l-2,0l0,-2l2,0Zm-2,2l0,2l-2,0l0,-2l2,0Zm4,10l-2,0l0,-2l2,0l0,2Zm-2,-2l-2,0l0,-2l2,0l0,2Zm-2,-28l0,2l-2,0l0,-2l2,0Zm-2,2l0,2l-2,0l0,-2l2,0Zm-2,2l0,2l-2,0l0,-2l2,0Zm-2,-10l0,2l-2,0l0,-2l2,0Zm-2,2l0,2l-2,0l0,-2l2,0Zm-2,2l0,2l-2,0l0,-2l2,0Zm-2,2l0,2l-2,0l0,-2l2,0Z" />
+  </g>
+  <metadata>
+    <rdf:RDF>
+      <cc:Work rdf:about="">
+        <cc:License rdf:resource="http://creativecommons.org/licenses/by-sa/4.0/" />
+        <dc:right>
+          <cc:Agent>
+            <dc:title>CC-BY-SA 4.0 Jugend Hackt</dc:title>
+          </cc:Agent>
+        </dc:right>
+        <dc:title>
+          <cc:Agent>
+            <dc:title>Pixelhack</dc:title>
+          </cc:Agent>
+        </dc:title>
+        <dc:contributor>
+          <cc:Agent>
+            <dc:title>Hanno Sternberg</dc:title>
+          </cc:Agent>
+        </dc:contributor>
+        <dc:creator>
+          <cc:Agent>
+            <dc:title>Jugend Hackt</dc:title>
+          </cc:Agent>
+        </dc:creator>
+        <dc:date>
+          <cc:Agent>
+            <dc:title>2013</dc:title>
+          </cc:Agent>
+        </dc:date>
+      </cc:Work>
+      <cc:License rdf:about="http://creativecommons.org/licenses/by-sa/4.0/">
+        <cc:permits rdf:resource="http://creativecommons.org/ns#DerivativeWorks" />
+        <cc:requires rdf:resource="http://creativecommons.org/ns#ShareAlike" />
+      </cc:License>
+    </rdf:RDF>
+  </metadata>
+</svg>

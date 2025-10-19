@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" viewBox="0 0 64 128" version="1.1" xml:space="preserve" style="fill-rule:evenodd;clip-rule:evenodd;stroke-linejoin:round;stroke-miterlimit:2;" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns" xmlns:cc="http://creativecommons.org/ns" xmlns:dc="http://purl.org/dc/elements/1.1/">
+  <g>
+    <path d="M46,122l0,2l-26,0l0,-2l24,0l0,-2l8,0l0,-2l4,0l0,-2l2,0l0,-2l2,0l0,-4l2,0l0,6l-2,0l0,2l-2,0l0,2l-4,0l0,2l-8,0Z" style="fill:#52575b;" />
+    <path d="M6,114l-2,0l0,-18l2,0l0,-8l2,0l0,-4l2,0l0,-6l2,0l0,-2l2,0l0,-2l2,0l0,-2l2,0l0,-2l2,0l0,-10l2,0l0,-12l-2,0l0,-6l-2,0l0,-8l2,0l0,-2l2,0l0,-2l4,0l0,-2l12,0l0,2l4,0l0,2l2,0l0,2l2,0l0,8l-2,0l0,6l-2,0l0,12l2,0l0,10l2,0l0,2l2,0l0,2l2,0l0,2l2,0l0,2l2,0l0,6l2,0l0,4l2,0l0,8l2,0l0,18l-2,0l0,2l-2,0l0,2l-4,0l0,2l-8,0l0,2l-24,0l0,-2l-8,0l0,-2l-4,0l0,-2l-2,0l0,-2Zm2,-18l0,18l4,0l0,2l8,0l0,2l24,0l0,-2l8,0l0,-2l4,0l0,-18l-2,0l0,-8l-2,0l0,-8l-2,0l0,-2l-2,0l0,-2l-2,0l0,-2l-2,0l0,-2l-2,0l0,-2l-2,0l0,-10l-2,0l0,-12l2,0l0,-6l-2,0l0,2l-12,0l0,-2l-2,0l0,6l2,0l0,12l-2,0l0,10l-2,0l0,2l-2,0l0,2l-2,0l0,2l-2,0l0,2l-2,0l0,2l-2,0l0,8l-2,0l0,8l-2,0Zm14,-62l0,4l4,0l0,2l12,0l0,-2l4,0l0,-4l-4,0l0,-2l-12,0l0,2l-4,0Z" style="fill:#d1d6da;" />
+    <g>
+      <path d="M44,108l8,0l0,2l4,0l0,4l-4,0l0,2l-8,0l0,2l-24,0l0,-2l-8,0l0,-2l-4,0l0,-4l4,0l0,-2l8,0l0,2l-6,0l0,4l36,0l0,-4l-6,0l0,-2Zm0,0l-4,0l0,-2l4,0l0,2Zm-24,0l0,-2l4,0l0,2l-4,0Z" style="fill:#16a6de;" />
+      <rect x="26" y="106" width="8" height="2" style="fill:#8000ff;" />
+      <path d="M20,108l24,0l0,2l6,0l0,4l-36,0l0,-4l6,0l0,-2Z" style="fill:#00b48d;" />
+    </g>
+    <g>
+      <path d="M14,82l0,2l-2,0l0,-4l2,0l0,-2l2,0l0,-2l6,0l0,-2l8,0l0,2l2,0l0,-2l10,0l0,2l6,0l0,2l2,0l0,2l2,0l0,4l-2,0l0,-2l-2,0l0,-2l-6,0l0,-2l-2,0l0,-2l-2,0l0,2l-16,0l0,2l-6,0l0,2l-2,0Zm-6,28l0,-4l4,0l0,-2l8,0l0,-2l24,0l0,2l8,0l0,2l4,0l0,4l-4,0l0,-2l-8,0l0,-2l-6,0l0,-2l-2,0l0,2l-16,0l0,2l-8,0l0,2l-4,0Z" style="fill:#09aa24;" />
+      <path d="M50,86l2,0l0,2l2,0l0,8l2,0l0,10l-4,0l0,-2l-8,0l0,-2l-24,0l0,2l-4,0l0,-2l-2,0l0,2l-2,0l0,2l-4,0l0,-10l2,0l0,-8l2,0l0,-2l2,0l0,-4l2,0l0,-2l6,0l0,-2l20,0l0,2l6,0l0,2l2,0l0,4Z" style="fill:#00b48d;" />
+      <path d="M14,86l-2,0l0,-2l2,0l0,2Zm36,0l0,-2l2,0l0,2l-2,0Zm-6,2l0,-2l6,0l0,2l-6,0Zm-18,2l12,0l0,2l-12,0l0,-2Zm12,0l0,-2l6,0l0,2l-6,0Zm-24,-4l6,0l0,2l-6,0l0,-2Zm6,2l6,0l0,2l-6,0l0,-2Z" style="fill:#16a6de;" />
+    </g>
+    <g>
+      <path d="M30,8l0,2l-2,0l0,-2l2,0Zm6,0l0,2l-2,0l0,-2l2,0Zm-12,6l0,2l-2,0l0,-2l2,0Zm24,0l0,2l-2,0l0,-2l2,0Zm-20,8l0,2l-2,0l0,-2l2,0Zm-12,8l0,2l-2,0l0,-2l2,0Zm18,22l0,2l-2,0l0,-2l2,0Z" style="fill:#10498c;" />
+      <path d="M30,10l0,2l-2,0l0,-2l2,0Zm18,6l0,2l-2,0l0,-2l2,0Zm-2,6l0,2l-2,0l0,-2l2,0Zm-18,2l0,2l-2,0l0,-2l2,0Zm-4,2l0,2l-2,0l0,-2l2,0Zm-6,6l0,2l-2,0l0,-2l2,0Zm16,2l0,2l-2,0l0,-2l2,0Zm-4,2l0,2l-2,0l0,-2l2,0Zm8,0l0,2l-2,0l0,-2l2,0Zm0,10l0,2l-2,0l0,-2l2,0Zm-8,2l0,2l-2,0l0,-2l2,0Zm4,6l0,2l-2,0l0,-2l2,0Z" style="fill:#16a6de;" />
+    </g>
+    <g>
+      <path d="M32,64l2,0l0,2l-2,0l0,-2Zm2,2l2,0l0,2l-2,0l0,-2Zm0,2l0,2l-2,0l0,-2l2,0Zm-2,0l-2,0l0,-2l2,0l0,2Zm0,-4l-2,0l0,-2l2,0l0,2Zm4,20l-2,0l0,-2l2,0l0,2Zm0,-2l0,-2l2,0l0,2l-2,0Zm2,0l2,0l0,2l-2,0l0,-2Zm0,2l0,2l-2,0l0,-2l2,0Zm10,12l-2,0l0,-2l2,0l0,2Zm0,-2l0,-2l2,0l0,2l-2,0Zm2,0l2,0l0,2l-2,0l0,-2Zm0,2l0,2l-2,0l0,-2l2,0Zm-34,2l-2,0l0,-2l2,0l0,2Zm0,-2l0,-2l2,0l0,2l-2,0Zm2,0l2,0l0,2l-2,0l0,-2Zm0,2l0,2l-2,0l0,-2l2,0Zm18,10l-2,0l0,-2l2,0l0,2Zm0,-2l0,-2l2,0l0,2l-2,0Zm2,0l2,0l0,2l-2,0l0,-2Zm0,2l0,2l-2,0l0,-2l2,0Zm-14,2l-2,0l0,-2l2,0l0,2Zm0,-2l0,-2l2,0l0,2l-2,0Zm2,0l2,0l0,2l-2,0l0,-2Zm0,2l0,2l-2,0l0,-2l2,0Zm8,-84l0,2l-2,0l0,-2l2,0Zm8,2l0,2l-2,0l0,-2l2,0Zm8,2l0,2l-2,0l0,-2l2,0Zm-22,40l0,2l-2,0l0,-2l2,0Zm10,0l0,2l-2,0l0,-2l2,0Zm-16,10l0,2l-2,0l0,-2l2,0Zm-2,4l0,2l-2,0l0,-2l2,0Zm10,0l0,2l-2,0l0,-2l2,0Zm10,8l0,2l-2,0l0,-2l2,0Zm-12,6l0,2l-2,0l0,-2l2,0Zm10,0l0,2l-2,0l0,-2l2,0Zm-22,4l0,2l-2,0l0,-2l2,0Zm20,10l0,2l-2,0l0,-2l2,0Zm10,0l0,2l-2,0l0,-2l2,0Z" style="fill:#ff3b8d;" />
+      <path d="M38,16l0,2l-2,0l0,-2l2,0Zm-6,2l0,2l-2,0l0,-2l2,0Zm-14,2l0,2l-2,0l0,-2l2,0Zm6,0l0,2l-2,0l0,-2l2,0Zm30,2l0,2l-2,0l0,-2l2,0Zm-38,2l0,2l-2,0l0,-2l2,0Zm18,0l0,2l-2,0l0,-2l2,0Zm8,2l0,2l-2,0l0,-2l2,0Zm8,2l0,2l-2,0l0,-2l2,0Zm4,0l0,2l-2,0l0,-2l2,0Zm-28,8l0,2l-2,0l0,-2l2,0Zm6,2l0,2l-2,0l0,-2l2,0Zm2,10l0,2l-2,0l0,-2l2,0Zm-2,12l0,2l-2,0l0,-2l2,0Zm2,6l0,2l-2,0l0,-2l2,0Zm-6,2l0,2l-2,0l0,-2l2,0Zm4,6l0,2l-2,0l0,-2l2,0Zm8,2l0,2l-2,0l0,-2l2,0Zm-12,4l0,2l-2,0l0,-2l2,0Zm20,2l0,2l-2,0l0,-2l2,0Zm2,12l0,2l-2,0l0,-2l2,0Zm-18,2l0,2l-2,0l0,-2l2,0Zm6,10l0,2l-2,0l0,-2l2,0Z" style="fill:#ca006a;" />
+    </g>
+  </g>
+  <g>
+    <g>
+      <path d="M66,126l0,2l-2,0l0,-64l2,0l0,2l2,0l0,2l2,0l0,56l-2,0l0,2l-2,0Zm58,-4l-2,0l0,-52l2,0l0,-2l2,0l0,-2l2,0l0,60l-2,0l0,-2l-2,0l0,-2Z" style="fill:#d3883e;" />
+    </g>
+  </g>
+  <metadata>
+    <rdf:RDF>
+      <cc:Work rdf:about="">
+        <cc:License rdf:resource="http://creativecommons.org/licenses/by-sa/4.0/" />
+        <dc:right>
+          <cc:Agent>
+            <dc:title>CC-BY-SA 4.0 Jugend Hackt</dc:title>
+          </cc:Agent>
+        </dc:right>
+        <dc:title>
+          <cc:Agent>
+            <dc:title>Pixelhack</dc:title>
+          </cc:Agent>
+        </dc:title>
+        <dc:contributor>
+          <cc:Agent>
+            <dc:title>Hanno Sternberg</dc:title>
+          </cc:Agent>
+        </dc:contributor>
+        <dc:creator>
+          <cc:Agent>
+            <dc:title>Jugend Hackt</dc:title>
+          </cc:Agent>
+        </dc:creator>
+        <dc:date>
+          <cc:Agent>
+            <dc:title>2013</dc:title>
+          </cc:Agent>
+        </dc:date>
+      </cc:Work>
+      <cc:License rdf:about="http://creativecommons.org/licenses/by-sa/4.0/">
+        <cc:permits rdf:resource="http://creativecommons.org/ns#DerivativeWorks" />
+        <cc:requires rdf:resource="http://creativecommons.org/ns#ShareAlike" />
+      </cc:License>
+    </rdf:RDF>
+  </metadata>
+</svg>

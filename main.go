@@ -28,6 +28,7 @@ func main() {
 	// init app
 	db := database.New(dbAdapter)
 	authy := auth.NewAuthenticator(db)
+	pixelHack := www.PixelHackItems()
 
 	// create admin user
 	adminPassword := config.AdminPassword()
@@ -65,8 +66,14 @@ func main() {
 		&p.LoginPageRoute{Auth: authy},
 		&p.LogoutRoute{},
 
+		&p.PixelHackPageRoute{},
+		&p.AttributionsPageRoute{},
+
 		www.StaticFileRoute{},
+		www.FontFileRoute{},
+		www.PixelhackFileRoute{},
 	}
+	c.SetAvailablePixelHackIcons(pixelHack)
 	components := []www.Route{
 		&c.CreateEventRoute{DB: db},
 		&c.UpdateEventRoute{DB: db},

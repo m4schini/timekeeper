@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" viewBox="0 0 64 64" version="1.1" xml:space="preserve" style="fill-rule:evenodd;clip-rule:evenodd;stroke-linejoin:round;stroke-miterlimit:2;" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns" xmlns:cc="http://creativecommons.org/ns" xmlns:dc="http://purl.org/dc/elements/1.1/">
+  <g id="CLI">
+    <path d="M6,16l0,4l-6,0l0,-4l6,0Zm46,0l0,4l-24,0l0,-4l24,0Z" style="fill:#550080;" />
+    <rect x="6" y="16" width="22" height="4" style="fill:#8000ff;" />
+    <rect x="52" y="16" width="4" height="4" style="fill:#00b48d;" />
+    <rect x="56" y="16" width="4" height="4" style="fill:#16a6de;" />
+    <rect x="60" y="16" width="4" height="4" style="fill:#e6414a;" />
+    <path d="M0,54l0,-34l64,0l0,34l-64,0Zm62,-32l-60,0l0,30l60,0l0,-30Z" style="fill:#52575b;" />
+    <path d="M2,52l0,-30l60,0l0,30l-60,0Zm4,-28l-2,0l0,2l2,0l0,2l2,0l0,2l-2,0l0,2l-2,0l0,2l2,0l0,-2l2,0l0,-2l2,0l0,-2l-2,0l0,-2l-2,0l0,-2Zm14,8l-8,0l0,2l8,0l0,-2Z" />
+    <path d="M6,32l0,2l-2,0l0,-2l2,0Zm0,-6l-2,0l0,-2l2,0l0,2Zm2,2l2,0l0,2l-2,0l0,-2Zm0,2l0,2l-2,0l0,-2l2,0Zm-2,-4l2,0l0,2l-2,0l0,-2Zm14,6l0,2l-8,0l0,-2l8,0Z" style="fill:#fff;" />
+  </g>
+  <metadata>
+    <rdf:RDF>
+      <cc:Work rdf:about="">
+        <cc:License rdf:resource="http://creativecommons.org/licenses/by-sa/4.0/" />
+        <dc:right>
+          <cc:Agent>
+            <dc:title>CC-BY-SA 4.0 Jugend Hackt</dc:title>
+          </cc:Agent>
+        </dc:right>
+        <dc:title>
+          <cc:Agent>
+            <dc:title>Pixelhack</dc:title>
+          </cc:Agent>
+        </dc:title>
+        <dc:contributor>
+          <cc:Agent>
+            <dc:title>Hanno Sternberg</dc:title>
+          </cc:Agent>
+        </dc:contributor>
+        <dc:creator>
+          <cc:Agent>
+            <dc:title>Jugend Hackt</dc:title>
+          </cc:Agent>
+        </dc:creator>
+        <dc:date>
+          <cc:Agent>
+            <dc:title>2013</dc:title>
+          </cc:Agent>
+        </dc:date>
+      </cc:Work>
+      <cc:License rdf:about="http://creativecommons.org/licenses/by-sa/4.0/">
+        <cc:permits rdf:resource="http://creativecommons.org/ns#DerivativeWorks" />
+        <cc:requires rdf:resource="http://creativecommons.org/ns#ShareAlike" />
+      </cc:License>
+    </rdf:RDF>
+  </metadata>
+</svg>
