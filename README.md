@@ -1,6 +1,6 @@
 # timekeeper
 
-<img src="https://github.com/kubernetes/kubernetes/raw/master/logo/logo.png" width="100">
+<img src="ports/www/static/timekeeper.png" width="161">
 
 ----
 
@@ -14,32 +14,8 @@ It can also export schedules as Calendar (ical), [VOC Schedule](https://github.c
 
 ## To start using timekeeper
 
-To use Kubernetes code as a library in other applications, see the [list of published components](https://git.k8s.io/kubernetes/staging/README.md).
-Use of the `k8s.io/kubernetes` module or `k8s.io/kubernetes/...` packages as libraries is not supported.
+### Helm
 
-## To start developing K8s
+### Podman
 
-The [community repository] hosts all information about
-building Kubernetes from source, how to contribute code
-and documentation, who to contact about what, etc.
-
-If you want to build Kubernetes right away there are two options:
-
-##### You have a working [Go environment].
-
-```
-git clone https://github.com/kubernetes/kubernetes
-cd kubernetes
-make
-```
-
-##### You have a working [Docker environment].
-
-```
-git clone https://github.com/kubernetes/kubernetes
-cd kubernetes
-make quick-release
-```
-
-For the full story, head over to the [developer's documentation].
-
+### Oldschool
