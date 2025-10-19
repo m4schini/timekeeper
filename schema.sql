@@ -3,7 +3,7 @@ CREATE SCHEMA timekeeper;
 
 CREATE TABLE timekeeper.users (
    id SERIAL PRIMARY KEY ,
-   login_name VARCHAR NOT NULL ,
+   login_name VARCHAR NOT NULL UNIQUE ,
    password VARCHAR NOT NULL
 );
 
