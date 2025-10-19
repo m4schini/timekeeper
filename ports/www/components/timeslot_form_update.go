@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"github.com/go-chi/chi/v5"
 	"go.uber.org/zap"
-	. "maragu.dev/gomponents"
 	"net/http"
 	"strconv"
 	"time"

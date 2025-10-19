@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/golang-jwt/jwt/v5"
 	"go.uber.org/zap"
+	"strconv"
 	"sync"
 	"time"
 	"timekeeper/app/database"
@@ -18,7 +19,7 @@ var (
 
 type Authenticator interface {
 	AuthenticateUser(username, password string) (jwt string, err error)
-	AuthenticateToken(jwt string) (err error)
+	AuthenticateToken(jwt string) (userId int, role model.Role, err error)
 
 	CreateUser(username, password string) (id int, err error)
 }
@@ -70,8 +71,10 @@ func (a *authy) AuthenticateUser(username, password string) (token string, err e
 
 	t := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.RegisteredClaims{
 		Issuer:    "timekeeper",
+		Subject:   fmt.Sprintf("%v", user.ID),
 		Audience:  nil,
 		ExpiresAt: jwt.NewNumericDate(time.Now().Add(72 * time.Hour)),
+		NotBefore: nil,
 		IssuedAt:  jwt.NewNumericDate(time.Now()),
 		ID:        fmt.Sprintf("%v", time.Now().Unix()),
 	})
@@ -79,7 +82,7 @@ func (a *authy) AuthenticateUser(username, password string) (token string, err e
 	return t.SignedString(config.HmacSecret())
 }
 
-func (a *authy) AuthenticateToken(token string) (err error) {
+func (a *authy) AuthenticateToken(token string) (userId int, role model.Role, err error) {
 	log := zap.L().Named("auth")
 	parsedToken, err := jwt.Parse(token, func(token *jwt.Token) (any, error) {
 		// hmacSampleSecret is a []byte containing your secret, e.g. []byte("my_secret_key")
@@ -87,20 +90,34 @@ func (a *authy) AuthenticateToken(token string) (err error) {
 	}, jwt.WithValidMethods([]string{jwt.SigningMethodHS256.Alg()}))
 	if err != nil {
 		log.Error("failed to parse jwt", zap.Error(err))
-		return err
+		return -1, model.RoleParticipant, err
 	}
 
 	expiration, err := parsedToken.Claims.GetExpirationTime()
 	if err != nil {
 		log.Error("failed to get expiration", zap.Error(err))
-		return err
+		return -1, model.RoleParticipant, err
 	}
 
 	if expiration.Before(time.Now()) {
 		err := fmt.Errorf("expired")
 		log.Error("token is expired", zap.Error(err))
-		return err
+		return -1, model.RoleParticipant, err
 	}
 
-	return nil
+	userIdStr, err := parsedToken.Claims.GetSubject()
+	if err != nil {
+		err := fmt.Errorf("invalid token")
+		log.Error("token misses user", zap.Error(err))
+		return -1, model.RoleParticipant, err
+	}
+
+	_userId, err := strconv.ParseInt(userIdStr, 10, 64)
+	if err != nil {
+		err := fmt.Errorf("invalid userId")
+		log.Error("cannot parse subjet", zap.Error(err), zap.String("userId", userIdStr))
+		return -1, model.RoleParticipant, err
+	}
+
+	return int(_userId), model.RoleOrganizer, nil
 }

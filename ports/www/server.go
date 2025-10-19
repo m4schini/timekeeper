@@ -15,8 +15,8 @@ func Serve(listener net.Listener, authenticator auth.Authenticator, pages []Rout
 	r := chi.NewRouter()
 	r.Use(
 		http.NewCrossOriginProtection().Handler,
-		middleware.Log,
 		middleware.UseAuth(authenticator),
+		middleware.Log,
 	)
 	for _, route := range pages {
 		HandleRoute(r, route)

@@ -23,6 +23,11 @@ func HTML(log *zap.Logger, w http.ResponseWriter, r *http.Request, node gomponen
 	}
 }
 
+func Error(log *zap.Logger, w http.ResponseWriter, code int, message string, err error) {
+	log.Error(message, zap.Error(err), zap.Int("status", code))
+	http.Error(w, message, code)
+}
+
 func SetCache(w http.ResponseWriter, maxAge time.Duration, revalidate *time.Duration) {
 	if revalidate == nil {
 		revalidate = &maxAge
@@ -30,9 +35,4 @@ func SetCache(w http.ResponseWriter, maxAge time.Duration, revalidate *time.Dura
 
 	w.Header().Set("Cache-Control", fmt.Sprintf("public, max-age=%v, stale-while-revalidate=%v, immutable", int(maxAge.Seconds()), int(revalidate.Seconds())))
 	w.Header().Set("Expires", time.Now().Add(maxAge).Format(http.TimeFormat))
-}
-
-func Error(log *zap.Logger, w http.ResponseWriter, code int, message string, err error) {
-	log.Error(message, zap.Error(err), zap.Int("status", code))
-	http.Error(w, message, code)
 }
