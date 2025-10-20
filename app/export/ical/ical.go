@@ -40,7 +40,7 @@ func ExportEventCalendar(events []model.EventModel) (string, error) {
 		e.SetSummary(event.Name)
 	}
 
-	log.Info("exported events calendar")
+	log.Debug("exported events calendar")
 	return cal.Serialize(ics.WithNewLineWindows), nil
 }
 
@@ -74,7 +74,7 @@ func ExportCalendarSchedule(event model.EventModel, timeslots []model.TimeslotMo
 		event.SetDescription(strings.ReplaceAll(timeslot.Note, string(ics.WithNewLineWindows), string(ics.WithNewLineUnix)))
 	}
 
-	log.Info("exported schedule as calendar (ical)")
+	log.Debug("exported schedule as calendar (ical)")
 	calData := cal.Serialize(ics.WithNewLineWindows)
 	return calData, nil
 }

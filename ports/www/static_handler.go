@@ -111,6 +111,7 @@ func (s PixelhackFileRoute) Handler() http.Handler {
 			return
 		}
 
+		writer.Header().Set("Content-Type", "image/svg+xml")
 		revalidate := 365 * 24 * time.Hour
 		render.SetCache(writer, 24*time.Hour, &revalidate)
 		writer.Write(fileContent)
