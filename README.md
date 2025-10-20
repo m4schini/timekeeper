@@ -10,7 +10,6 @@ It is created and optimized for [Jugend hackt](https://jugendhackt.org/) events.
 It provides basic mechanisms for the creation and management of time schedules, locations and rooms for events.
 It can also export schedules as Calendar (ical), [VOC Schedule](https://github.com/voc/schedule/blob/master/validator/json/schema.json) (Info Beamer) and Markdown tables.
 
-----
 <div>
 <img src="ports/www/static/pixelhack/flag_pride.svg" width="69">
 <img src="ports/www/static/pixelhack/resistor_pride.svg" width="45">
@@ -27,7 +26,6 @@ It can also export schedules as Calendar (ical), [VOC Schedule](https://github.c
 <img src="ports/www/static/pixelhack/flag_pride.svg" width="69">
 </div>
 
-----
 
 # Get Started
 
@@ -64,12 +62,12 @@ helm install timekeeper ./helm
 | TIMEKEEPER_ADMIN_PASSWORD    |          |               |                                                                         |
 
 # Attributions
-## Bundled font: Atkinson Hyperlegible Next
+## Bundled pixelart: PixelHack
 CC-BY-SA 4.0 Jugend Hackt (Hanno Sternberg)
 
 [License](http://creativecommons.org/licenses/by-sa/4.0/)
 
-## Bundled pixelart: PixelHack
+## Bundled font: Atkinson Hyperlegible Next
 Copyright 2020, Braille Institute of America, Inc. (https://www.brailleinstitute.org/), with Reserved Font Names: “ATKINSON” and “HYPERLEGIBLE”.
 This Font Software is licensed under the SIL Open Font License, Version 1.1. This license is copied below, and is also available with a FAQ at: https://openfontlicense.org
 
