@@ -7,11 +7,13 @@ on:
     paths-ignore:
       - helm
       - README.md
+      - .github/ISSUE_TEMPLATE
   pull_request:
     branches: [ "main" ]
     paths-ignore:
       - helm
       - README.md
+      - .github/ISSUE_TEMPLATE
 
 
 env:

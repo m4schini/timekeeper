@@ -15,7 +15,7 @@ import (
 )
 
 func CompactDayPage(event model.EventModel, data []model.TimeslotModel) Node {
-	return Shell(event.Name,
+	return ShellWithHead(event.Name, nil, []Node{},
 		Main(
 			components.CompactDay(data),
 			components.ScriptScrollSeperatorIntoView(),

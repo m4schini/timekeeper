@@ -66,7 +66,7 @@ func (l *LoginRoute) Handler() http.Handler {
 	return http.HandlerFunc(func(writer http.ResponseWriter, request *http.Request) {
 		err := rateLimiter.Wait(request.Context())
 		if err != nil {
-			log.Debug("login was cancelled while waiting on rate limiter")
+			log.Info("login was cancelled while waiting on rate limiter")
 			return
 		}
 		err = request.ParseForm()

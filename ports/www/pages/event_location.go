@@ -37,6 +37,7 @@ func LocationPage(event model.EventModel, location model.EventLocationModel, loc
 
 	//osmUrl := fmt.Sprintf("https://www.openstreetmap.org/export/embed.html?bbox=%v%2C52.51540800941198%2C13.480079770088198%2C52.51854508785383&amp;layer=mapnik&amp;marker=52.51697657663071%2C13.477188348770142")
 	return ShellWithHead(fmt.Sprintf("%v - %v", location.Name, event.Name),
+		PageFooter(),
 		[]Node{
 			Link(Rel("stylesheet"), Href("https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"), Integrity("sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="), CrossOrigin("")),
 		},
