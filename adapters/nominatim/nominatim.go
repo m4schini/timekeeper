@@ -74,7 +74,7 @@ func (n *Client) get(ctx context.Context, url string) (resp *http.Response, err 
 	if err != nil {
 		return nil, err
 	}
-	n.log.Debug("sending reqeust to osm api", zap.String("url", r.URL.String()))
+	n.log.Info("sending request to nominatim api", zap.String("url", r.URL.String()))
 	return n.client.Do(r)
 }
 

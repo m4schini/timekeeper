@@ -69,16 +69,18 @@ func (a *authy) AuthenticateUser(username, password string) (token string, err e
 		return "", ErrInvalidPassword
 	}
 
+	expiresAt := time.Now().Add(72 * time.Hour)
+	jwtId := time.Now().Unix()
 	t := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.RegisteredClaims{
 		Issuer:    "timekeeper",
 		Subject:   fmt.Sprintf("%v", user.ID),
 		Audience:  nil,
-		ExpiresAt: jwt.NewNumericDate(time.Now().Add(72 * time.Hour)),
+		ExpiresAt: jwt.NewNumericDate(expiresAt),
 		NotBefore: nil,
 		IssuedAt:  jwt.NewNumericDate(time.Now()),
-		ID:        fmt.Sprintf("%v", time.Now().Unix()),
+		ID:        fmt.Sprintf("%v", jwtId),
 	})
-	log.Info("user authenticated. created jwt")
+	log.Info("user authenticated - jwt created", zap.Int("user", user.ID), zap.String("username", user.LoginName), zap.Time("expires_at", expiresAt), zap.Int64("jwt_id", jwtId))
 	return t.SignedString(config.HmacSecret())
 }
 

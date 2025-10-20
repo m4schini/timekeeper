@@ -17,7 +17,7 @@ func HandleRoute(router chi.Router, route Route) {
 	router.Method(route.Method(), route.Pattern(), middleware.UseGzip(route.Handler()))
 
 	zap.L().Named("ports").Named("www").
-		Debug("added route",
+		Info("added route",
 			zap.String("method", route.Method()),
 			zap.String("route", route.Pattern()),
 		)

@@ -29,10 +29,48 @@ It can also export schedules as Calendar (ical), [VOC Schedule](https://github.c
 
 ----
 
-## To start using timekeeper
+# Get Started
 
-### Helm
+## Prerequisites
+- Postgresql
 
-### Podman
+## Container
+```shell
+podman run ghcr.io/m4schini/timekeeper:latest \
+  -p 8080:80 \
+  --env TIMEKEEPER_BASE_URL= \
+  --env DATABASE_CONNECTIONSTRING= \
+  --env JWT_SECRET= 
 
-### Oldschool
+```
+
+## Helm
+```shell
+helm install timekeeper ./helm
+```
+
+## Oldschool
+
+# Config
+
+| Environment Variable         | Required | Default       | Description                                                             |
+|------------------------------|----------|---------------|-------------------------------------------------------------------------|
+| DATABASE_CONNECTIONSTRING    | REQUIRED |               |                                                                         |
+| JWT_SECRET                   | REQUIRED |               |                                                                         |
+| TIMEKEEPER_TIMEZONE          |          | Europe/Berlin |                                                                         |
+| TIMEKEEPER_TELEMETRY_ENABLED |          | false         | Enables prometheus metrics endpoint at /metrics and debug level logging |
+| PORT                         |          | 80            |                                                                         |
+| TIMEKEEPER_BASE_URL          |          |               |                                                                         |
+| TIMEKEEPER_ADMIN_PASSWORD    |          |               |                                                                         |
+
+# Attributions
+## Bundled font: Atkinson Hyperlegible Next
+CC-BY-SA 4.0 Jugend Hackt (Hanno Sternberg)
+
+[License](http://creativecommons.org/licenses/by-sa/4.0/)
+
+## Bundled pixelart: PixelHack
+Copyright 2020, Braille Institute of America, Inc. (https://www.brailleinstitute.org/), with Reserved Font Names: “ATKINSON” and “HYPERLEGIBLE”.
+This Font Software is licensed under the SIL Open Font License, Version 1.1. This license is copied below, and is also available with a FAQ at: https://openfontlicense.org
+
+[License](https://github.com/m4schini/timekeeper/blob/8a312ed579c1be3845f79f92294fee7c61a771cc/ports/www/static/font/Atkinson-Hyperlegible-SIL-OPEN-FONT-LICENSE-Version%201.1-v2%20ACC.pdf)

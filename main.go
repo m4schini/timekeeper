@@ -2,6 +2,7 @@ package main
 
 import (
 	"go.uber.org/zap"
+	"go.uber.org/zap/zapcore"
 	"golang.org/x/time/rate"
 	"net"
 	"timekeeper/adapters"
@@ -15,7 +16,7 @@ import (
 )
 
 func main() {
-	logger, _ := zap.NewDevelopment()
+	logger := NewLogger()
 	zap.ReplaceGlobals(logger)
 
 	// init adapters
@@ -107,4 +108,22 @@ func main() {
 	if err != nil {
 		logger.Warn("failed to serve www", zap.Error(err))
 	}
+}
+
+func NewLogger() *zap.Logger {
+	if config.TelemetryEnabled() {
+		logger, _ := zap.NewDevelopment()
+		return logger
+	}
+
+	cfg := zap.NewDevelopmentConfig()
+	cfg.DisableStacktrace = true
+	cfg.Development = false
+	cfg.Level = zap.NewAtomicLevelAt(zapcore.InfoLevel)
+	logger, err := cfg.Build()
+	if err != nil {
+		logger, _ = zap.NewDevelopment()
+	}
+
+	return logger
 }

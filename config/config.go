@@ -28,7 +28,7 @@ func HmacSecret() []byte {
 }
 
 func AdminPassword() string {
-	return getEnvOr("ADMIN_PASSWORD", "")
+	return getEnvOr("TIMEKEEPER_ADMIN_PASSWORD", "")
 }
 
 func BaseUrl() string {

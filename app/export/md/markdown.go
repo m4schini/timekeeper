@@ -67,6 +67,6 @@ func ExportMarkdownTimetable(timeslots []model.TimeslotModel) (string, error) {
 		return "", err
 	}
 
-	log.Info("exported schedule as markdown tables", zap.Int("bytes", len(markdown)))
+	log.Debug("exported schedule as markdown tables", zap.Int("bytes", len(markdown)))
 	return markdown, nil
 }

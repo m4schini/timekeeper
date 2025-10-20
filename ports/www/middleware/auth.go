@@ -28,7 +28,7 @@ var userKey = userCtxKey("user")
 func authenticateCookie(authenticator auth.Authenticator, log *zap.Logger, request *http.Request) *http.Request {
 	cookie, err := request.Cookie("SESSION")
 	if err != nil {
-		log.Debug("failed to get session cookie", zap.Error(err))
+		//log.Debug("failed to get session cookie", zap.Error(err))
 		return request
 	}
 
