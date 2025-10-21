@@ -3,8 +3,11 @@ package pages
 import (
 	"fmt"
 	"github.com/go-chi/chi/v5"
+	"go.uber.org/zap"
 	"net/http"
 	"strconv"
+	"time"
+	"timekeeper/app/cache"
 	"timekeeper/app/database"
 	"timekeeper/app/database/model"
 	export "timekeeper/app/export/ical"
@@ -27,6 +30,9 @@ func (v *EventExportIcalScheduleRoute) Pattern() string {
 func (v *EventExportIcalScheduleRoute) Handler() http.Handler {
 	log := components.Logger(v)
 	queries := v.DB.Queries
+
+	log.Debug("starting cache")
+	calcache := cache.NewInMemory()
 	return http.HandlerFunc(func(writer http.ResponseWriter, request *http.Request) {
 		eventParam := chi.URLParam(request, "event")
 		eventId, err := strconv.ParseInt(eventParam, 10, 64)
@@ -35,6 +41,17 @@ func (v *EventExportIcalScheduleRoute) Handler() http.Handler {
 			return
 		}
 		roles, _ := ParseRolesQuery(request.URL.Query(), false)
+
+		cacheKey := cacheKey(eventId, roles)
+		cachedCal, expiresAt, valid := calcache.Get(cacheKey)
+		if valid {
+			log.Debug("using cached calendar export", zap.Int64("event", eventId), zap.Any("roles", roles), zap.Duration("ttl", expiresAt.Sub(time.Now())))
+			writer.Header().Set("Content-Type", "text/calendar; charset=utf-8")
+			writer.Header().Set("Content-Disposition", fmt.Sprintf("inline; filename=timekeeper_event_%v.ics", eventId))
+			writer.Write([]byte(cachedCal))
+			return
+		}
+		log.Info("calendar export not cached, generating new calendar", zap.Int64("event", eventId), zap.Any("roles", roles))
 
 		event, err := queries.GetEvent(int(eventId))
 		if err != nil {
@@ -55,8 +72,32 @@ func (v *EventExportIcalScheduleRoute) Handler() http.Handler {
 			return
 		}
 
+		calcache.Set(cacheKey, cal, 5*time.Minute)
 		writer.Header().Set("Content-Type", "text/calendar; charset=utf-8")
 		writer.Header().Set("Content-Disposition", fmt.Sprintf("inline; filename=timekeeper_event_%v.ics", event.ID))
 		writer.Write([]byte(cal))
 	})
+}
+
+func cacheKey(eventId int64, roles []model.Role) string {
+	var (
+		orga        bool
+		mentor      bool
+		participant bool
+	)
+	for _, role := range roles {
+		switch role {
+		case model.RoleOrganizer:
+			orga = true
+			break
+		case model.RoleMentor:
+			mentor = true
+			break
+		case model.RoleParticipant:
+			participant = true
+			break
+		}
+	}
+
+	return fmt.Sprintf("%v:%v:%v:%v", eventId, orga, mentor, participant)
 }
