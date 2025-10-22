@@ -51,7 +51,6 @@ func (v *EventExportIcalScheduleRoute) Handler() http.Handler {
 			writer.Write([]byte(cachedCal))
 			return
 		}
-		log.Info("calendar export not cached, generating new calendar", zap.Int64("event", eventId), zap.Any("roles", roles))
 
 		event, err := queries.GetEvent(int(eventId))
 		if err != nil {
