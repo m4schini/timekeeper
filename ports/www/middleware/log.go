@@ -6,7 +6,6 @@ import (
 	"github.com/prometheus/client_golang/prometheus/promauto"
 	"go.uber.org/zap"
 	"net/http"
-	"strings"
 	"time"
 	"timekeeper/config"
 )
@@ -50,10 +49,12 @@ func Log(next http.Handler) http.Handler {
 			requestDuration.Observe(float64(d.Milliseconds()))
 		}
 
-		if strings.Contains(request.URL.Path, "/export/") {
-			log.Debug("handled www request", zap.Duration("duration", d))
-		} else {
+		if d > 100*time.Millisecond {
+			log.Warn("handled www request", zap.Duration("duration", d))
+		} else if request.Method != http.MethodGet {
 			log.Info("handled www request", zap.Duration("duration", d))
+		} else {
+			log.Debug("handled www request", zap.Duration("duration", d))
 		}
 	})
 }
