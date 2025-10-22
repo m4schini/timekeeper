@@ -26,6 +26,8 @@ spec:
           ports:
             - containerPort: {{ .Values.service.http.port }}
               name: http
+            - containerPort: 9000
+              name: metrics
           env:
             - name: PORT
               value: "{{ .Values.service.http.port }}"

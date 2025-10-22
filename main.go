@@ -1,10 +1,13 @@
 package main
 
 import (
+	"github.com/go-chi/chi/v5"
+	"github.com/prometheus/client_golang/prometheus/promhttp"
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
 	"golang.org/x/time/rate"
 	"net"
+	"net/http"
 	"timekeeper/adapters"
 	"timekeeper/adapters/nominatim"
 	"timekeeper/app/auth"
@@ -103,6 +106,20 @@ func main() {
 		logger.Fatal("failed to listen", zap.Error(err))
 	}
 
+	if config.TelemetryEnabled() {
+		zap.L().Named("telemetry").Info("telemetry is enabled")
+		go func() {
+			r := chi.NewRouter()
+			r.Handle("/metrics", promhttp.Handler())
+			err := http.ListenAndServe(":9000", r)
+			if err != nil {
+				logger.Warn("failed to serve metrics")
+			}
+		}()
+	} else {
+		zap.L().Named("telemetry").Info("telemetry is disabled")
+	}
+
 	logger.Info("serving timekeeper :" + config.Port())
 	err = www.Serve(l, authy, pages, components)
 	if err != nil {
@@ -111,10 +128,10 @@ func main() {
 }
 
 func NewLogger() *zap.Logger {
-	if config.TelemetryEnabled() {
-		logger, _ := zap.NewDevelopment()
-		return logger
-	}
+	//if config.TelemetryEnabled() {
+	//	logger, _ := zap.NewDevelopment()
+	//	return logger
+	//}
 
 	cfg := zap.NewDevelopmentConfig()
 	cfg.DisableStacktrace = true
