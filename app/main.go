@@ -18,9 +18,13 @@ import (
 	p "timekeeper/ports/www/pages"
 )
 
+var version = "dev"
+
 func main() {
 	logger := NewLogger()
 	zap.ReplaceGlobals(logger)
+
+	logger.Info("starting timekeeper", zap.String("version", version))
 
 	// init adapters
 	nominatimClient := nominatim.New()
