@@ -4,16 +4,12 @@ on:
   workflow_dispatch:
   push:
     branches: [ "main" ]
-    paths-ignore:
-      - helm
-      - README.md
-      - .github/ISSUE_TEMPLATE
+    paths:
+      - app
   pull_request:
     branches: [ "main" ]
-    paths-ignore:
-      - helm
-      - README.md
-      - .github/ISSUE_TEMPLATE
+    paths:
+      - app
 
 
 env:
@@ -74,8 +70,8 @@ jobs:
         uses: docker/build-push-action@0565240e2d4ab88bba5387d719585280857ece09 # v5.0.0
         with:
           platforms: "${{ inputs.platforms }}"
-          context: "."
-          file: "./Containerfile"
+          context: "./app"
+          file: "./app/Containerfile"
           push: ${{ github.event_name != 'pull_request' }}
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
