@@ -1,6 +1,6 @@
 # timekeeper
 
-<img src="ports/www/static/timekeeper.png" width="161">
+<img src="app/ports/www/static/timekeeper.png" width="161">
 
 ----
 
@@ -11,19 +11,19 @@ It provides basic mechanisms for the creation and management of time schedules, 
 It can also export schedules as Calendar (ical), [VOC Schedule](https://github.com/voc/schedule/blob/master/validator/json/schema.json) (Info Beamer) and Markdown tables.
 
 <div>
-<img src="ports/www/static/pixelhack/flag_pride.svg" width="69">
-<img src="ports/www/static/pixelhack/resistor_pride.svg" width="45">
-<img src="ports/www/static/pixelhack/flag_nonbinary.svg" width="69">
-<img src="ports/www/static/pixelhack/resitor_nonbinary.svg" width="45">
-<img src="ports/www/static/pixelhack/flag_trans.svg" width="69">
-<img src="ports/www/static/pixelhack/resistor_trans.svg" width="45">
-<img src="ports/www/static/pixelhack/reisealpaka.svg" width="50">
-<img src="ports/www/static/pixelhack/resistor_trans.svg" width="45">
-<img src="ports/www/static/pixelhack/flag_trans.svg" width="69">
-<img src="ports/www/static/pixelhack/resitor_nonbinary.svg" width="45">
-<img src="ports/www/static/pixelhack/flag_nonbinary.svg" width="69">
-<img src="ports/www/static/pixelhack/resistor_pride.svg" width="45">
-<img src="ports/www/static/pixelhack/flag_pride.svg" width="69">
+<img src="app/ports/www/static/pixelhack/flag_pride.svg" width="69">
+<img src="app/ports/www/static/pixelhack/resistor_pride.svg" width="45">
+<img src="app/ports/www/static/pixelhack/flag_nonbinary.svg" width="69">
+<img src="app/ports/www/static/pixelhack/resitor_nonbinary.svg" width="45">
+<img src="app/ports/www/static/pixelhack/flag_trans.svg" width="69">
+<img src="app/ports/www/static/pixelhack/resistor_trans.svg" width="45">
+<img src="app/ports/www/static/pixelhack/reisealpaka.svg" width="50">
+<img src="app/ports/www/static/pixelhack/resistor_trans.svg" width="45">
+<img src="app/ports/www/static/pixelhack/flag_trans.svg" width="69">
+<img src="app/ports/www/static/pixelhack/resitor_nonbinary.svg" width="45">
+<img src="app/ports/www/static/pixelhack/flag_nonbinary.svg" width="69">
+<img src="app/ports/www/static/pixelhack/resistor_pride.svg" width="45">
+<img src="app/ports/www/static/pixelhack/flag_pride.svg" width="69">
 </div>
 
 
