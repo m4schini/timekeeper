@@ -29,12 +29,6 @@ func Log(next http.Handler) http.Handler {
 		Subsystem: "www",
 		Name:      "requests",
 	}, []string{"method", "status", "route"})
-	requestDuration := promauto.NewHistogram(prometheus.HistogramOpts{
-		Namespace: "timekeeper",
-		Subsystem: "www",
-		Name:      "request_durations",
-		Buckets:   []float64{1, 5, 10, 20, 40, 60, 100, 150, 200, 250, 300, 600, 1200, 6000},
-	})
 
 	return http.HandlerFunc(func(writer http.ResponseWriter, request *http.Request) {
 		start := time.Now()
@@ -61,15 +55,13 @@ func Log(next http.Handler) http.Handler {
 		d := time.Since(start)
 		if telemtryEnabled {
 			counter.WithLabelValues(request.Method, fmt.Sprintf("%v", sr.status), request.URL.Path).Inc()
-			requestDuration.Observe(float64(d.Milliseconds()))
 		}
 
+		log = log.With(zap.Int("status", sr.status), zap.Duration("duration", d), zap.Int64("duration_micros", d.Microseconds()))
 		if d > 100*time.Millisecond {
-			log.Warn("handled www request", zap.Duration("duration", d))
-		} else if request.Method != http.MethodGet {
-			log.Info("handled www request", zap.Duration("duration", d))
+			log.Warn("handled www request")
 		} else {
-			log.Debug("handled www request", zap.Duration("duration", d))
+			log.Info("handled www request")
 		}
 	})
 }
