@@ -10,17 +10,6 @@ import (
 	"timekeeper/config"
 )
 
-// statusRecorder wraps http.ResponseWriter to capture the status code
-type statusRecorder struct {
-	http.ResponseWriter
-	status int
-}
-
-func (r *statusRecorder) WriteHeader(code int) {
-	r.status = code
-	r.ResponseWriter.WriteHeader(code)
-}
-
 func Log(next http.Handler) http.Handler {
 	log := zap.L().Named("www").WithOptions(zap.AddCallerSkip(1))
 	telemtryEnabled := config.TelemetryEnabled()
@@ -46,10 +35,7 @@ func Log(next http.Handler) http.Handler {
 		log := log.With(logFields...)
 		log.Debug("received www request")
 
-		sr := &statusRecorder{
-			ResponseWriter: writer,
-			status:         http.StatusOK,
-		}
+		sr := RecordStatus(writer)
 		next.ServeHTTP(sr, request)
 
 		d := time.Since(start)
@@ -64,4 +50,22 @@ func Log(next http.Handler) http.Handler {
 			log.Info("handled www request")
 		}
 	})
+}
+
+func RecordStatus(w http.ResponseWriter) *statusRecorder {
+	return &statusRecorder{
+		ResponseWriter: w,
+		status:         http.StatusOK,
+	}
+}
+
+// statusRecorder wraps http.ResponseWriter to capture the status code
+type statusRecorder struct {
+	http.ResponseWriter
+	status int
+}
+
+func (r *statusRecorder) WriteHeader(code int) {
+	r.status = code
+	r.ResponseWriter.WriteHeader(code)
 }
