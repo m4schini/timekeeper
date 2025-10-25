@@ -10,14 +10,25 @@ import (
 	"timekeeper/config"
 )
 
+// statusRecorder wraps http.ResponseWriter to capture the status code
+type statusRecorder struct {
+	http.ResponseWriter
+	status int
+}
+
+func (r *statusRecorder) WriteHeader(code int) {
+	r.status = code
+	r.ResponseWriter.WriteHeader(code)
+}
+
 func Log(next http.Handler) http.Handler {
 	log := zap.L().Named("www").WithOptions(zap.AddCallerSkip(1))
 	telemtryEnabled := config.TelemetryEnabled()
-	counter := promauto.NewCounter(prometheus.CounterOpts{
+	counter := promauto.NewCounterVec(prometheus.CounterOpts{
 		Namespace: "timekeeper",
 		Subsystem: "www",
 		Name:      "requests",
-	})
+	}, []string{"method", "status", "route"})
 	requestDuration := promauto.NewHistogram(prometheus.HistogramOpts{
 		Namespace: "timekeeper",
 		Subsystem: "www",
@@ -41,11 +52,15 @@ func Log(next http.Handler) http.Handler {
 		log := log.With(logFields...)
 		log.Debug("received www request")
 
-		next.ServeHTTP(writer, request)
+		sr := &statusRecorder{
+			ResponseWriter: writer,
+			status:         http.StatusOK,
+		}
+		next.ServeHTTP(sr, request)
 
 		d := time.Since(start)
 		if telemtryEnabled {
-			counter.Inc()
+			counter.WithLabelValues(request.Method, fmt.Sprintf("%v", sr.status), request.URL.Path).Inc()
 			requestDuration.Observe(float64(d.Milliseconds()))
 		}
 
