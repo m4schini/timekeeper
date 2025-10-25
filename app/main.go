@@ -110,20 +110,6 @@ func main() {
 		logger.Fatal("failed to listen", zap.Error(err))
 	}
 
-	if config.TelemetryEnabled() {
-		zap.L().Named("telemetry").Info("telemetry is enabled")
-		go func() {
-			r := chi.NewRouter()
-			r.Handle("/metrics", promhttp.Handler())
-			err := http.ListenAndServe(":9000", r)
-			if err != nil {
-				logger.Warn("failed to serve metrics")
-			}
-		}()
-	} else {
-		zap.L().Named("telemetry").Info("telemetry is disabled")
-	}
-
 	logger.Info("serving timekeeper :" + config.Port())
 	err = www.Serve(l, authy, pages, components)
 	if err != nil {
@@ -147,4 +133,30 @@ func NewLogger() *zap.Logger {
 	}
 
 	return logger
+}
+
+func EnableMetricsEndpoint() {
+	zap.L().Named("telemetry").Info("metrics endpoint is enabled", zap.String("route", ":9000/metrics"))
+	token := config.MetricsEndpointToken()
+	next := promhttp.Handler()
+	r := chi.NewRouter()
+	r.Handle("/metrics", http.HandlerFunc(func(writer http.ResponseWriter, request *http.Request) {
+		if token == "" {
+			next.ServeHTTP(writer, request)
+			return
+		}
+
+		if request.Header.Get("Authorization") == token {
+			next.ServeHTTP(writer, request)
+			return
+		}
+
+		http.Error(writer, "unauthorized", http.StatusUnauthorized)
+	}))
+	go func() {
+		err := http.ListenAndServe(":9000", r)
+		if err != nil {
+			zap.L().Warn("failed to serve metrics")
+		}
+	}()
 }

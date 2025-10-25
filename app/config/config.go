@@ -19,6 +19,10 @@ func TelemetryEnabled() bool {
 	return strings.ToLower(getEnvOr("TIMEKEEPER_TELEMETRY_ENABLED", "false")) == "true"
 }
 
+func MetricsEndpointToken() string {
+	return getEnvOr("TIMEKEEPER_METRICS_TOKEN", "")
+}
+
 func DatabaseConnectionString() string {
 	return mustEnv("DATABASE_CONNECTIONSTRING")
 }
