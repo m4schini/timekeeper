@@ -2,12 +2,13 @@ package middleware
 
 import (
 	"fmt"
-	"github.com/prometheus/client_golang/prometheus"
-	"github.com/prometheus/client_golang/prometheus/promauto"
-	"go.uber.org/zap"
 	"net/http"
 	"time"
 	"timekeeper/config"
+
+	"github.com/prometheus/client_golang/prometheus"
+	"github.com/prometheus/client_golang/prometheus/promauto"
+	"go.uber.org/zap"
 )
 
 func Log(next http.Handler) http.Handler {
@@ -43,7 +44,7 @@ func Log(next http.Handler) http.Handler {
 			counter.WithLabelValues(request.Method, fmt.Sprintf("%v", sr.status), request.URL.Path).Inc()
 		}
 
-		log = log.With(zap.Int("status", sr.status), zap.Duration("duration", d), zap.Int64("duration_micros", d.Microseconds()))
+		log = log.With(zap.Int("status", sr.status), zap.Duration("duration", d))
 		if d > 100*time.Millisecond {
 			log.Warn("handled www request")
 		} else {

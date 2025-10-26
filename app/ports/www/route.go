@@ -1,10 +1,11 @@
 package www
 
 import (
-	"github.com/go-chi/chi/v5"
-	"go.uber.org/zap"
 	"net/http"
 	"timekeeper/ports/www/middleware"
+
+	"github.com/go-chi/chi/v5"
+	"go.uber.org/zap"
 )
 
 type Route interface {

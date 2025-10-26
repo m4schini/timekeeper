@@ -1,13 +1,7 @@
 package main
 
 import (
-	"github.com/go-chi/chi/v5"
-	"github.com/prometheus/client_golang/prometheus/promhttp"
-	"go.uber.org/zap"
-	"go.uber.org/zap/zapcore"
-	"golang.org/x/time/rate"
 	"net"
-	"net/http"
 	"timekeeper/adapters"
 	"timekeeper/adapters/nominatim"
 	"timekeeper/app/auth"
@@ -16,6 +10,9 @@ import (
 	"timekeeper/ports/www"
 	c "timekeeper/ports/www/components"
 	p "timekeeper/ports/www/pages"
+
+	"go.uber.org/zap"
+	"golang.org/x/time/rate"
 )
 
 var version = "dev"
@@ -118,45 +115,11 @@ func main() {
 }
 
 func NewLogger() *zap.Logger {
-	//if config.TelemetryEnabled() {
-	//	logger, _ := zap.NewDevelopment()
-	//	return logger
-	//}
-
-	cfg := zap.NewDevelopmentConfig()
-	cfg.DisableStacktrace = true
-	cfg.Development = false
-	cfg.Level = zap.NewAtomicLevelAt(zapcore.InfoLevel)
-	logger, err := cfg.Build()
-	if err != nil {
-		logger, _ = zap.NewDevelopment()
+	if config.TelemetryEnabled() {
+		logger, _ := zap.NewProduction()
+		return logger
 	}
 
+	logger, _ := zap.NewDevelopment()
 	return logger
-}
-
-func EnableMetricsEndpoint() {
-	zap.L().Named("telemetry").Info("metrics endpoint is enabled", zap.String("route", ":9000/metrics"))
-	token := config.MetricsEndpointToken()
-	next := promhttp.Handler()
-	r := chi.NewRouter()
-	r.Handle("/metrics", http.HandlerFunc(func(writer http.ResponseWriter, request *http.Request) {
-		if token == "" {
-			next.ServeHTTP(writer, request)
-			return
-		}
-
-		if request.Header.Get("Authorization") == token {
-			next.ServeHTTP(writer, request)
-			return
-		}
-
-		http.Error(writer, "unauthorized", http.StatusUnauthorized)
-	}))
-	go func() {
-		err := http.ListenAndServe(":9000", r)
-		if err != nil {
-			zap.L().Warn("failed to serve metrics")
-		}
-	}()
 }
