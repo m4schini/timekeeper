@@ -2,10 +2,6 @@ package components
 
 import (
 	"fmt"
-	"go.uber.org/zap"
-	"maragu.dev/gomponents"
-	. "maragu.dev/gomponents"
-	. "maragu.dev/gomponents/html"
 	"net/http"
 	"strconv"
 	"time"
@@ -13,6 +9,11 @@ import (
 	"timekeeper/app/database/model"
 	"timekeeper/ports/www/middleware"
 	"timekeeper/ports/www/render"
+
+	"go.uber.org/zap"
+	"maragu.dev/gomponents"
+	. "maragu.dev/gomponents"
+	. "maragu.dev/gomponents/html"
 )
 
 func EditEvent(eventId int) Node {
@@ -53,9 +54,10 @@ func (l *UpdateEventRoute) Handler() http.Handler {
 		var (
 			eventParam = request.PostFormValue("event")
 			nameParam  = request.PostFormValue("name")
+			slugParam  = request.PostFormValue("slug")
 			startParam = request.PostFormValue("start")
 		)
-		model, err := ParseUpdateEventModel(eventParam, nameParam, startParam)
+		model, err := ParseUpdateEventModel(eventParam, nameParam, slugParam, startParam)
 		if err != nil {
 			render.Error(log, writer, http.StatusBadRequest, "failed to parse form", err)
 			return
@@ -73,7 +75,7 @@ func (l *UpdateEventRoute) Handler() http.Handler {
 	})
 }
 
-func ParseUpdateEventModel(event, name, start string) (model.UpdateEventModel, error) {
+func ParseUpdateEventModel(event, name, slug, start string) (model.UpdateEventModel, error) {
 	eventId, err := strconv.ParseInt(event, 10, 64)
 	if err != nil {
 		return model.UpdateEventModel{}, err
@@ -84,9 +86,14 @@ func ParseUpdateEventModel(event, name, start string) (model.UpdateEventModel, e
 		return model.UpdateEventModel{}, err
 	}
 
+	if !EventSlugRegex.MatchString(slug) {
+		return model.UpdateEventModel{}, fmt.Errorf("invalid slug")
+	}
+
 	return model.UpdateEventModel{
 		ID:    int(eventId),
 		Name:  name,
+		Slug:  slug,
 		Start: startDate,
 	}, nil
 }

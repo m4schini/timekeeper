@@ -1,9 +1,6 @@
 package pages
 
 import (
-	"github.com/go-chi/chi/v5"
-	. "maragu.dev/gomponents"
-	. "maragu.dev/gomponents/html"
 	"net/http"
 	"strconv"
 	"timekeeper/app/database"
@@ -11,6 +8,10 @@ import (
 	"timekeeper/ports/www/components"
 	"timekeeper/ports/www/middleware"
 	"timekeeper/ports/www/render"
+
+	"github.com/go-chi/chi/v5"
+	. "maragu.dev/gomponents"
+	. "maragu.dev/gomponents/html"
 )
 
 func EditEventPage(event model.EventModel) Node {

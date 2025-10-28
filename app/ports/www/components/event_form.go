@@ -2,9 +2,19 @@ package components
 
 import (
 	"fmt"
+	"regexp"
+	"timekeeper/app/database/model"
+
 	. "maragu.dev/gomponents"
 	. "maragu.dev/gomponents/html"
-	"timekeeper/app/database/model"
+)
+
+const (
+	EventSlugPattern = `(?i)^[a-z0-9-]+$` // (?i) makes it case-insensitive
+)
+
+var (
+	EventSlugRegex = regexp.MustCompile(EventSlugPattern)
 )
 
 func eventForm(event *model.EventModel, method, action, actionText string) Node {
@@ -19,6 +29,13 @@ func eventForm(event *model.EventModel, method, action, actionText string) Node 
 		Div(Class("param"),
 			Label(For("name"), Text("Name")),
 			Input(Type("text"), Name("name"), Placeholder("Jugend hackt 2042"), Required(), Iff(hasModel, func() Node {
+				return Value(event.Name)
+			})),
+		),
+
+		Div(Class("param"),
+			Label(For("slug"), Text("URL Slug")),
+			Input(Type("text"), Name("slug"), Placeholder("jh42"), Pattern("^[A-Za-z0-9-]+$"), Required(), Iff(hasModel, func() Node {
 				return Value(event.Name)
 			})),
 		),
