@@ -9,7 +9,8 @@ func (c *Commands) UpdateEvent(m model.UpdateEventModel) (err error) {
 UPDATE timekeeper.events
 SET
     name = $1,
-    start = $2
-WHERE id = $3`, m.Name, m.Start, m.ID)
+    start = $2,
+    slug = $3
+WHERE id = $4`, m.Name, m.Start, m.Slug, m.ID)
 	return err
 }

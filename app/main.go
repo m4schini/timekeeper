@@ -74,6 +74,10 @@ func main() {
 		&p.PixelHackPageRoute{},
 		&p.AttributionsPageRoute{},
 
+		&www.ShortEventHandler{DB: db},
+		&www.ShortEventScheduleHandler{DB: db},
+		&www.ShortEventScheduleMHandler{DB: db},
+
 		www.StaticFileRoute{},
 		www.FontFileRoute{},
 		www.PixelhackFileRoute{},

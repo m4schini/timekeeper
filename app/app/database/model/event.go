@@ -8,6 +8,7 @@ import (
 
 type EventModel struct {
 	ID        int
+	Slug      string
 	Name      string
 	TotalDays int
 	Start     time.Time
@@ -27,11 +28,13 @@ func (e EventModel) Day(day int) time.Time {
 
 type CreateEventModel struct {
 	Name  string
+	Slug  string
 	Start time.Time
 }
 
 type UpdateEventModel struct {
 	ID    int
 	Name  string
+	Slug  string
 	Start time.Time
 }

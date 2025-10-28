@@ -8,6 +8,7 @@ func (q *Queries) GetEvents(offset, limit int) (es []model.EventModel, err error
 		e.id, 
 		e.name, 
 		e.start, 
+		e.slug,
 		COUNT(DISTINCT t.day) AS total_days
 	FROM 
 		timekeeper.events e
@@ -26,7 +27,7 @@ func (q *Queries) GetEvents(offset, limit int) (es []model.EventModel, err error
 	es = make([]model.EventModel, 0)
 	for rows.Next() {
 		var r model.EventModel
-		err := rows.Scan(&r.ID, &r.Name, &r.Start, &r.TotalDays)
+		err := rows.Scan(&r.ID, &r.Name, &r.Start, &r.Slug, &r.TotalDays)
 		if err != nil {
 			return nil, err
 		}

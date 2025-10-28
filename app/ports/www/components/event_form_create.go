@@ -2,14 +2,15 @@ package components
 
 import (
 	"fmt"
-	"go.uber.org/zap"
-	"maragu.dev/gomponents"
 	"net/http"
 	"time"
 	"timekeeper/app/database"
 	"timekeeper/app/database/model"
 	"timekeeper/ports/www/middleware"
 	"timekeeper/ports/www/render"
+
+	"go.uber.org/zap"
+	"maragu.dev/gomponents"
 )
 
 func EventCreateForm() gomponents.Node {
@@ -46,8 +47,9 @@ func (l *CreateEventRoute) Handler() http.Handler {
 		var (
 			nameParam  = request.PostFormValue("name")
 			startParam = request.PostFormValue("start")
+			slugParam  = request.PostFormValue("slug")
 		)
-		model, err := ParseCreateEventModel(nameParam, startParam)
+		model, err := ParseCreateEventModel(nameParam, startParam, slugParam)
 		if err != nil {
 			render.Error(log, writer, http.StatusBadRequest, "failed to parse form", err)
 			return
@@ -65,14 +67,19 @@ func (l *CreateEventRoute) Handler() http.Handler {
 	})
 }
 
-func ParseCreateEventModel(name, start string) (model.CreateEventModel, error) {
+func ParseCreateEventModel(name, start, slug string) (model.CreateEventModel, error) {
 	startDate, err := time.Parse("02.01.2006", start)
 	if err != nil {
 		return model.CreateEventModel{}, err
 	}
 
+	if !EventSlugRegex.MatchString(slug) {
+		return model.CreateEventModel{}, fmt.Errorf("invalid slug")
+	}
+
 	return model.CreateEventModel{
 		Name:  name,
 		Start: startDate,
+		Slug:  slug,
 	}, nil
 }

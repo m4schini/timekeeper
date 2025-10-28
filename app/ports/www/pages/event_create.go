@@ -1,14 +1,15 @@
 package pages
 
 import (
-	. "maragu.dev/gomponents"
-	. "maragu.dev/gomponents/html"
 	"net/http"
 	"timekeeper/app/database"
 	"timekeeper/app/database/model"
 	"timekeeper/ports/www/components"
 	"timekeeper/ports/www/middleware"
 	"timekeeper/ports/www/render"
+
+	. "maragu.dev/gomponents"
+	. "maragu.dev/gomponents/html"
 )
 
 func CreateEventPage() Node {
