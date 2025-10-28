@@ -8,6 +8,7 @@ import (
 
 type EventModel struct {
 	ID        int
+	Slug      string
 	Name      string
 	TotalDays int
 	Start     time.Time

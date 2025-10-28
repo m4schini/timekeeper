@@ -32,6 +32,7 @@ type Queries interface {
 
 	GetEvent(id int) (r model.EventModel, err error)
 	GetEvents(offset int, limit int) (es []model.EventModel, err error)
+	GetEventIdBySlug(slug string) (id int, err error)
 
 	GetTimeslot(id int) (r model.TimeslotModel, err error)
 	GetTimeslotsOfEvent(event int, offset int, limit int) (ts []model.TimeslotModel, total int, err error)

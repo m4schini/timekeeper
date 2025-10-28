@@ -2,10 +2,11 @@ package components
 
 import (
 	"fmt"
-	. "maragu.dev/gomponents"
-	. "maragu.dev/gomponents/html"
 	"strings"
 	"timekeeper/app/database/model"
+
+	. "maragu.dev/gomponents"
+	. "maragu.dev/gomponents/html"
 )
 
 type PaletteColor string
@@ -70,6 +71,18 @@ func UrlScheduleWithRoles(eventId int, roles ...model.Role) string {
 	}
 
 	return fmt.Sprintf("/event/%v/schedule?role=%v", eventId, strings.Join(roleStrs, ","))
+}
+
+func ShortUrlEvent(slug string) string {
+	return fmt.Sprintf("/e/%v", slug)
+}
+
+func ShortUrlSchedule(slug string, forMentors bool) string {
+	if forMentors {
+		return fmt.Sprintf("/s/%v/m", slug)
+	} else {
+		return fmt.Sprintf("/s/%v", slug)
+	}
 }
 
 func UrlExportIcalSchedule(eventId int) string {

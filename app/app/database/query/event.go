@@ -3,7 +3,7 @@ package query
 import . "timekeeper/app/database/model"
 
 func (q *Queries) GetEvent(id int) (r EventModel, err error) {
-	row := q.DB.QueryRow(`SELECT id, name, start FROM timekeeper.events WHERE id = $1`, id)
+	row := q.DB.QueryRow(`SELECT id, name, start, slug FROM timekeeper.events WHERE id = $1`, id)
 	if err = row.Err(); err != nil {
 		return EventModel{}, err
 	}
@@ -19,7 +19,7 @@ func (q *Queries) GetEvent(id int) (r EventModel, err error) {
 		return EventModel{}, err
 	}
 
-	err = row.Scan(&r.ID, &r.Name, &r.Start)
+	err = row.Scan(&r.ID, &r.Name, &r.Start, &r.Slug)
 	r.TotalDays = totalDays
 	return r, nil
 }

@@ -13,7 +13,8 @@ CREATE TABLE timekeeper.events (
     id SERIAL PRIMARY KEY ,
     name VARCHAR NOT NULL ,
     start DATE NOT NULL,
-    owner INT NOT NULL REFERENCES timekeeper.users(id)
+    owner INT NOT NULL REFERENCES timekeeper.users(id),
+    slug VARCHAR NOT NULL UNIQUE
 );
 
 CREATE TABLE timekeeper.event_has_location (

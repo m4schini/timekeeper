@@ -2,10 +2,6 @@ package pages
 
 import (
 	"fmt"
-	"github.com/go-chi/chi/v5"
-	"go.uber.org/zap"
-	. "maragu.dev/gomponents"
-	. "maragu.dev/gomponents/html"
 	"net/http"
 	"strconv"
 	"time"
@@ -16,6 +12,11 @@ import (
 	"timekeeper/ports/www/components"
 	"timekeeper/ports/www/middleware"
 	"timekeeper/ports/www/render"
+
+	"github.com/go-chi/chi/v5"
+	"go.uber.org/zap"
+	. "maragu.dev/gomponents"
+	. "maragu.dev/gomponents/html"
 )
 
 func EventPublicPage(event model.EventModel, locations []model.EventLocationModel) Node {
@@ -84,8 +85,8 @@ func EventSectionSchedule(event model.EventModel, withCopyBoxes bool) Node {
 			return Group{
 				Div(Style("display: flex; flex-direction: column; margin-top: 1rem"),
 					Strong(Text("Links zum teilen")),
-					components.CopyTextBox("copy_tn", "Link für Teilnehmer*innen", fmt.Sprintf("%v%v", config.BaseUrl(), components.UrlScheduleWithRoles(event.ID))),
-					components.CopyTextBox("copy_men", "Link für Mentor*innen", fmt.Sprintf("%v%v", config.BaseUrl(), components.UrlScheduleWithRoles(event.ID, model.RoleParticipant, model.RoleMentor))),
+					components.CopyTextBox("copy_tn", "Link für Teilnehmer*innen", fmt.Sprintf("%v%v", config.BaseUrl(), components.ShortUrlSchedule(event.Slug, false))),
+					components.CopyTextBox("copy_men", "Link für Mentor*innen", fmt.Sprintf("%v%v", config.BaseUrl(), components.ShortUrlSchedule(event.Slug, true))),
 					components.CopyTextBox("copy_org", "Link für Orga", fmt.Sprintf("%v%v", config.BaseUrl(), components.UrlScheduleWithRoles(event.ID, model.RoleParticipant, model.RoleMentor, model.RoleOrganizer))),
 					components.CopyTextBox("copy_voc", "Link für VOC/Info-Beamer", fmt.Sprintf("%v%v", config.BaseUrl(), components.UrlExportVocSchedule(event.ID))),
 					components.CopyTextBox("copy_ical", "Link für Calendar", fmt.Sprintf("%v%v", config.BaseUrl(), components.UrlExportIcalSchedule(event.ID))),
