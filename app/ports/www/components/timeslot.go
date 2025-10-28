@@ -2,11 +2,14 @@ package components
 
 import (
 	"fmt"
+	"time"
+	"timekeeper/app/database/model"
+
+	"github.com/microcosm-cc/bluemonday"
+	"github.com/russross/blackfriday/v2"
 	. "maragu.dev/gomponents"
 	hx "maragu.dev/gomponents-htmx"
 	. "maragu.dev/gomponents/html"
-	"time"
-	"timekeeper/app/database/model"
 )
 
 func CreateTimeslotButton(eventId int) Node {
@@ -38,7 +41,7 @@ func TimeSlot(t model.TimeslotModel, withActions, active, disabled bool) Node {
 		),
 		Div(Class("timeslot-info"),
 			Div(Class("timeslot-info-title"), Text(t.Title)),
-			Div(Class("timeslot-info-notes"), Text(t.Note)),
+			timeslotNote(t.Note),
 		),
 		If(withActions, Div(Class("timeslot-action"),
 			EditTimeslotButton(t.ID),
@@ -55,10 +58,17 @@ func CompactTimeSlot(t model.TimeslotModel, active, disabled bool) Node {
 		Div(Class("timeslot-roles"), RoleTag(t.Role)),
 		Div(Class("timeslot-info"),
 			Div(Class("timeslot-info-title"), Text(t.Title)),
-			Div(Class("timeslot-info-notes"), Text(t.Note)),
+			timeslotNote(t.Note),
 		),
 		Div(Class("timeslot-map")), //LocationCrop(t.Location.X, t.Location.Y, t.Location.Width, t.Location.Height, 100),
 	)
+}
+
+func timeslotNote(note string) Node {
+	unsafe := blackfriday.Run([]byte(note), blackfriday.WithExtensions(blackfriday.CommonExtensions))
+	html := bluemonday.UGCPolicy().SanitizeBytes(unsafe)
+
+	return Div(Class("timeslot-info-notes md-p"), Raw(string(html)))
 }
 
 func timeslotTime(date time.Time, duration time.Duration, withEnd bool) Node {

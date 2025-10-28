@@ -2,13 +2,14 @@ package md
 
 import (
 	"bytes"
+	"timekeeper/app/database/model"
+
 	"github.com/JohannesKaufmann/html-to-markdown/v2/plugin/base"
 	"github.com/JohannesKaufmann/html-to-markdown/v2/plugin/commonmark"
 	"github.com/JohannesKaufmann/html-to-markdown/v2/plugin/table"
 	"go.uber.org/zap"
 	. "maragu.dev/gomponents"
 	. "maragu.dev/gomponents/html"
-	"timekeeper/app/database/model"
 
 	"github.com/JohannesKaufmann/html-to-markdown/v2/converter"
 )
