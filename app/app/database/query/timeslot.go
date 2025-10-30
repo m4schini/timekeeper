@@ -26,6 +26,7 @@ SELECT ts.id as id,
        r.location_y as room_y,
        r.location_w as room_w,
        r.location_h as room_h,
+       r.description as room_description,
 
        l.id as location_id,
        l.name as location_name,
@@ -43,7 +44,7 @@ WHERE ts.id = $1 ORDER BY ts.start `, id)
 	var r RoomModel
 	var l LocationModel
 	var durationInSeconds int
-	err = row.Scan(&t.ID, &t.Title, &t.Note, &t.Day, &t.Start, &t.Role, &durationInSeconds, &e.ID, &e.Name, &e.Start, &r.ID, &r.Name, &r.LocationX, &r.LocationY, &r.LocationW, &r.LocationH, &l.ID, &l.Name, &l.File)
+	err = row.Scan(&t.ID, &t.Title, &t.Note, &t.Day, &t.Start, &t.Role, &durationInSeconds, &e.ID, &e.Name, &e.Start, &r.ID, &r.Name, &r.LocationX, &r.LocationY, &r.LocationW, &r.LocationH, &r.Description, &l.ID, &l.Name, &l.File)
 	if err != nil {
 		return t, err
 	}

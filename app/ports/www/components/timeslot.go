@@ -2,11 +2,13 @@ package components
 
 import (
 	"fmt"
+	"strings"
+	"time"
+	"timekeeper/app/database/model"
+
 	. "maragu.dev/gomponents"
 	hx "maragu.dev/gomponents-htmx"
 	. "maragu.dev/gomponents/html"
-	"time"
-	"timekeeper/app/database/model"
 )
 
 func CreateTimeslotButton(eventId int) Node {
@@ -76,7 +78,15 @@ func timeslotTime(date time.Time, duration time.Duration, withEnd bool) Node {
 }
 
 func timeslotRoom(eventId, locationId int, r model.RoomModel) Node {
-	title := fmt.Sprintf("%v: %v", r.Location.Name, r.Name)
+
+	desc := r.Description
+	if strings.TrimSpace(desc) == "" {
+		desc = r.Name
+	}
+	title := fmt.Sprintf("%v: %v", r.Location.Name, desc)
+	if desc == r.Location.Name {
+		title = r.Location.Name
+	}
 	return Div(Class("timeslot-room"),
 		If(
 			true,
