@@ -16,7 +16,7 @@ import (
 
 func EditEventPage(event model.EventModel) Node {
 	return Shell(event.Name,
-		components.PageHeader(model.EventModel{}),
+		components.PageHeader(event),
 		Main(
 			H2(Text("Edit Event")),
 			components.EventUpdateForm(event),

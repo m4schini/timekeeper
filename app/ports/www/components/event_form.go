@@ -36,7 +36,7 @@ func eventForm(event *model.EventModel, method, action, actionText string) Node 
 		Div(Class("param"),
 			Label(For("slug"), Text("URL Slug")),
 			Input(Type("text"), Name("slug"), Placeholder("jh42"), Pattern("^[A-Za-z0-9-]+$"), Required(), Iff(hasModel, func() Node {
-				return Value(event.Name)
+				return Value(event.Slug)
 			})),
 		),
 
