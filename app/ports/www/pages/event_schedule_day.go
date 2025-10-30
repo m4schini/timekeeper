@@ -1,9 +1,6 @@
 package pages
 
 import (
-	"github.com/go-chi/chi/v5"
-	. "maragu.dev/gomponents"
-	. "maragu.dev/gomponents/html"
 	"net/http"
 	"strconv"
 	"strings"
@@ -12,13 +9,16 @@ import (
 	"timekeeper/ports/www/components"
 	"timekeeper/ports/www/middleware"
 	"timekeeper/ports/www/render"
+
+	"github.com/go-chi/chi/v5"
+	. "maragu.dev/gomponents"
+	. "maragu.dev/gomponents/html"
 )
 
 func CompactDayPage(event model.EventModel, data []model.TimeslotModel) Node {
 	return ShellWithHead(event.Name, nil, []Node{},
 		Main(
 			components.CompactDay(data),
-			components.ScriptScrollSeperatorIntoView(),
 			components.ScriptReloadPageEveryMinute(),
 		))
 }
