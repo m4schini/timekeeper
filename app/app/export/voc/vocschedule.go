@@ -4,11 +4,12 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
-	"go.uber.org/zap"
 	"io"
 	"time"
 	"timekeeper/app/database/model"
 	"timekeeper/config"
+
+	"go.uber.org/zap"
 )
 
 func ExportVocScheduleTo(event model.EventModel, timeslots []model.TimeslotModel, writer io.Writer) error {
@@ -33,7 +34,7 @@ func ExportVocScheduleTo(event model.EventModel, timeslots []model.TimeslotModel
 			Description: t.Note,
 			Date:        eventDate,
 			Duration:    fmt.Sprintf("%02d:%02d", hours, minutes),
-			Guid:        fmt.Sprintf("00000000-0000-0000-0000-%012d", t.ID),
+			Guid:        t.GUID,
 			Id:          t.ID,
 			Language:    "de",
 			Room:        room,

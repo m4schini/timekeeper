@@ -21,6 +21,7 @@ func (q *Queries) GetTimeslotsOfEvent(event int, offset, limit int) (ts []Timesl
 
 	rows, err := q.DB.Query(`
 SELECT ts.id as id,
+       ts.guid as ts_guid,
        title,
        note,
        day,
@@ -29,10 +30,12 @@ SELECT ts.id as id,
        FLOOR(EXTRACT(EPOCH FROM duration)) AS total_seconds,
 
        e.id as event_id,
+       e.guid as event_guid,
        e.name as event_name,
        e.start as event_start,
 
        r.id as room_id,
+       r.guid as room_guid,
        r.name as room_name,
        r.location_x as room_x,
        r.location_y as room_y,
@@ -41,6 +44,7 @@ SELECT ts.id as id,
        r.description as room_description,
 
        l.id as location_id,
+       l.guid as location_guid,
        l.name as location_name,
        l.file as location_file
 
@@ -62,7 +66,11 @@ WHERE e.id = $1 ORDER BY ts.start, ts.note LIMIT $2 OFFSET $3 `,
 		var l LocationModel
 		var t TimeslotModel
 		var durationInSeconds int
-		err = rows.Scan(&t.ID, &t.Title, &t.Note, &t.Day, &t.Start, &t.Role, &durationInSeconds, &e.ID, &e.Name, &e.Start, &r.ID, &r.Name, &r.LocationX, &r.LocationY, &r.LocationW, &r.LocationH, &r.Description, &l.ID, &l.Name, &l.File)
+		err = rows.Scan(
+			&t.ID, &t.GUID, &t.Title, &t.Note, &t.Day, &t.Start, &t.Role, &durationInSeconds,
+			&e.ID, &e.GUID, &e.Name, &e.Start,
+			&r.ID, &r.GUID, &r.Name, &r.LocationX, &r.LocationY, &r.LocationW, &r.LocationH, &r.Description,
+			&l.ID, &l.GUID, &l.Name, &l.File)
 		if err != nil {
 			return nil, 0, err
 		}

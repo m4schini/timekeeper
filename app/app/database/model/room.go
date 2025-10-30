@@ -2,6 +2,7 @@ package model
 
 type RoomModel struct {
 	ID          int
+	GUID        string
 	Location    LocationModel
 	Name        string
 	Description string

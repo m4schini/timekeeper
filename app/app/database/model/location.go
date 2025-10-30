@@ -7,6 +7,7 @@ import (
 
 type LocationModel struct {
 	ID    int
+	GUID  string
 	Name  string
 	File  string
 	OsmId string

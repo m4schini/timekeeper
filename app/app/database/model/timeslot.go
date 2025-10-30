@@ -7,6 +7,7 @@ import (
 
 type TimeslotModel struct {
 	ID       int
+	GUID     string
 	Event    EventModel
 	Title    string
 	Note     string
