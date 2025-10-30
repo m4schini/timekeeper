@@ -2,8 +2,6 @@ package pages
 
 import (
 	"fmt"
-	"github.com/go-chi/chi/v5"
-	"go.uber.org/zap"
 	"net/http"
 	"strconv"
 	"time"
@@ -13,6 +11,9 @@ import (
 	export "timekeeper/app/export/ical"
 	"timekeeper/ports/www/components"
 	"timekeeper/ports/www/render"
+
+	"github.com/go-chi/chi/v5"
+	"go.uber.org/zap"
 )
 
 type EventExportIcalScheduleRoute struct {
@@ -30,9 +31,8 @@ func (v *EventExportIcalScheduleRoute) Pattern() string {
 func (v *EventExportIcalScheduleRoute) Handler() http.Handler {
 	log := components.Logger(v)
 	queries := v.DB.Queries
+	cache := cache.NewInMemory()
 
-	log.Debug("starting cache")
-	calcache := cache.NewInMemory()
 	return http.HandlerFunc(func(writer http.ResponseWriter, request *http.Request) {
 		eventParam := chi.URLParam(request, "event")
 		eventId, err := strconv.ParseInt(eventParam, 10, 64)
@@ -43,12 +43,12 @@ func (v *EventExportIcalScheduleRoute) Handler() http.Handler {
 		roles, _ := ParseRolesQuery(request.URL.Query(), false)
 
 		cacheKey := cacheKey(eventId, roles)
-		cachedCal, expiresAt, valid := calcache.Get(cacheKey)
+		cachedExport, expiresAt, valid := cache.Get(cacheKey)
 		if valid {
 			log.Debug("using cached calendar export", zap.Int64("event", eventId), zap.Any("roles", roles), zap.Duration("ttl", expiresAt.Sub(time.Now())))
 			writer.Header().Set("Content-Type", "text/calendar; charset=utf-8")
 			writer.Header().Set("Content-Disposition", fmt.Sprintf("inline; filename=timekeeper_event_%v.ics", eventId))
-			writer.Write([]byte(cachedCal))
+			writer.Write(cachedExport)
 			return
 		}
 
@@ -71,7 +71,7 @@ func (v *EventExportIcalScheduleRoute) Handler() http.Handler {
 			return
 		}
 
-		calcache.Set(cacheKey, cal, 5*time.Minute)
+		cache.Set(cacheKey, []byte(cal), 5*time.Minute)
 		writer.Header().Set("Content-Type", "text/calendar; charset=utf-8")
 		writer.Header().Set("Content-Disposition", fmt.Sprintf("inline; filename=timekeeper_event_%v.ics", event.ID))
 		writer.Write([]byte(cal))
