@@ -1,18 +1,21 @@
 package pages
 
 import (
-	"github.com/go-chi/chi/v5"
-	. "maragu.dev/gomponents"
-	. "maragu.dev/gomponents/html"
+	"fmt"
 	"net/http"
 	"net/url"
 	"strconv"
 	"strings"
 	"timekeeper/app/database"
 	"timekeeper/app/database/model"
+	"timekeeper/app/export/md"
 	"timekeeper/ports/www/components"
 	"timekeeper/ports/www/middleware"
 	"timekeeper/ports/www/render"
+
+	"github.com/go-chi/chi/v5"
+	. "maragu.dev/gomponents"
+	. "maragu.dev/gomponents/html"
 )
 
 func SchedulePage(event model.EventModel, withActions bool, days [][]model.TimeslotModel) Node {
@@ -29,6 +32,23 @@ func SchedulePage(event model.EventModel, withActions bool, days [][]model.Times
 		),
 		components.ScriptScrollSeperatorIntoView(),
 		If(!withActions, components.ScriptReloadPageEveryMinute()),
+	)
+}
+
+func CompactSchedulePage(event model.EventModel, days [][]model.TimeslotModel) Node {
+	dayNodes := make(Group, 0, len(days)*2)
+	for i, timeslots := range days {
+		h := H3(Text(fmt.Sprintf("Tag %v (%v)", i, md.Wochentag(event.Day(i).Weekday()))))
+
+		dayNodes = append(dayNodes, h)
+		dayNodes = append(dayNodes, components.CompactDay(timeslots))
+	}
+
+	return ShellWithHead(event.Name, nil, []Node{},
+		Main(
+			dayNodes,
+		),
+		components.ScriptScrollSeperatorIntoView(),
 	)
 }
 
@@ -74,6 +94,7 @@ func (l *SchedulePageRoute) Handler() http.Handler {
 			render.Error(log, writer, http.StatusBadRequest, "invalid event id", err)
 			return
 		}
+		useCompact := request.URL.Query().Has("compact")
 		isOrganizer := middleware.IsOrganizer(request)
 		roles, _ := ParseRolesQuery(request.URL.Query(), isOrganizer)
 
@@ -95,6 +116,10 @@ func (l *SchedulePageRoute) Handler() http.Handler {
 			renderData[day] = model.FilterTimeslotRoles(timeslotsOfDay, roles)
 		}
 
-		render.HTML(log, writer, request, SchedulePage(event, isOrganizer, renderData))
+		if useCompact {
+			render.HTML(log, writer, request, CompactSchedulePage(event, renderData))
+		} else {
+			render.HTML(log, writer, request, SchedulePage(event, isOrganizer, renderData))
+		}
 	})
 }
