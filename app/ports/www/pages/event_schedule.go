@@ -18,10 +18,15 @@ import (
 	. "maragu.dev/gomponents/html"
 )
 
-func SchedulePage(event model.EventModel, withActions bool, days [][]model.TimeslotModel) Node {
+func SchedulePage(event model.EventModel, withActions bool, days [][]model.TimeslotModel, roles []model.Role) Node {
 	dayNodes := make(Group, len(days))
+	rolesStr := make([]string, len(roles))
+	for i, r := range roles {
+		rolesStr[i] = string(r)
+	}
+
 	for i, timeslots := range days {
-		dayNodes[i] = components.Day(event.ID, i, event.Day(i), withActions, timeslots)
+		dayNodes[i] = components.Day(event.ID, i, event.Day(i), withActions, timeslots, fmt.Sprintf("/event/%v/schedule/%v?role=%v", event.ID, i, strings.Join(rolesStr, ",")))
 	}
 
 	return Shell(event.Name,
@@ -119,7 +124,7 @@ func (l *SchedulePageRoute) Handler() http.Handler {
 		if useCompact {
 			render.HTML(log, writer, request, CompactSchedulePage(event, renderData))
 		} else {
-			render.HTML(log, writer, request, SchedulePage(event, isOrganizer, renderData))
+			render.HTML(log, writer, request, SchedulePage(event, isOrganizer, renderData, roles))
 		}
 	})
 }

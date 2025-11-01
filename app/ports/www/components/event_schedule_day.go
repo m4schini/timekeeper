@@ -2,10 +2,6 @@ package components
 
 import (
 	"fmt"
-	"github.com/go-chi/chi/v5"
-	"go.uber.org/zap"
-	. "maragu.dev/gomponents"
-	. "maragu.dev/gomponents/html"
 	"net/http"
 	"strconv"
 	"strings"
@@ -16,13 +12,18 @@ import (
 	"timekeeper/config"
 	"timekeeper/ports/www/middleware"
 	"timekeeper/ports/www/render"
+
+	"github.com/go-chi/chi/v5"
+	"go.uber.org/zap"
+	. "maragu.dev/gomponents"
+	. "maragu.dev/gomponents/html"
 )
 
 func Separator(minutes float64) Node {
 	return Div(Class("separator"), ID("separator"), Text(fmt.Sprintf("In %.0f Minuten", minutes)))
 }
 
-func Day(event, day int, date time.Time, withActions bool, timeslots []model.TimeslotModel) Node {
+func Day(event, day int, date time.Time, withActions bool, timeslots []model.TimeslotModel, headHref string) Node {
 	t := Group{}
 	now := time.Now()
 	insertedSep := false
@@ -57,7 +58,7 @@ func Day(event, day int, date time.Time, withActions bool, timeslots []model.Tim
 	}
 
 	return Div(Class("day-container"),
-		H2(A(Text(fmt.Sprintf("Tag %v (%v)", day, md.Wochentag(date.Weekday()))), Href(fmt.Sprintf("/event/%v/schedule/%v?compact", event, day)))),
+		H2(A(Text(fmt.Sprintf("Tag %v (%v)", day, md.Wochentag(date.Weekday()))), Href(headHref))),
 		Div(Style("display: flex; flex-direction: column; gap: 1rem"), t),
 	)
 }
@@ -161,6 +162,6 @@ func (d *DayRoute) Handler() http.Handler {
 			}
 		}
 
-		render.HTML(log, writer, request, Day(event.ID, int(day), event.Start, isOrganizer, dayData))
+		render.HTML(log, writer, request, Day(event.ID, int(day), event.Start, isOrganizer, dayData, "#"))
 	})
 }

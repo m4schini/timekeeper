@@ -64,16 +64,17 @@ func CompactTimeSlot(t model.TimeslotModel, active, disabled bool) Node {
 }
 
 func timeslotTime(date time.Time, duration time.Duration, withEnd bool) Node {
-	var timeslotText string
 	if withEnd {
-		timeslotText = fmt.Sprintf("%v-%v", date.Format("15:04"), date.Add(duration).Format("15:04"))
-	} else {
-		timeslotText = fmt.Sprintf("%v", date.Format("15:04"))
+		timeslotText := fmt.Sprintf("%v-%v", date.Format("15:04"), date.Add(duration).Format("15:04"))
+		return Div(
+			Class("timeslot-time"),
+			Text(timeslotText),
+			Title(fmt.Sprintf("%v - %v (%v)", date.Format("15:04"), date.Add(duration).Format("15:04"), duration)))
 	}
 
 	return Div(
 		Class("timeslot-time"),
-		Text(timeslotText),
+		Text(fmt.Sprintf("%v", date.Format("15:04"))), Span(Textf("%vm", duration.Minutes())),
 		Title(fmt.Sprintf("%v - %v (%v)", date.Format("15:04"), date.Add(duration).Format("15:04"), duration)))
 }
 

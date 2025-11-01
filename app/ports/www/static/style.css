@@ -210,10 +210,15 @@ h2 > a {
 
 .timeslot-container .timeslot-time {
     display: flex;
-    justify-content: center;
+    justify-content: space-between;
     align-items: center;
     font-weight: bold;
     font-size: x-large;
+}
+
+.timeslot-container .timeslot-time > span {
+    font-size: 1rem;
+    font-weight: normal;
 }
 
 .timeslot-container .timeslot-room {
