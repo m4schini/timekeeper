@@ -1,12 +1,14 @@
 package pages
 
 import (
-	. "maragu.dev/gomponents"
-	. "maragu.dev/gomponents/html"
+	"fmt"
 	"net/http"
 	"timekeeper/app/database/model"
 	"timekeeper/ports/www/components"
 	"timekeeper/ports/www/render"
+
+	. "maragu.dev/gomponents"
+	. "maragu.dev/gomponents/html"
 )
 
 func PixelHackPage() Node {
@@ -14,7 +16,7 @@ func PixelHackPage() Node {
 	for _, name := range components.AvailablePixelHackIcons {
 		g = append(g, Li(Style("display: flex; align-items: center; gap: 1rem; margin: 0"),
 			components.PixelHackIcon(name, 24),
-			Textf(":%v:", name),
+			components.CopyTextBox("", "", fmt.Sprintf(":%v:", name)),
 		))
 	}
 	return Shell("",

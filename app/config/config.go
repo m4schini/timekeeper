@@ -2,9 +2,12 @@ package config
 
 import (
 	"os"
+	"regexp"
 	"strings"
 	"time"
 )
+
+var PixelHackPlaceholderRx = regexp.MustCompile(`:([a-z0-9_]+):`)
 
 func Timezone() *time.Location {
 	timezone := getEnvOr("TIMEKEEPER_TIMEZONE", "Europe/Berlin")

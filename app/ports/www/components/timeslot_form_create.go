@@ -2,9 +2,6 @@ package components
 
 import (
 	"fmt"
-	"go.uber.org/zap"
-	. "maragu.dev/gomponents"
-	. "maragu.dev/gomponents/html"
 	"net/http"
 	"strconv"
 	"time"
@@ -12,6 +9,10 @@ import (
 	"timekeeper/app/database/model"
 	"timekeeper/ports/www/middleware"
 	"timekeeper/ports/www/render"
+
+	"go.uber.org/zap"
+	. "maragu.dev/gomponents"
+	. "maragu.dev/gomponents/html"
 )
 
 func TimeslotForm(ts *model.TimeslotModel, event model.EventModel, rooms []model.RoomModel, method, action, actionText string) Node {
@@ -62,6 +63,7 @@ func TimeslotForm(ts *model.TimeslotModel, event model.EventModel, rooms []model
 		Div(Class("param"),
 			Label(For("note"), Text("Notiz")),
 			Textarea(Name("note"), Placeholder("Notiz"), Rows("4"), Cols("50"), If(hasTs, Text(ts.Note))),
+			Label(For("note"), Text("Pixelhack emojis: "), A(Href("/help/pixelhack"), Textf("PixelHack Overview"))),
 		),
 
 		Div(Class("param"),

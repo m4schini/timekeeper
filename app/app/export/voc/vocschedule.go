@@ -28,6 +28,9 @@ func ExportVocScheduleTo(event model.EventModel, timeslots []model.TimeslotModel
 		hours := int(t.Duration.Hours())
 		minutes := int(t.Duration.Minutes()) % 60
 
+		t.Note = config.PixelHackPlaceholderRx.ReplaceAllString(t.Note, "")
+		t.Title = config.PixelHackPlaceholderRx.ReplaceAllString(t.Title, "")
+
 		eventDate := t.Date()
 		event := ConferenceEvent{
 			Abstract:    t.Note,

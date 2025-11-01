@@ -2,13 +2,14 @@ package ical
 
 import (
 	"fmt"
-	"github.com/arran4/golang-ical"
-	"go.uber.org/zap"
 	"net/url"
 	"strings"
 	"time"
 	"timekeeper/app/database/model"
 	"timekeeper/config"
+
+	"github.com/arran4/golang-ical"
+	"go.uber.org/zap"
 )
 
 func ExportEventCalendar(events []model.EventModel) (string, error) {
@@ -63,6 +64,9 @@ func ExportCalendarSchedule(event model.EventModel, timeslots []model.TimeslotMo
 	}
 
 	for _, timeslot := range timeslots {
+		timeslot.Note = config.PixelHackPlaceholderRx.ReplaceAllString(timeslot.Note, "")
+		timeslot.Title = config.PixelHackPlaceholderRx.ReplaceAllString(timeslot.Title, "")
+
 		now := time.Now()
 		event := cal.AddEvent(fmt.Sprintf("%v@%v", timeslot.ID, domain.Host))
 		event.SetCreatedTime(now)

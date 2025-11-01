@@ -2,13 +2,15 @@ package md
 
 import (
 	"bytes"
+	"timekeeper/app/database/model"
+	"timekeeper/config"
+
 	"github.com/JohannesKaufmann/html-to-markdown/v2/plugin/base"
 	"github.com/JohannesKaufmann/html-to-markdown/v2/plugin/commonmark"
 	"github.com/JohannesKaufmann/html-to-markdown/v2/plugin/table"
 	"go.uber.org/zap"
 	. "maragu.dev/gomponents"
 	. "maragu.dev/gomponents/html"
-	"timekeeper/app/database/model"
 
 	"github.com/JohannesKaufmann/html-to-markdown/v2/converter"
 )
@@ -36,6 +38,9 @@ func ExportMarkdownTimetable(timeslots []model.TimeslotModel) (string, error) {
 			end := timeslot.Start.Add(timeslot.Duration).Format("15:04")
 			timeslotStr += " - " + end
 		}
+
+		timeslot.Note = config.PixelHackPlaceholderRx.ReplaceAllString(timeslot.Note, "")
+		timeslot.Title = config.PixelHackPlaceholderRx.ReplaceAllString(timeslot.Title, "")
 
 		rows = append(rows, Tr(
 			Td(Textf("%v", timeslotStr)),
