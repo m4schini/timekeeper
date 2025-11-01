@@ -74,7 +74,7 @@ func timeslotTime(date time.Time, duration time.Duration, withEnd bool) Node {
 
 	return Div(
 		Class("timeslot-time"),
-		Text(fmt.Sprintf("%v", date.Format("15:04"))), Span(Textf("%vm", duration.Minutes())),
+		Text(fmt.Sprintf("%v", date.Format("15:04"))), If(duration.Minutes() > 0, Span(Textf("%vm", duration.Minutes()))),
 		Title(fmt.Sprintf("%v - %v (%v)", date.Format("15:04"), date.Add(duration).Format("15:04"), duration)))
 }
 
