@@ -1,0 +1,586 @@
+:root {
+    --color-deep-red: #e52420;
+    --color-deep-orange: #ea680c;
+    --color-deep-yellow: #ffd003;
+    --color-deep-green: #4cad37;
+    --color-deep-blue: #00498c;
+    --color-deep-purple: #4c2582;
+    --color-deep-pink: #e95197;
+    --color-deep-grey: #52575b;
+    --color-soft-red: #e6414a;
+    --color-soft-orange: #f3971b;
+    --color-soft-yellow: #ffe50c;
+    --color-soft-green: #00b48d;
+    --color-soft-blue: #00a6de;
+    --color-soft-pruple: #51509d;
+    --color-soft-grey: #d1d6da;
+    --color-black: #000;
+}
+
+@font-face {
+    font-family: atkinson-hyperlegible-next; /* set name */
+    src: url(/static/font/AtkinsonHyperlegibleNext-Regular.otf); /* url of the font */
+    font-weight: normal;
+}
+@font-face {
+    font-family: atkinson-hyperlegible-next; /* set name */
+    src: url(/static/font/AtkinsonHyperlegibleNext-Bold.otf); /* url of the font */
+    font-weight: bold;
+}
+
+:root, html, body {
+    /*font-family: "atkinson-hyperlegible-next", sans-serif;*/
+    font-family: "atkinson-hyperlegible-next";
+    font-weight: normal;
+    height: 100%;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+
+    /*background-image: url(/static/pixelhack/backgrpund_pattern_a_gray.svg);*/
+    /*background-blend-mode: overlay;*/
+    /*background-size: 50px;*/
+}
+
+.footer {
+    height: 72px;
+    padding: 4px;
+
+    margin-top: 1rem;
+
+    display: flex;
+    gap: 4px;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center
+}
+
+.footer > div {
+    display: flex;
+    height: 24px;
+    gap: 4px;
+}
+
+@media screen and (min-width: 800px) {
+    .footer {
+        height: 24px;
+        flex-direction: row;
+    }
+}
+
+.pixelhack-spritesheet {
+    background-image: url('/static/pixelhack.png');
+    /* size of the whole sheet */
+    background-size: 2048px 2048px;
+
+    /*!* size of one frame *!*/
+    /*width: 100px;*/
+    /*height: 100px;*/
+
+    /*!* coordinates of the desired frame (negated) *!*/
+    /*background-position: -500px 0px;*/
+}
+
+a.button {
+    padding: 0.5rem;
+    margin-right: 0.5rem;
+    text-decoration: none;
+    color: black;
+    background-color: var(--color-soft-blue);
+    width: fit-content;
+}
+
+.box {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 2px solid var(--color-deep-red);
+    background: rgba(0,0,0,0.4);
+    color: white;
+    font-weight: bold;
+}
+
+.box:target {
+    border: 4px solid var(--color-deep-green);
+}
+
+h2 > a {
+    text-decoration: none;
+    color: white;
+}
+
+.days-container {
+    display: grid;
+    grid-template-columns: 1fr;
+    /*gap: 1rem; !* spacing between columns *!*/
+    row-gap: 2rem;
+    width: 100%;
+}
+
+.event-container {
+    padding: 1rem;
+}
+
+.event-container > div {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 2rem;
+}
+
+@media screen and (min-width: 1000px) and (max-width: 1400px) {
+    .days-container {
+        grid-template-columns: 2fr 2fr;
+    }
+
+    .timeslot-container {
+        grid-template-columns: 130px 1fr !important;
+    }
+
+    .timeslot-container .timeslot-time {
+        font-size: x-large !important;
+    }
+
+    .timeslot-container .timeslot-roles {
+        font-size: unset !important;
+    }
+
+    .timeslot-container .timeslot-info-title {
+        font-size: x-large !important;
+    }
+}
+
+@media screen and (min-width: 1400px) {
+    .days-container {
+        grid-template-columns: repeat(auto-fit, minmax(470px, 1fr));
+    }
+
+    .timeslot-container {
+        grid-template-columns: 140px 1fr !important;
+    }
+
+    .timeslot-container .timeslot-time {
+        font-size: xx-large !important;
+    }
+
+    .timeslot-container .timeslot-roles {
+        font-size: unset !important;
+    }
+
+    .timeslot-container .timeslot-info-title {
+        font-size: xx-large !important;
+    }
+}
+
+.day-container {
+    padding: 1rem;
+
+    box-shadow: rgba(60, 64, 67, 0.3) 0px 1px 2px 0px, rgba(60, 64, 67, 0.15) 0px 2px 6px 2px;
+}
+
+.day-container > h2 {
+    margin-top: 0;
+}
+
+.timeslot-container {
+    display: grid;
+    grid-template-columns: 110px 1fr;
+    grid-template-rows: auto auto;
+    column-gap: 1rem;
+
+    padding: 1rem;
+}
+.timeslot-container:hover {
+    background-color: lightgray;
+}
+
+.timeslot-container .timeslot-action {
+    grid-row: 2;
+    grid-column: 1 / 3;
+
+    display: flex;
+    gap: 0.5rem;
+    padding-top: 0.5rem;
+}
+
+.timeslot-container .timeslot-meta {
+    display: flex;
+    flex-direction: column;
+    justify-content: start;
+}
+
+.timeslot-container .timeslot-time {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-weight: bold;
+    font-size: x-large;
+}
+
+.timeslot-container .timeslot-time > span {
+    font-size: 1rem;
+    font-weight: normal;
+}
+
+.timeslot-container .timeslot-room {
+    grid-column-start: 1;
+    grid-row-start: 2;
+}
+
+.timeslot-container .timeslot-room a {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    width: 100%;
+    height: 2rem;
+    max-height: 2rem;
+
+    font-weight: bold;
+    text-decoration: none;
+    color: black;
+    background-color: var(--color-soft-blue);
+}
+
+.timeslot-container .timeslot-info {
+    grid-column: span 2 / span 2;
+    /*grid-row: span 2 / span 2;*/
+    grid-column-start: 2;
+    grid-row-start: 1;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    /*align-items: center;*/
+    gap: 0.5rem
+}
+
+.timeslot-container .timeslot-info-title {
+    font-weight: bold;
+    font-size: medium;
+}
+
+.timeslot-container .timeslot-info-notes {
+    white-space: pre-line
+}
+
+
+.timeslot-container .timeslot-roles {
+    grid-row-start: 3;
+
+    display: flex;
+    flex-direction: column;
+    font-size: small;
+}
+
+.role {
+    color: black;
+    padding: 0.2rem;
+    text-align: center;
+}
+
+.role.role-o {
+    background-color: var(--color-soft-yellow);
+}
+
+.role.role-m {
+    background-color: var(--color-soft-orange);
+}
+
+.role.role-t {
+    background-color: var(--color-soft-green);
+}
+
+.page-header {
+    padding: 1rem;
+    background-color: var(--color-deep-blue);
+    color: white;
+
+    display: flex;
+    justify-content: space-between;
+}
+
+.page-header .last-change {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.logo {
+    margin: 0;
+    color: white;
+}
+
+.logo a {
+    text-decoration: none;
+    color: white;
+}
+
+.location-map img {
+    height: auto;
+    max-height: 90vh;
+    max-width: 95vw;
+}
+
+.location-crop {
+    position: relative;
+}
+
+.location-card {
+    min-width: 200px
+}
+
+a.location-card {
+    text-decoration: none;
+    color: black !important;
+}
+
+a.location-card:hover {
+    background-color: rgba(135, 135, 135, 0.5);
+}
+
+.osm-container {
+    display: flex;
+}
+
+@media screen and (max-width: 800px) {
+    .osm-container {
+        flex-direction: column;
+    }
+
+    .osm-container #map {
+        width: 100% !important;
+    }
+
+    .osm-container .address {
+        white-space: pre-line;
+        padding: 0.5rem !important;
+        margin: 0;
+        font-size: 1.5rem !important;
+    }
+}
+
+.osm-container #map {
+    width: 600px;
+    height: 400px
+}
+
+.osm-container .address {
+    white-space: pre-line;
+    padding: 1rem;
+    font-size: 2rem;
+}
+
+.osm-container .location-label {
+    font-size: 1.5rem;
+    padding-left: 1rem;
+}
+
+.room {
+    display: flex;
+    flex-direction: column;
+    padding: 1rem;
+    margin-bottom: 1rem;
+}
+
+.room:target {
+    border: 4px solid var(--color-soft-green);
+}
+
+.room > * {
+    margin: 0;
+}
+
+.room > h4 {
+    font-size: 1.5rem;
+}
+
+.room p {
+    font-size: 1.2rem;
+    white-space: pre-line;
+}
+
+.menu {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    gap: 1rem;
+}
+
+.menu a {
+    text-decoration: none;
+    color: black;
+    height: 100%;
+    padding: 0.5rem;
+    background-color: var(--color-soft-blue);
+}
+
+h2 {
+    background-color: var(--color-soft-blue);
+    padding: 1rem;
+    color: white;
+}
+
+h3 {
+    background-color: var(--color-soft-blue);
+    padding: 0.6rem 1rem;
+    color: white;
+}
+
+.export-actions {
+    padding: 1rem;
+}
+
+.export-actions > a {
+    margin-right: 1rem;
+    padding: 0.5rem;
+    background-color: var(--color-soft-blue);
+    color: black;
+    text-decoration: none;
+}
+
+.separator {
+    display: flex;
+    align-items: center;
+    text-align: center;
+    color: var(--color-deep-red);
+    font-weight: bold;
+
+}
+
+.separator::before,
+.separator::after {
+    content: '';
+    flex: 1;
+    border-bottom: 2px solid var(--color-deep-red);
+}
+
+.separator:not(:empty)::before {
+    margin-right: .25em;
+}
+
+.separator:not(:empty)::after {
+    margin-left: .25em;
+}
+
+.form {
+    display: flex;
+    flex-direction: column;
+    width: 96%;
+    gap: 1rem;
+    max-width: 100vw;
+
+    padding: 1rem;
+}
+
+.form > .param {
+    display: flex;
+    flex-direction: column;
+}
+
+.form input[type=submit] {
+    padding: 0.5rem;
+    margin-right: 0.5rem;
+    margin-bottom: 0 !important;
+    text-decoration: none;
+    width: fit-content;
+    border: none;
+
+    color: white;
+    background-color: var(--color-deep-blue);
+}
+
+.form input[type=submit]:hover {
+    color: black;
+    background-color: var(--color-soft-blue);
+}
+
+.form input[type=text] {
+    padding: 0.3rem;
+}
+
+.compact-timeslot-container {
+    display: grid;
+    grid-template-columns: 160px 100px 1fr;
+    grid-template-rows: 1rem auto;
+    column-gap: 0.5rem;
+
+    padding: 0.2rem 0.5rem;
+}
+
+.compact-timeslot-container:hover {
+    background-color: lightgray;
+}
+
+.compact-timeslot-container .timeslot-time {
+    grid-column-start: 1;
+    grid-row-start: 1;
+    grid-row: span 2 / span 2;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-weight: bold;
+    font-size: 1.5rem;
+}
+
+.compact-timeslot-container .timeslot-room {
+    grid-column-start: 2;
+    grid-row-start: 1;
+}
+
+.compact-timeslot-container .timeslot-room a {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+
+    width: 100%;
+    height: 1rem;
+    max-height: 1rem;
+
+    font-weight: bold;
+    text-decoration: none;
+    color: black;
+    background-color: var(--color-soft-blue);
+    font-size: 0.7rem;
+}
+
+.compact-timeslot-container .timeslot-info {
+    grid-column-start: 3;
+    grid-row-start: 1;
+    grid-row: 1 / 3;
+
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    /*align-items: center;*/
+}
+
+.compact-timeslot-container .timeslot-info-title {
+    font-weight: bold;
+    font-size: large;
+}
+
+.compact-timeslot-container .timeslot-info-notes {
+    font-size: small;
+    white-space: pre-line
+}
+
+
+.compact-timeslot-container .timeslot-roles {
+    grid-column-start: 2;
+
+    display: flex;
+    flex-direction: column;
+    font-size: x-small;
+}
+
+.rooms .form input[type=submit] {
+    margin-bottom: 1rem;
+}
+
+.rooms li {
+    padding-bottom: 1rem;
+}

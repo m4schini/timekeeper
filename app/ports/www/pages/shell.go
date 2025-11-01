@@ -2,10 +2,11 @@ package pages
 
 import (
 	_ "embed"
+	"timekeeper/ports/www/components"
+
 	. "maragu.dev/gomponents"
 	. "maragu.dev/gomponents/components"
 	. "maragu.dev/gomponents/html"
-	"timekeeper/ports/www/components"
 )
 
 func Shell(title string, children ...Node) Node {
@@ -25,7 +26,7 @@ func ShellWithHead(title string, footer Node, head []Node, children ...Node) Nod
 		Language:    "de",
 		Head: append(head,
 			Script(Src("/static/htmx.min.js")),
-			Link(Href("/static/style.css"), Rel("stylesheet")),
+			Link(Href("/static/style2.css"), Rel("stylesheet")),
 			Link(Rel("icon"), Type("image/png"), Href("/static/timekeeper_icon.png")),
 		),
 		Body:      append(children, footer),
