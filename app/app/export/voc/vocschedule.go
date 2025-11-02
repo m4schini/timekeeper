@@ -40,6 +40,7 @@ func ExportVocScheduleTo(event model.EventModel, timeslots []model.TimeslotModel
 			Guid:        t.GUID,
 			Id:          t.ID,
 			Language:    "de",
+			Track:       t.Role.Title(),
 			Room:        room,
 			Slug:        fmt.Sprintf("event-%d", t.ID),
 			Start:       t.Start.Format("15:04"),
