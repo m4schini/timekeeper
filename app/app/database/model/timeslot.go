@@ -16,6 +16,7 @@ type TimeslotModel struct {
 	Duration time.Duration
 	Room     RoomModel
 	Role     Role
+	Children []TimeslotModel
 }
 
 func (t *TimeslotModel) Date() time.Time {

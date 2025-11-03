@@ -42,6 +42,14 @@ func TimeSlot(t model.TimeslotModel, withActions, active, disabled bool) Node {
 			Div(Class("timeslot-info-title"), Text2(t.Title, 32)),
 			Div(Class("timeslot-info-notes"), Text2(t.Note, 16)),
 		),
+		Iff(t.Children != nil && len(t.Children) > 0, func() Node {
+			g := Group{}
+			for _, child := range t.Children {
+				g = append(g, TimeSlot(child, withActions, active, disabled))
+			}
+
+			return Div(g)
+		}),
 		If(withActions, Div(Class("timeslot-action"),
 			EditTimeslotButton(t.ID),
 			DuplicateTimeslotButton(t.ID),
