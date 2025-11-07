@@ -29,6 +29,7 @@ func main() {
 	if err != nil {
 		logger.Fatal("failed to create postgresql adapter", zap.Error(err))
 	}
+	defer dbAdapter.Close()
 
 	// init app
 	db := database.New(dbAdapter)
