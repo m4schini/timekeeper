@@ -13,10 +13,21 @@ CREATE TABLE timekeeper.events (
     id SERIAL PRIMARY KEY ,
     name VARCHAR NOT NULL ,
     start DATE NOT NULL,
-    owner INT NOT NULL REFERENCES timekeeper.users(id),
+--     owner INT NOT NULL REFERENCES timekeeper.users(id),
     slug VARCHAR NOT NULL UNIQUE,
     guid uuid NOT NULL UNIQUE DEFAULT gen_random_uuid()
 );
+
+CREATE TABLE timekeeper.locations (
+                                      id SERIAL PRIMARY KEY ,
+                                      name VARCHAR NOT NULL ,
+                                      file VARCHAR,
+                                      osm_id VARCHAR,
+                                      guid uuid NOT NULL UNIQUE DEFAULT gen_random_uuid()
+);
+--  https://nominatim.openstreetmap.org/lookup?osm_ids=W286396721
+--  https://nominatim.openstreetmap.org/lookup?osm_ids=N290381165
+
 
 CREATE TABLE timekeeper.event_has_location (
     id SERIAL PRIMARY KEY ,
@@ -26,16 +37,6 @@ CREATE TABLE timekeeper.event_has_location (
     note VARCHAR NOT NULL,
     visible BOOL NOT NULL DEFAULT true
 );
-
-CREATE TABLE timekeeper.locations (
-    id SERIAL PRIMARY KEY ,
-    name VARCHAR NOT NULL ,
-    file VARCHAR,
-    osm_id VARCHAR,
-    guid uuid NOT NULL UNIQUE DEFAULT gen_random_uuid()
-);
---  https://nominatim.openstreetmap.org/lookup?osm_ids=W286396721
---  https://nominatim.openstreetmap.org/lookup?osm_ids=N290381165
 
 CREATE TABLE timekeeper.rooms (
   id SERIAL PRIMARY KEY ,

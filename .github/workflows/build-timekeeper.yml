@@ -61,7 +61,7 @@ jobs:
           tags: |
             type=ref,event=pr
             type=raw,value=${{ github.run_id }}
-            type=raw,value=latest
+            type=raw,value=experimental
 
       # Build and push Docker image with Buildx (don't push on PR)
       # https://github.com/docker/build-push-action
