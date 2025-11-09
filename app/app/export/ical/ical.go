@@ -48,6 +48,8 @@ func ExportEventCalendar(events []model.EventModel) (string, error) {
 func ExportCalendarSchedule(event model.EventModel, timeslots []model.TimeslotModel) (string, error) {
 	log := zap.L().Named("export").Named("ical").With(zap.Int("event", event.ID), zap.Int("timeslots_count", len(timeslots)))
 
+	timeslots = model.FlattenTimeslots(timeslots)
+
 	log.Debug("exporting schedule as calendar (ical)")
 	cal := ics.NewCalendar()
 	cal.SetMethod(ics.MethodPublish)

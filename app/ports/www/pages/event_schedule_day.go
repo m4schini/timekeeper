@@ -63,13 +63,12 @@ func (l *EventScheduleDayRoute) Handler() http.Handler {
 			return
 		}
 
-		timeslots, _, err := queries.GetTimeslotsOfEvent(int(eventId), 0, 100)
+		timeslots, _, err := queries.GetTimeslotsOfEvent(int(eventId), roles, 0, 100)
 		if err != nil {
 			render.Error(log, writer, http.StatusInternalServerError, "failed to retrieve day", err)
 			return
 		}
 		timeslots = model.FilterTimeslotDay(timeslots, int(day))
-		timeslots = model.FilterTimeslotRoles(timeslots, roles)
 
 		render.HTML(log, writer, request, CompactDayPage(event, timeslots))
 	})

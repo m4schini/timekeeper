@@ -109,7 +109,7 @@ func (l *SchedulePageRoute) Handler() http.Handler {
 			return
 		}
 
-		timeslots, _, err := queries.GetTimeslotsOfEvent(int(eventId), 0, 1000)
+		timeslots, _, err := queries.GetTimeslotsOfEvent(int(eventId), roles, 0, 1000)
 		if err != nil {
 			render.Error(log, writer, http.StatusInternalServerError, "failed to get timeslots", err)
 			return
@@ -118,7 +118,7 @@ func (l *SchedulePageRoute) Handler() http.Handler {
 		eventDays := model.MapTimeslotsToDays(timeslots)
 		renderData := make([][]model.TimeslotModel, len(eventDays))
 		for day, timeslotsOfDay := range eventDays {
-			renderData[day] = model.FilterTimeslotRoles(timeslotsOfDay, roles)
+			renderData[day] = timeslotsOfDay
 		}
 
 		if useCompact {

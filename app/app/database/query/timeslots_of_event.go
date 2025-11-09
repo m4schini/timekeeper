@@ -6,9 +6,11 @@ import (
 	"time"
 	. "timekeeper/app/database/model"
 	"timekeeper/config"
+
+	"github.com/lib/pq"
 )
 
-func (q *Queries) GetTimeslotsOfEvent(event int, offset, limit int) (ts []TimeslotModel, total int, err error) {
+func (q *Queries) GetTimeslotsOfEvent(event int, roles []Role, offset, limit int) (ts []TimeslotModel, total int, err error) {
 	row := q.DB.QueryRow(`SELECT COUNT(id) FROM timekeeper.timeslots WHERE event = $1`, event)
 	if err = row.Err(); err != nil {
 		return nil, -1, err
@@ -56,8 +58,8 @@ FROM timekeeper.timeslots ts
 JOIN timekeeper.rooms r ON r.id = ts.room
 JOIN timekeeper.events e on e.id = ts.event
 JOIN timekeeper.locations l on l.id = r.location
-WHERE e.id = $1 ORDER BY ts.start, ts.note, ts.parent_id DESC LIMIT $2 OFFSET $3 `,
-		event, limit, offset)
+WHERE e.id = $1 AND ts.role = ANY($4) ORDER BY ts.start, ts.parent_id NULLS FIRST, ts.note LIMIT $2 OFFSET $3 `,
+		event, limit, offset, pq.Array(roles))
 	if err != nil {
 		return nil, total, err
 	}

@@ -2,9 +2,6 @@ package pages
 
 import (
 	"fmt"
-	"github.com/go-chi/chi/v5"
-	. "maragu.dev/gomponents"
-	. "maragu.dev/gomponents/html"
 	"net/http"
 	"strconv"
 	"timekeeper/app/database"
@@ -12,14 +9,18 @@ import (
 	"timekeeper/ports/www/components"
 	"timekeeper/ports/www/middleware"
 	"timekeeper/ports/www/render"
+
+	"github.com/go-chi/chi/v5"
+	. "maragu.dev/gomponents"
+	. "maragu.dev/gomponents/html"
 )
 
-func EditTimeslotPage(timeslot model.TimeslotModel, event model.EventModel, rooms []model.RoomModel) Node {
+func EditTimeslotPage(timeslot model.TimeslotModel, parentTimeslot *model.TimeslotModel, event model.EventModel, rooms []model.RoomModel) Node {
 	return Shell(event.Name,
 		components.PageHeader(event),
 		Main(
 			H2(Text("Edit Timeslot")),
-			components.TimeslotForm(&timeslot, event, rooms, "POST", fmt.Sprintf("/_/edit/timeslot/%v", timeslot.ID), "Update"),
+			components.TimeslotForm(&timeslot, parentTimeslot, event, rooms, "POST", fmt.Sprintf("/_/edit/timeslot/%v", timeslot.ID), "Update"),
 		),
 	)
 }
@@ -66,6 +67,7 @@ func (l *EditTimeslotPageRoute) Handler() http.Handler {
 			return
 		}
 
-		render.HTML(log, writer, request, EditTimeslotPage(timeslot, timeslot.Event, rooms))
+		//TODO parent
+		render.HTML(log, writer, request, EditTimeslotPage(timeslot, nil, timeslot.Event, rooms))
 	})
 }

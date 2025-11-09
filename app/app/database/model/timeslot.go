@@ -1,6 +1,7 @@
 package model
 
 import (
+	"fmt"
 	"time"
 	"timekeeper/config"
 )
@@ -26,6 +27,33 @@ func (t *TimeslotModel) Date() time.Time {
 		config.Timezone())
 }
 
+func FlattenTimeslots(timeslots []TimeslotModel) []TimeslotModel {
+	flatTimeslots := make([]TimeslotModel, 0, len(timeslots))
+	for _, timeslot := range timeslots {
+		if timeslot.Children == nil || len(timeslot.Children) == 0 {
+			flatTimeslots = append(flatTimeslots, timeslot)
+		} else {
+			for _, child := range timeslot.Children {
+				flatTimeslots = append(flatTimeslots, TimeslotModel{
+					ID:       child.ID,
+					GUID:     child.GUID,
+					Event:    child.Event,
+					Title:    fmt.Sprintf("%v: %v", timeslot.Title, child.Title),
+					Note:     child.Note,
+					Day:      child.Day,
+					Start:    child.Start,
+					Duration: child.Duration,
+					Room:     child.Room,
+					Role:     child.Role,
+					Children: child.Children,
+				})
+			}
+		}
+	}
+
+	return flatTimeslots
+}
+
 func FilterTimeslotDay(timeslots []TimeslotModel, dayIndex int) []TimeslotModel {
 	filtered := make([]TimeslotModel, 0, len(timeslots))
 	for _, timeslot := range timeslots {
@@ -37,19 +65,19 @@ func FilterTimeslotDay(timeslots []TimeslotModel, dayIndex int) []TimeslotModel 
 	return filtered
 }
 
-func FilterTimeslotRoles(timeslots []TimeslotModel, roles []Role) []TimeslotModel {
-	filtered := make([]TimeslotModel, 0, len(timeslots))
-	for _, timeslot := range timeslots {
-		for _, role := range roles {
-			if timeslot.Role == role {
-				filtered = append(filtered, timeslot)
-				break
-			}
-		}
-	}
-
-	return filtered
-}
+//func FilterTimeslotRoles(timeslots []TimeslotModel, roles []Role) []TimeslotModel {
+//	filtered := make([]TimeslotModel, 0, len(timeslots))
+//	for _, timeslot := range timeslots {
+//		for _, role := range roles {
+//			if timeslot.Role == role {
+//				filtered = append(filtered, timeslot)
+//				break
+//			}
+//		}
+//	}
+//
+//	return filtered
+//}
 
 func MapTimeslotsToDays(timeslots []TimeslotModel) map[int][]TimeslotModel {
 	eventDays := make(map[int][]TimeslotModel)
@@ -68,6 +96,7 @@ func MapTimeslotsToDays(timeslots []TimeslotModel) map[int][]TimeslotModel {
 
 type CreateTimeslotModel struct {
 	Event    int
+	Parent   *int64
 	Role     Role
 	Day      int
 	Timeslot time.Time

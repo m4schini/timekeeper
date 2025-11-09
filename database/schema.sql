@@ -19,11 +19,11 @@ CREATE TABLE timekeeper.events (
 );
 
 CREATE TABLE timekeeper.locations (
-                                      id SERIAL PRIMARY KEY ,
-                                      name VARCHAR NOT NULL ,
-                                      file VARCHAR,
-                                      osm_id VARCHAR,
-                                      guid uuid NOT NULL UNIQUE DEFAULT gen_random_uuid()
+      id SERIAL PRIMARY KEY ,
+      name VARCHAR NOT NULL ,
+      file VARCHAR,
+      osm_id VARCHAR,
+      guid uuid NOT NULL UNIQUE DEFAULT gen_random_uuid()
 );
 --  https://nominatim.openstreetmap.org/lookup?osm_ids=W286396721
 --  https://nominatim.openstreetmap.org/lookup?osm_ids=N290381165
@@ -52,6 +52,7 @@ CREATE TABLE timekeeper.rooms (
 
 CREATE TABLE timekeeper.timeslots (
     id SERIAL PRIMARY KEY ,
+    parent_id INT REFERENCES timekeeper.timeslots(id) ON DELETE CASCADE ,
     event INT NOT NULL REFERENCES timekeeper.events(id) ON DELETE CASCADE ,
     title VARCHAR NOT NULL ,
     note VARCHAR NOT NULL ,
@@ -61,4 +62,25 @@ CREATE TABLE timekeeper.timeslots (
     role EVENT_ROLE NOT NULL DEFAULT 'Organizer',
     duration INTERVAL SECOND(0) NOT NULL,
     guid uuid NOT NULL UNIQUE DEFAULT gen_random_uuid()
-)
+);
+
+-- CREATE TABLE timekeeper.project_groups (
+--     id SERIAL PRIMARY KEY ,
+--     guid UUID NOT NULL UNIQUE DEFAULT gen_random_uuid(),
+--     name VARCHAR NOT NULL,
+--     location VARCHAR,
+--     room_id INT,
+--     note VARCHAR NOT NULL DEFAULT ''
+-- );
+--
+-- CREATE TABLE timekeeper.participants (
+--     id SERIAL PRIMARY KEY ,
+--     guid UUID NOT NULL UNIQUE DEFAULT gen_random_uuid(),
+--     name VARCHAR NOT NULL
+-- );
+--
+-- CREATE TABLE timekeeper.project_groups_members (
+--     id SERIAL PRIMARY KEY ,
+--     participant_id INT NOT NULL ,
+--     group_id INT NOT NULL
+-- );

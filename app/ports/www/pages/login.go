@@ -1,16 +1,17 @@
 package pages
 
 import (
-	"go.uber.org/zap"
-	"golang.org/x/time/rate"
-	. "maragu.dev/gomponents"
-	. "maragu.dev/gomponents/html"
 	"net/http"
 	"time"
 	"timekeeper/app/auth"
 	"timekeeper/app/database/model"
 	"timekeeper/ports/www/components"
 	"timekeeper/ports/www/render"
+
+	"go.uber.org/zap"
+	"golang.org/x/time/rate"
+	. "maragu.dev/gomponents"
+	. "maragu.dev/gomponents/html"
 )
 
 func LoginPage() Node {
@@ -85,6 +86,7 @@ func (l *LoginRoute) Handler() http.Handler {
 		if err != nil {
 			log.Warn("failed login", zap.Error(err))
 			http.Redirect(writer, request, "/login", http.StatusSeeOther)
+			return
 		}
 
 		log.Debug("user authenticated. setting cookie")

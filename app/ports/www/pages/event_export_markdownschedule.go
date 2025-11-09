@@ -2,8 +2,6 @@ package pages
 
 import (
 	"fmt"
-	"github.com/go-chi/chi/v5"
-	"go.uber.org/zap"
 	"net/http"
 	"slices"
 	"strconv"
@@ -13,6 +11,9 @@ import (
 	export "timekeeper/app/export/md"
 	"timekeeper/ports/www/components"
 	"timekeeper/ports/www/render"
+
+	"github.com/go-chi/chi/v5"
+	"go.uber.org/zap"
 )
 
 type Day struct {
@@ -53,12 +54,11 @@ func (l *EventScheduleExportMarkdownRoute) Handler() http.Handler {
 			return
 		}
 
-		timeslots, _, err := queries.GetTimeslotsOfEvent(int(eventId), 0, 100)
+		timeslots, _, err := queries.GetTimeslotsOfEvent(int(eventId), roles, 0, 100)
 		if err != nil {
 			render.Error(log, writer, http.StatusInternalServerError, "failed to retrieve day", err)
 			return
 		}
-		timeslots = model.FilterTimeslotRoles(timeslots, roles)
 
 		eventDays := model.MapTimeslotsToDays(timeslots)
 		days := make([]Day, 0, len(eventDays))

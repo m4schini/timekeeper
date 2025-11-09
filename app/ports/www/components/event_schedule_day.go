@@ -149,7 +149,7 @@ func (d *DayRoute) Handler() http.Handler {
 			return
 		}
 
-		timeslots, _, err := queries.GetTimeslotsOfEvent(int(eventId), 0, 100)
+		timeslots, _, err := queries.GetTimeslotsOfEvent(int(eventId), []model.Role{model.RoleMentor}, 0, 100)
 		if err != nil {
 			render.Error(log, writer, http.StatusInternalServerError, "failed to retrieve day", err)
 			return

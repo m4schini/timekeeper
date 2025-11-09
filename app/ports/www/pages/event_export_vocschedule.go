@@ -6,7 +6,6 @@ import (
 	"time"
 	"timekeeper/app/cache"
 	"timekeeper/app/database"
-	"timekeeper/app/database/model"
 	export "timekeeper/app/export/voc"
 	"timekeeper/ports/www/components"
 	"timekeeper/ports/www/render"
@@ -56,12 +55,11 @@ func (v *EventExportVocScheduleRoute) Handler() http.Handler {
 			return
 		}
 
-		timeslots, _, err := queries.GetTimeslotsOfEvent(int(eventId), 0, 1000)
+		timeslots, _, err := queries.GetTimeslotsOfEvent(int(eventId), roles, 0, 1000)
 		if err != nil {
 			render.Error(log, writer, http.StatusInternalServerError, "failed to get timeslots of event", err)
 			return
 		}
-		timeslots = model.FilterTimeslotRoles(timeslots, roles)
 
 		export, err := export.ExportVocSchedule(event, timeslots)
 		if err != nil {

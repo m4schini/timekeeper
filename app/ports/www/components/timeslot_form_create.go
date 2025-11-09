@@ -15,7 +15,7 @@ import (
 	. "maragu.dev/gomponents/html"
 )
 
-func TimeslotForm(ts *model.TimeslotModel, event model.EventModel, rooms []model.RoomModel, method, action, actionText string) Node {
+func TimeslotForm(ts *model.TimeslotModel, parentTs *model.TimeslotModel, event model.EventModel, rooms []model.RoomModel, method, action, actionText string) Node {
 	hasTs := ts != nil
 	if !hasTs {
 		ts = &model.TimeslotModel{Room: model.RoomModel{}, Event: model.EventModel{}}
@@ -25,11 +25,16 @@ func TimeslotForm(ts *model.TimeslotModel, event model.EventModel, rooms []model
 		roomOptions = append(roomOptions, Option(
 			Value(fmt.Sprintf("%v", room.ID)),
 			Textf("%v: %v", room.Location.Name, room.Name),
-			If(hasTs && room.ID == ts.Room.ID, Selected())))
+			If(hasTs && room.ID == ts.Room.ID, Selected())),
+			If(!hasTs && parentTs != nil, Selected()),
+		)
 	}
 
 	return Form(Method(method), Action(action), Class("form"),
 		Input(Type("hidden"), Name("event"), Value(fmt.Sprintf("%v", event.ID))),
+		Iff(!hasTs && parentTs != nil, func() Node {
+			return Input(Type("hidden"), Name("parent"), Value(fmt.Sprintf("%v", parentTs.ID)))
+		}),
 
 		Div(Class("param"),
 			Label(For("role"), Text("Rolle")),
@@ -42,17 +47,32 @@ func TimeslotForm(ts *model.TimeslotModel, event model.EventModel, rooms []model
 
 		Div(Class("param"),
 			Label(For("day"), Text("Tag")),
-			Input(Type("number"), Name("day"), Placeholder("0"), Min("0"), Required(), If(hasTs, Value(fmt.Sprintf("%v", ts.Day)))),
+			Input(Type("number"), Name("day"), Placeholder("0"), Min("0"), Required(),
+				If(hasTs, Value(fmt.Sprintf("%v", ts.Day))),
+				Iff(!hasTs && parentTs != nil, func() Node {
+					return Value(fmt.Sprintf("%v", parentTs.Day))
+				}),
+			),
 		),
 
 		Div(Class("param"),
 			Label(For("timeslot"), Text("Zeit")),
-			Input(Type("text"), Name("timeslot"), Placeholder("08:00"), Pattern(`^([01]\d|2[0-3]):([0-5]\d)$`), Required(), If(hasTs, Value(ts.Start.Format("15:04")))),
+			Input(Type("text"), Name("timeslot"), Placeholder("08:00"), Pattern(`^([01]\d|2[0-3]):([0-5]\d)$`), Required(),
+				If(hasTs, Value(ts.Start.Format("15:04"))),
+				Iff(parentTs != nil, func() Node {
+					return Value(fmt.Sprintf("%v", parentTs.Start.Format("15:04")))
+				}),
+			),
 		),
 
 		Div(Class("param"),
 			Label(For("duration"), Text("Dauer in Minuten")),
-			Input(Type("number"), Name("duration"), Placeholder("60"), Min("0"), Max("1440"), Required(), If(hasTs, Value(fmt.Sprintf("%v", ts.Duration.Minutes())))),
+			Input(Type("number"), Name("duration"), Placeholder("60"), Min("0"), Max("1440"), Required(),
+				If(hasTs, Value(fmt.Sprintf("%v", ts.Duration.Minutes()))),
+				Iff(!hasTs && parentTs != nil, func() Node {
+					return Value(fmt.Sprintf("%v", parentTs.Duration.Minutes()))
+				}),
+			),
 		),
 
 		Div(Class("param"),
@@ -106,6 +126,7 @@ func (l *CreateTimeslotRoute) Handler() http.Handler {
 
 		var (
 			eventParam    = request.PostFormValue("event")
+			parentParam   = request.PostFormValue("parent")
 			roleParam     = request.PostFormValue("role")
 			dayParam      = request.PostFormValue("day")
 			timeslotParam = request.PostFormValue("timeslot")
@@ -114,7 +135,7 @@ func (l *CreateTimeslotRoute) Handler() http.Handler {
 			noteParam     = request.PostFormValue("note")
 			roomParam     = request.PostFormValue("room")
 		)
-		model, err := ParseCreateTimeslotModel(eventParam, roleParam, dayParam, timeslotParam, durationParam, titleParam, noteParam, roomParam)
+		model, err := ParseCreateTimeslotModel(eventParam, parentParam, roleParam, dayParam, timeslotParam, durationParam, titleParam, noteParam, roomParam)
 		if err != nil {
 			render.Error(log, writer, http.StatusBadRequest, "failed to parse form", err)
 			return
@@ -132,10 +153,17 @@ func (l *CreateTimeslotRoute) Handler() http.Handler {
 	})
 }
 
-func ParseCreateTimeslotModel(event, role, day, timeslot, duration, title, note, room string) (model.CreateTimeslotModel, error) {
+func ParseCreateTimeslotModel(event, parent, role, day, timeslot, duration, title, note, room string) (model.CreateTimeslotModel, error) {
+	var parentIdp *int64
 	eventId, err := strconv.ParseInt(event, 10, 64)
 	if err != nil {
 		return model.CreateTimeslotModel{}, err
+	}
+	parentId, err := strconv.ParseInt(parent, 10, 64)
+	if err != nil {
+		parentIdp = nil
+	} else {
+		parentIdp = &parentId
 	}
 	dayValue, err := strconv.ParseInt(day, 10, 64)
 	if err != nil {
@@ -156,6 +184,7 @@ func ParseCreateTimeslotModel(event, role, day, timeslot, duration, title, note,
 
 	return model.CreateTimeslotModel{
 		Event:    int(eventId),
+		Parent:   parentIdp,
 		Role:     model.RoleFrom(role),
 		Day:      int(dayValue),
 		Timeslot: timeslotValue,

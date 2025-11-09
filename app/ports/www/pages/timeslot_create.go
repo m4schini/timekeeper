@@ -2,8 +2,6 @@ package pages
 
 import (
 	"fmt"
-	. "maragu.dev/gomponents"
-	. "maragu.dev/gomponents/html"
 	"net/http"
 	"strconv"
 	"timekeeper/app/database"
@@ -11,9 +9,13 @@ import (
 	"timekeeper/ports/www/components"
 	"timekeeper/ports/www/middleware"
 	"timekeeper/ports/www/render"
+
+	"go.uber.org/zap"
+	. "maragu.dev/gomponents"
+	. "maragu.dev/gomponents/html"
 )
 
-func CreateTimeslotPage(event model.EventModel, rooms []model.RoomModel) Node {
+func CreateTimeslotPage(event model.EventModel, parentTimeslot *model.TimeslotModel, rooms []model.RoomModel) Node {
 	roomOptions := Group{}
 	for _, room := range rooms {
 		roomOptions = append(roomOptions, Option(Value(fmt.Sprintf("%v", room.ID)), Text(room.Name)))
@@ -23,7 +25,7 @@ func CreateTimeslotPage(event model.EventModel, rooms []model.RoomModel) Node {
 		components.PageHeader(event),
 		Main(
 			H2(Text("Create Timeslot")),
-			components.TimeslotForm(nil, event, rooms, "POST", "/_/create/timeslot", "Create"),
+			components.TimeslotForm(nil, parentTimeslot, event, rooms, "POST", "/_/create/timeslot", "Create"),
 		),
 	)
 }
@@ -50,11 +52,19 @@ func (l *CreateTimeslotPageRoute) Handler() http.Handler {
 			return
 		}
 		var (
-			eventParam   = request.URL.Query().Get("event")
-			eventId, err = strconv.ParseInt(eventParam, 10, 64)
+			eventParam     = request.URL.Query().Get("event")
+			hasParentParam = request.URL.Query().Has("parent")
+			parentParam    = request.URL.Query().Get("parent")
+			parent         *model.TimeslotModel
 		)
+		eventId, err := strconv.ParseInt(eventParam, 10, 64)
 		if err != nil {
 			render.Error(log, writer, http.StatusBadRequest, "invalid eventId", err)
+			return
+		}
+		parentId, err := strconv.ParseInt(parentParam, 10, 64)
+		if err != nil {
+			render.Error(log, writer, http.StatusBadRequest, "invalid parentId", err)
 			return
 		}
 
@@ -64,12 +74,21 @@ func (l *CreateTimeslotPageRoute) Handler() http.Handler {
 			return
 		}
 
-		rooms, _, err := queries.GetRooms(0, 100)
+		if hasParentParam {
+			p, err := queries.GetTimeslot(int(parentId))
+			if err == nil {
+				parent = &p
+			} else {
+				log.Warn("failed to get parent", zap.String("parentParam", parentParam))
+			}
+		}
+
+		rooms, err := queries.GetRoomsOfEventLocations(event.ID)
 		if err != nil {
 			render.Error(log, writer, http.StatusInternalServerError, "failed to retrieve rooms", err)
 			return
 		}
 
-		render.HTML(log, writer, request, CreateTimeslotPage(event, rooms))
+		render.HTML(log, writer, request, CreateTimeslotPage(event, parent, rooms))
 	})
 }

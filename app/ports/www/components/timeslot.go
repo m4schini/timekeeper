@@ -5,14 +5,19 @@ import (
 	"strings"
 	"time"
 	"timekeeper/app/database/model"
+	"timekeeper/config"
 
 	. "maragu.dev/gomponents"
 	hx "maragu.dev/gomponents-htmx"
 	. "maragu.dev/gomponents/html"
 )
 
-func CreateTimeslotButton(eventId int) Node {
-	return AButton(ColorDefault, fmt.Sprintf("/timeslot/new?event=%v", eventId), "Create Timeslot")
+func CreateTimeslotButton(eventId int, parentTimeslotId *int) Node {
+	if parentTimeslotId == nil {
+		return AButton(ColorDefault, fmt.Sprintf("/timeslot/new?event=%v", eventId), "Create Timeslot")
+	} else {
+		return AButton(ColorDefault, fmt.Sprintf("/timeslot/new?event=%v&parent=%v", eventId, *parentTimeslotId), "Create Child Timeslot")
+	}
 }
 
 func EditTimeslotButton(timeslotId int) Node {
@@ -32,11 +37,15 @@ func DeleteTimeslotButton(timeslotId int) Node {
 }
 
 func TimeSlot(t model.TimeslotModel, withActions, active, disabled bool) Node {
+	return SubTimeSlot(t, nil, withActions, active, disabled, true, true, true)
+}
+
+func SubTimeSlot(t model.TimeslotModel, parent *model.TimeslotModel, withActions, active, disabled, showTime, showRoom, showRole bool) Node {
 	return Div(Class("timeslot-container"), If(disabled && !active, Style("opacity: 0.5;")), If(active, Style("border-left: 8px solid var(--color-deep-green);")),
 		Div(Class("timeslot-meta"),
-			timeslotTime(t.Date(), t.Duration, false),
-			timeslotRoom(t.Event.ID, t.Room.Location.ID, t.Room),
-			Div(Class("timeslot-roles"), RoleTag(t.Role)),
+			If(showTime, timeslotTime(t.Date(), t.Duration, false)),
+			If(showRoom, timeslotRoom(t.Event.ID, t.Room.Location.ID, t.Room)),
+			If(showRole, Div(Class("timeslot-roles"), RoleTag(t.Role))),
 		),
 		Div(Class("timeslot-info"),
 			Div(Class("timeslot-info-title"), Text2(t.Title, 32)),
@@ -44,13 +53,22 @@ func TimeSlot(t model.TimeslotModel, withActions, active, disabled bool) Node {
 		),
 		Iff(t.Children != nil && len(t.Children) > 0, func() Node {
 			g := Group{}
+			now := time.Now().In(config.Timezone()) //TODO zeigt/filtert sub events nicht richtig
 			for _, child := range t.Children {
-				g = append(g, TimeSlot(child, withActions, active, disabled))
+				//until := now.Before(child.Start)
+				active := now.After(child.Start) && now.Before(child.Start.Add(child.Duration))
+
+				g = append(g, SubTimeSlot(child, &t, withActions, active, false,
+					child.Start != t.Start,
+					child.Room.ID != t.Room.ID,
+					child.Role != t.Role))
+
 			}
 
-			return Div(g)
+			return Div(Class("timeslot-sub-events"), g)
 		}),
 		If(withActions, Div(Class("timeslot-action"),
+			If(parent == nil, CreateTimeslotButton(t.Event.ID, &t.ID)),
 			EditTimeslotButton(t.ID),
 			DuplicateTimeslotButton(t.ID),
 			DeleteTimeslotButton(t.ID),

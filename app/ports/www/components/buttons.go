@@ -25,7 +25,7 @@ func AButton(color PaletteColor, href, text string, attrs ...Node) Node {
 
 func EventActions(eventId int) Node {
 	return Div(Class("menu"),
-		CreateTimeslotButton(eventId),
+		CreateTimeslotButton(eventId, nil),
 		Text("Export: "),
 		ExportEventMarkdownButton(eventId),
 		ExportEventVocScheduleButton(eventId),
