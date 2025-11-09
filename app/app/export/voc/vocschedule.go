@@ -19,6 +19,8 @@ func ExportVocScheduleTo(event model.EventModel, timeslots []model.TimeslotModel
 	conf := NewConference(fmt.Sprintf("timekeeper_event_%v", event.ID), event.Name, event.Start, event.TotalDays)
 	tracksSet := make(map[model.Role]Track)
 
+	timeslots = model.FlattenTimeslots(timeslots)
+
 	for _, t := range timeslots {
 		tracksSet[t.Role] = TrackFromRole(t.Role)
 

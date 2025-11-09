@@ -2,9 +2,6 @@ package pages
 
 import (
 	"fmt"
-	"github.com/go-chi/chi/v5"
-	. "maragu.dev/gomponents"
-	. "maragu.dev/gomponents/html"
 	"net/http"
 	"strconv"
 	"timekeeper/app/database"
@@ -12,9 +9,13 @@ import (
 	"timekeeper/ports/www/components"
 	"timekeeper/ports/www/middleware"
 	"timekeeper/ports/www/render"
+
+	"github.com/go-chi/chi/v5"
+	. "maragu.dev/gomponents"
+	. "maragu.dev/gomponents/html"
 )
 
-func DuplicateTimeslotPage(timeslot model.TimeslotModel, event model.EventModel, rooms []model.RoomModel) Node {
+func DuplicateTimeslotPage(timeslot model.TimeslotModel, parentTimeslot *model.TimeslotModel, event model.EventModel, rooms []model.RoomModel) Node {
 	roomOptions := Group{}
 	for _, room := range rooms {
 		roomOptions = append(roomOptions, Option(Value(fmt.Sprintf("%v", room.ID)), Text(room.Name)))
@@ -24,7 +25,7 @@ func DuplicateTimeslotPage(timeslot model.TimeslotModel, event model.EventModel,
 		components.PageHeader(event),
 		Main(
 			H2(Text("Duplicate Timeslot")),
-			components.TimeslotForm(&timeslot, event, rooms, "POST", "/_/create/timeslot", "Duplicate"),
+			components.TimeslotForm(&timeslot, parentTimeslot, event, rooms, "POST", "/_/create/timeslot", "Duplicate"),
 		),
 	)
 }
@@ -71,6 +72,7 @@ func (l *DuplicateTimeslotPageRoute) Handler() http.Handler {
 			return
 		}
 
-		render.HTML(log, writer, request, DuplicateTimeslotPage(timeslot, timeslot.Event, rooms))
+		//TODO parent
+		render.HTML(log, writer, request, DuplicateTimeslotPage(timeslot, nil, timeslot.Event, rooms))
 	})
 }

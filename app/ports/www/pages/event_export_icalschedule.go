@@ -58,12 +58,11 @@ func (v *EventExportIcalScheduleRoute) Handler() http.Handler {
 			return
 		}
 
-		timeslots, _, err := queries.GetTimeslotsOfEvent(int(eventId), 0, 1000)
+		timeslots, _, err := queries.GetTimeslotsOfEvent(int(eventId), roles, 0, 1000)
 		if err != nil {
 			render.Error(log, writer, http.StatusInternalServerError, "failed to get timeslots of event", err)
 			return
 		}
-		timeslots = model.FilterTimeslotRoles(timeslots, roles)
 
 		cal, err := export.ExportCalendarSchedule(event, timeslots)
 		if err != nil {

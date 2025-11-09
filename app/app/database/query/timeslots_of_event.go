@@ -1,12 +1,16 @@
 package query
 
 import (
+	"database/sql"
+	"fmt"
 	"time"
 	. "timekeeper/app/database/model"
 	"timekeeper/config"
+
+	"github.com/lib/pq"
 )
 
-func (q *Queries) GetTimeslotsOfEvent(event int, offset, limit int) (ts []TimeslotModel, total int, err error) {
+func (q *Queries) GetTimeslotsOfEvent(event int, roles []Role, offset, limit int) (ts []TimeslotModel, total int, err error) {
 	row := q.DB.QueryRow(`SELECT COUNT(id) FROM timekeeper.timeslots WHERE event = $1`, event)
 	if err = row.Err(); err != nil {
 		return nil, -1, err
@@ -21,6 +25,7 @@ func (q *Queries) GetTimeslotsOfEvent(event int, offset, limit int) (ts []Timesl
 
 	rows, err := q.DB.Query(`
 SELECT ts.id as id,
+       ts.parent_id as parent_id,
        ts.guid as ts_guid,
        title,
        note,
@@ -53,21 +58,23 @@ FROM timekeeper.timeslots ts
 JOIN timekeeper.rooms r ON r.id = ts.room
 JOIN timekeeper.events e on e.id = ts.event
 JOIN timekeeper.locations l on l.id = r.location
-WHERE e.id = $1 ORDER BY ts.start, ts.note LIMIT $2 OFFSET $3 `,
-		event, limit, offset)
+WHERE e.id = $1 AND ts.role = ANY($4) ORDER BY ts.start, ts.parent_id NULLS FIRST, ts.note LIMIT $2 OFFSET $3 `,
+		event, limit, offset, pq.Array(roles))
 	if err != nil {
 		return nil, total, err
 	}
 
-	ts = make([]TimeslotModel, 0, limit)
+	_ts := make([]*TimeslotModel, 0, limit)
+	_tsMap := make(map[int64]*TimeslotModel)
 	for rows.Next() {
+		var parentId sql.NullInt64
 		var e EventModel
 		var r RoomModel
 		var l LocationModel
 		var t TimeslotModel
 		var durationInSeconds int
 		err = rows.Scan(
-			&t.ID, &t.GUID, &t.Title, &t.Note, &t.Day, &t.Start, &t.Role, &durationInSeconds,
+			&t.ID, &parentId, &t.GUID, &t.Title, &t.Note, &t.Day, &t.Start, &t.Role, &durationInSeconds,
 			&e.ID, &e.GUID, &e.Name, &e.Start,
 			&r.ID, &r.GUID, &r.Name, &r.LocationX, &r.LocationY, &r.LocationW, &r.LocationH, &r.Description,
 			&l.ID, &l.GUID, &l.Name, &l.File)
@@ -80,7 +87,28 @@ WHERE e.id = $1 ORDER BY ts.start, ts.note LIMIT $2 OFFSET $3 `,
 		r.Location = l
 		t.Room = r
 
-		ts = append(ts, t)
+		if !parentId.Valid {
+			_ts = append(_ts, &t)
+			_tsMap[int64(t.ID)] = &t
+			fmt.Println("remember parent:", t.ID)
+		} else {
+			parent, ok := _tsMap[parentId.Int64]
+			if ok {
+				chldrn := parent.Children
+				if chldrn == nil {
+					chldrn = make([]TimeslotModel, 0)
+				}
+				chldrn = append(chldrn, t)
+				parent.Children = chldrn
+			} else {
+				fmt.Println("parent doesn't exist:", parentId.Int64)
+			}
+		}
 	}
+	ts = make([]TimeslotModel, len(_ts))
+	for i, t := range _ts {
+		ts[i] = *t
+	}
+
 	return ts, total, nil
 }
