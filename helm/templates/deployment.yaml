@@ -27,6 +27,6 @@ spec:
             - containerPort: {{ .Values.service.http.port }}
               name: http
           env:
-            - name: PORT
+            - name: TIMEKEEPER_PORT
               value: "{{ .Values.service.http.port }}"
             {{- .Values.environment | toYaml | nindent 12 }}
