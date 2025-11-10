@@ -5,12 +5,14 @@ import (
 	"regexp"
 	"strings"
 	"time"
+
+	"github.com/spf13/viper"
 )
 
 var PixelHackPlaceholderRx = regexp.MustCompile(`:([a-z0-9_]+):`)
 
 func Timezone() *time.Location {
-	timezone := getEnvOr("TIMEKEEPER_TIMEZONE", "Europe/Berlin")
+	timezone := viper.GetString("timezone")
 	l, err := time.LoadLocation(timezone)
 	if err != nil {
 		panic(err)
@@ -19,47 +21,63 @@ func Timezone() *time.Location {
 }
 
 func TelemetryEnabled() bool {
-	return strings.ToLower(getEnvOr("TIMEKEEPER_TELEMETRY_ENABLED", "false")) == "true"
+	return viper.GetBool("telemetry.enabled")
 }
 
 func MetricsEndpointToken() string {
-	return getEnvOr("TIMEKEEPER_METRICS_TOKEN", "")
+	return viper.GetString("telemetry.endpoint.token")
 }
 
 func DatabaseConnectionString() string {
-	return mustEnv("DATABASE_CONNECTIONSTRING")
+	str := viper.GetString("database.connectionstring")
+	if str == "" {
+		panic("TIMEKEEPER_DATABASE_CONNECTIONSTRING is required")
+	}
+	return str
 }
 
 func HmacSecret() []byte {
-	return []byte(mustEnv("JWT_SECRET"))
+	secret := viper.GetString("jwt.secret.key")
+	if secret != "" {
+		return []byte(secret)
+	}
+	secretFileLocation := viper.GetString("jwt.secret.file")
+	s, err := os.ReadFile(secretFileLocation)
+	if err != nil {
+		panic(err)
+	}
+	return s
 }
 
 func AdminPassword() string {
-	return getEnvOr("TIMEKEEPER_ADMIN_PASSWORD", "")
+	return viper.GetString("admin.password")
 }
 
 func BaseUrl() string {
-	return getEnvOr("TIMEKEEPER_BASE_URL", "https://zeit.haeck.se")
+	return viper.GetString("baseUrl")
 }
 
 func Port() string {
-	return getEnvOr("PORT", "80")
+	return viper.GetString("port")
 }
 
-func getEnvOr(envName, defaultValue string) string {
-	value := os.Getenv(envName)
-	if value == "" {
-		return defaultValue
-	} else {
-		return value
-	}
-}
+func Load() error {
+	viper.SetDefault("timezone", "Europe/Berlin")
+	viper.SetDefault("telemetry.enabled", false)
+	viper.SetDefault("baseUrl", "https://zeit.haeck.se")
+	viper.SetDefault("port", "80")
+	viper.SetDefault("jwt.secret.file", "/etc/timekeeper/jwt.secret")
 
-func mustEnv(envName string) string {
-	value := os.Getenv(envName)
-	if value == "" {
-		panic(envName + " MUST BE SET")
-	}
+	viper.SetEnvKeyReplacer(strings.NewReplacer(".", "_"))
+	viper.SetEnvPrefix("timekeeper")
+	viper.AutomaticEnv()
 
-	return value
+	// Add search paths to find the file
+	viper.SetConfigName("timekeeper")
+	viper.AddConfigPath("/etc/timekeeper/")
+	viper.AddConfigPath("$HOME/.timekeeper")
+	viper.AddConfigPath(".")
+
+	// Find and read the config file
+	return viper.ReadInConfig()
 }

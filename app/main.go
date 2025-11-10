@@ -22,6 +22,7 @@ func main() {
 	zap.ReplaceGlobals(logger)
 
 	logger.Info("starting timekeeper", zap.String("version", version))
+	config.Load()
 
 	// init adapters
 	nominatimClient := nominatim.New()
