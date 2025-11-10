@@ -1,11 +1,11 @@
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 environment:
-  - name: "ADMIN_PASSWORD"
+  - name: "TIMEKEEPER_ADMIN_PASSWORD"
     value: ""
-  - name: "JWT_SECRET"
+  - name: "TIMEKEEPER_JWT_SECRET"
     value: ""
-  - name: "DATABASE_CONNECTIONSTRING"
+  - name: "TIMEKEEPER_DATABASE_CONNECTIONSTRING"
     value: ""
 
 # This will set the replicaset count more information can be found here: https://kubernetes.io/docs/concepts/workloads/controllers/replicaset/

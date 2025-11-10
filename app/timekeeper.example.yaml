@@ -1,0 +1,13 @@
+timezone: Europe/Berlin
+baseUrl: https://zeit.haeck.se
+port: 8080
+
+database:
+  connectionstring: <postgresql connection string>
+
+jwt:
+  secret:
+    file: /etc/timekeeper/jwt.secret
+
+telemetry:
+  enabled: false
