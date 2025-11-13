@@ -2,12 +2,12 @@ package query
 
 import (
 	"database/sql"
-	"fmt"
 	"time"
 	. "timekeeper/app/database/model"
 	"timekeeper/config"
 
 	"github.com/lib/pq"
+	"go.uber.org/zap"
 )
 
 func (q *Queries) GetTimeslotsOfEvent(event int, roles []Role, offset, limit int) (ts []TimeslotModel, total int, err error) {
@@ -90,7 +90,6 @@ WHERE e.id = $1 AND ts.role = ANY($4) ORDER BY ts.start, ts.parent_id NULLS FIRS
 		if !parentId.Valid {
 			_ts = append(_ts, &t)
 			_tsMap[int64(t.ID)] = &t
-			fmt.Println("remember parent:", t.ID)
 		} else {
 			parent, ok := _tsMap[parentId.Int64]
 			if ok {
@@ -101,7 +100,7 @@ WHERE e.id = $1 AND ts.role = ANY($4) ORDER BY ts.start, ts.parent_id NULLS FIRS
 				chldrn = append(chldrn, t)
 				parent.Children = chldrn
 			} else {
-				fmt.Println("parent doesn't exist:", parentId.Int64)
+				zap.L().Warn("parent timeslot doesn't exist yet", zap.Int64("parent_id", parentId.Int64), zap.Int("child_id", t.ID))
 			}
 		}
 	}
