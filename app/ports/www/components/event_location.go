@@ -4,7 +4,7 @@ import (
 	"fmt"
 	. "maragu.dev/gomponents"
 	. "maragu.dev/gomponents/html"
-	"timekeeper/app/database/model"
+	"raumzeitalpaka/app/database/model"
 )
 
 func EventLocationCard(event model.EventModel, eventLocation model.EventLocationModel, withActions bool) Node {

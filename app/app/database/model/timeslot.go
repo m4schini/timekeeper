@@ -2,8 +2,8 @@ package model
 
 import (
 	"fmt"
+	"raumzeitalpaka/config"
 	"time"
-	"timekeeper/config"
 )
 
 type TimeslotModel struct {

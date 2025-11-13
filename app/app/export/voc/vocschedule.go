@@ -5,9 +5,9 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
+	"raumzeitalpaka/app/database/model"
+	"raumzeitalpaka/config"
 	"time"
-	"timekeeper/app/database/model"
-	"timekeeper/config"
 
 	"go.uber.org/zap"
 )
@@ -16,7 +16,7 @@ func ExportVocScheduleTo(event model.EventModel, timeslots []model.TimeslotModel
 	log := zap.L().Named("export").Named("vocschedule").With(zap.Int("event", event.ID), zap.Int("timeslots_count", len(timeslots)))
 	log.Debug("exporting schedule as voc-schedule")
 
-	conf := NewConference(fmt.Sprintf("timekeeper_event_%v", event.ID), event.Name, event.Start, event.TotalDays)
+	conf := NewConference(fmt.Sprintf("raumzeitalpaka_event_%v", event.ID), event.Name, event.Start, event.TotalDays)
 	tracksSet := make(map[model.Role]Track)
 
 	timeslots = model.FlattenTimeslots(timeslots)

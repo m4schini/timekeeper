@@ -3,8 +3,8 @@ package middleware
 import (
 	"fmt"
 	"net/http"
+	"raumzeitalpaka/config"
 	"time"
-	"timekeeper/config"
 
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/prometheus/client_golang/prometheus/promauto"
@@ -15,7 +15,7 @@ func Log(next http.Handler) http.Handler {
 	log := zap.L().Named("www").WithOptions(zap.AddCallerSkip(1))
 	telemtryEnabled := config.TelemetryEnabled()
 	counter := promauto.NewCounterVec(prometheus.CounterOpts{
-		Namespace: "timekeeper",
+		Namespace: "raumzeitalpaka",
 		Subsystem: "www",
 		Name:      "requests",
 	}, []string{"method", "status", "route"})

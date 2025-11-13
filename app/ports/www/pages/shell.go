@@ -2,7 +2,7 @@ package pages
 
 import (
 	_ "embed"
-	"timekeeper/ports/www/components"
+	"raumzeitalpaka/ports/www/components"
 
 	. "maragu.dev/gomponents"
 	. "maragu.dev/gomponents/components"

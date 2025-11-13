@@ -2,10 +2,10 @@ package pages
 
 import (
 	"net/http"
-	"timekeeper/app/database"
-	export "timekeeper/app/export/ical"
-	"timekeeper/ports/www/components"
-	"timekeeper/ports/www/render"
+	"raumzeitalpaka/app/database"
+	export "raumzeitalpaka/app/export/ical"
+	"raumzeitalpaka/ports/www/components"
+	"raumzeitalpaka/ports/www/render"
 )
 
 type EventsExportIcalRoute struct {

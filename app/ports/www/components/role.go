@@ -3,7 +3,7 @@ package components
 import (
 	. "maragu.dev/gomponents"
 	. "maragu.dev/gomponents/html"
-	"timekeeper/app/database/model"
+	"raumzeitalpaka/app/database/model"
 )
 
 func RoleTag(role model.Role) Node {

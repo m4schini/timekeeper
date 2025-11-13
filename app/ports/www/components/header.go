@@ -4,9 +4,9 @@ import (
 	"fmt"
 	. "maragu.dev/gomponents"
 	. "maragu.dev/gomponents/html"
+	"raumzeitalpaka/app/database/model"
+	"raumzeitalpaka/config"
 	"time"
-	"timekeeper/app/database/model"
-	"timekeeper/config"
 )
 
 func PageHeader(event model.EventModel) Node {

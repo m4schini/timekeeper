@@ -2,8 +2,8 @@ package components
 
 import (
 	"fmt"
+	"raumzeitalpaka/app/database/model"
 	"strings"
-	"timekeeper/app/database/model"
 
 	. "maragu.dev/gomponents"
 	. "maragu.dev/gomponents/html"

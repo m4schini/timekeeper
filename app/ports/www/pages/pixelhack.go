@@ -3,9 +3,9 @@ package pages
 import (
 	"fmt"
 	"net/http"
-	"timekeeper/app/database/model"
-	"timekeeper/ports/www/components"
-	"timekeeper/ports/www/render"
+	"raumzeitalpaka/app/database/model"
+	"raumzeitalpaka/ports/www/components"
+	"raumzeitalpaka/ports/www/render"
 
 	. "maragu.dev/gomponents"
 	. "maragu.dev/gomponents/html"

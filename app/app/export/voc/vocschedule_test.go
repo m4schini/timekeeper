@@ -2,9 +2,9 @@ package voc
 
 import (
 	"fmt"
+	"raumzeitalpaka/app/database/model"
 	"testing"
 	"time"
-	"timekeeper/app/database/model"
 )
 
 func TestExportVocSchedule(t *testing.T) {

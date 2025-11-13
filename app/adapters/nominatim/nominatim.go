@@ -4,9 +4,10 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"net/http"
+
 	"go.uber.org/zap"
 	"golang.org/x/time/rate"
-	"net/http"
 )
 
 type LookupResponse struct {
@@ -67,7 +68,7 @@ func (n *Client) get(ctx context.Context, url string) (resp *http.Response, err 
 	if err != nil {
 		return nil, err
 	}
-	r.Header.Set("User-Agent", "timekeeper")
+	r.Header.Set("User-Agent", "raumzeitalpaka")
 	r = r.WithContext(ctx)
 
 	err = n.rateLimit.Wait(ctx)

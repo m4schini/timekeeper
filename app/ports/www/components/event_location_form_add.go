@@ -6,11 +6,11 @@ import (
 	. "maragu.dev/gomponents"
 	. "maragu.dev/gomponents/html"
 	"net/http"
+	"raumzeitalpaka/app/database"
+	"raumzeitalpaka/app/database/model"
+	"raumzeitalpaka/ports/www/middleware"
+	"raumzeitalpaka/ports/www/render"
 	"strconv"
-	"timekeeper/app/database"
-	"timekeeper/app/database/model"
-	"timekeeper/ports/www/middleware"
-	"timekeeper/ports/www/render"
 )
 
 func AddLocationForm(eventId int, locations []model.LocationModel) Node {

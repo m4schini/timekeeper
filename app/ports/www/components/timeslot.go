@@ -2,10 +2,10 @@ package components
 
 import (
 	"fmt"
+	"raumzeitalpaka/app/database/model"
+	"raumzeitalpaka/config"
 	"strings"
 	"time"
-	"timekeeper/app/database/model"
-	"timekeeper/config"
 
 	. "maragu.dev/gomponents"
 	hx "maragu.dev/gomponents-htmx"

@@ -2,7 +2,7 @@ package adapters
 
 import (
 	"database/sql"
-	"timekeeper/config"
+	"raumzeitalpaka/config"
 
 	_ "github.com/lib/pq" //postgres driver
 )

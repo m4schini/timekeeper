@@ -2,13 +2,13 @@ package pages
 
 import (
 	"net/http"
+	"raumzeitalpaka/app/cache"
+	"raumzeitalpaka/app/database"
+	export "raumzeitalpaka/app/export/voc"
+	"raumzeitalpaka/ports/www/components"
+	"raumzeitalpaka/ports/www/render"
 	"strconv"
 	"time"
-	"timekeeper/app/cache"
-	"timekeeper/app/database"
-	export "timekeeper/app/export/voc"
-	"timekeeper/ports/www/components"
-	"timekeeper/ports/www/render"
 
 	"github.com/go-chi/chi/v5"
 	"go.uber.org/zap"

@@ -6,9 +6,9 @@ import (
 	. "maragu.dev/gomponents"
 	. "maragu.dev/gomponents/html"
 	"net/http"
-	"timekeeper/app/auth"
-	"timekeeper/ports/www/middleware"
-	"timekeeper/ports/www/render"
+	"raumzeitalpaka/app/auth"
+	"raumzeitalpaka/ports/www/middleware"
+	"raumzeitalpaka/ports/www/render"
 )
 
 func UserForm() Node {

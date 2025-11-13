@@ -1,6 +1,6 @@
 package query
 
-import . "timekeeper/app/database/model"
+import . "raumzeitalpaka/app/database/model"
 
 func (q *Queries) GetLocations(offset, limit int) (ls []LocationModel, err error) {
 	rows, err := q.DB.Query(`

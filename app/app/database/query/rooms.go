@@ -1,6 +1,6 @@
 package query
 
-import . "timekeeper/app/database/model"
+import . "raumzeitalpaka/app/database/model"
 
 func (q *Queries) GetRooms(offset, limit int) (rs []RoomModel, total int, err error) {
 	row := q.DB.QueryRow(`SELECT COUNT(id) FROM timekeeper.rooms`)

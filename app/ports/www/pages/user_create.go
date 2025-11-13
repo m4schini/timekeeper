@@ -4,11 +4,11 @@ import (
 	. "maragu.dev/gomponents"
 	. "maragu.dev/gomponents/html"
 	"net/http"
-	"timekeeper/app/database"
-	"timekeeper/app/database/model"
-	"timekeeper/ports/www/components"
-	"timekeeper/ports/www/middleware"
-	"timekeeper/ports/www/render"
+	"raumzeitalpaka/app/database"
+	"raumzeitalpaka/app/database/model"
+	"raumzeitalpaka/ports/www/components"
+	"raumzeitalpaka/ports/www/middleware"
+	"raumzeitalpaka/ports/www/render"
 )
 
 func CreateUserPage() Node {

@@ -2,14 +2,14 @@ package main
 
 import (
 	"net"
-	"timekeeper/adapters"
-	"timekeeper/adapters/nominatim"
-	"timekeeper/app/auth"
-	"timekeeper/app/database"
-	"timekeeper/config"
-	"timekeeper/ports/www"
-	c "timekeeper/ports/www/components"
-	p "timekeeper/ports/www/pages"
+	"raumzeitalpaka/adapters"
+	"raumzeitalpaka/adapters/nominatim"
+	"raumzeitalpaka/app/auth"
+	"raumzeitalpaka/app/database"
+	"raumzeitalpaka/config"
+	"raumzeitalpaka/ports/www"
+	c "raumzeitalpaka/ports/www/components"
+	p "raumzeitalpaka/ports/www/pages"
 
 	"go.uber.org/zap"
 	"golang.org/x/time/rate"
@@ -21,7 +21,7 @@ func main() {
 	logger := NewLogger()
 	zap.ReplaceGlobals(logger)
 
-	logger.Info("starting timekeeper", zap.String("version", version))
+	logger.Info("starting raumzeitalpaka", zap.String("version", version))
 	config.Load()
 
 	// init adapters
@@ -113,7 +113,7 @@ func main() {
 		logger.Fatal("failed to listen", zap.Error(err))
 	}
 
-	logger.Info("serving timekeeper :" + config.Port())
+	logger.Info("serving raumzeitalpaka :" + config.Port())
 	err = www.Serve(l, authy, pages, components)
 	if err != nil {
 		logger.Warn("failed to serve www", zap.Error(err))

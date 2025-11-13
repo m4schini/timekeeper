@@ -1,8 +1,8 @@
 package model
 
 import (
+	"raumzeitalpaka/adapters/nominatim"
 	"strings"
-	"timekeeper/adapters/nominatim"
 )
 
 type LocationModel struct {

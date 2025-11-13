@@ -6,10 +6,10 @@ import (
 	"go.uber.org/zap"
 	"net"
 	"net/http"
+	"raumzeitalpaka/app/auth"
+	"raumzeitalpaka/config"
+	"raumzeitalpaka/ports/www/middleware"
 	"strings"
-	"timekeeper/app/auth"
-	"timekeeper/config"
-	"timekeeper/ports/www/middleware"
 )
 
 func Serve(listener net.Listener, authenticator auth.Authenticator, pages []Route, components []Route) error {

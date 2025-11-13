@@ -3,11 +3,11 @@ package components
 import (
 	"fmt"
 	"net/http"
+	"raumzeitalpaka/app/database"
+	"raumzeitalpaka/app/database/model"
+	"raumzeitalpaka/ports/www/middleware"
+	"raumzeitalpaka/ports/www/render"
 	"time"
-	"timekeeper/app/database"
-	"timekeeper/app/database/model"
-	"timekeeper/ports/www/middleware"
-	"timekeeper/ports/www/render"
 
 	"go.uber.org/zap"
 	"maragu.dev/gomponents"

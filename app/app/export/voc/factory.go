@@ -1,15 +1,15 @@
 package voc
 
 import (
+	"raumzeitalpaka/app/database/model"
+	"raumzeitalpaka/config"
 	"strings"
 	"time"
-	"timekeeper/app/database/model"
-	"timekeeper/config"
 )
 
 const (
 	ScheduleSchema   = "https://c3voc.de/schedule/schema.json"
-	GeneratorName    = "timekeeper"
+	GeneratorName    = "raumzeitalpaka"
 	GeneratorVersion = "dev"
 )
 

@@ -2,8 +2,8 @@ package md
 
 import (
 	"bytes"
-	"timekeeper/app/database/model"
-	"timekeeper/config"
+	"raumzeitalpaka/app/database/model"
+	"raumzeitalpaka/config"
 
 	"github.com/JohannesKaufmann/html-to-markdown/v2/plugin/base"
 	"github.com/JohannesKaufmann/html-to-markdown/v2/plugin/commonmark"

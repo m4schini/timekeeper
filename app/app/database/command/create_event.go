@@ -1,7 +1,7 @@
 package command
 
 import (
-	"timekeeper/app/database/model"
+	"raumzeitalpaka/app/database/model"
 )
 
 func (c *Commands) CreateEvent(m model.CreateEventModel) (id int, err error) {

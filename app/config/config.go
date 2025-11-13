@@ -31,7 +31,7 @@ func MetricsEndpointToken() string {
 func DatabaseConnectionString() string {
 	str := viper.GetString("database.connectionstring")
 	if str == "" {
-		panic("TIMEKEEPER_DATABASE_CONNECTIONSTRING is required")
+		panic("RZA_DATABASE_CONNECTIONSTRING is required")
 	}
 	return str
 }
@@ -66,16 +66,16 @@ func Load() error {
 	viper.SetDefault("telemetry.enabled", false)
 	viper.SetDefault("baseUrl", "https://zeit.haeck.se")
 	viper.SetDefault("port", "80")
-	viper.SetDefault("jwt.secret.file", "/etc/timekeeper/jwt.secret")
+	viper.SetDefault("jwt.secret.file", "/etc/raumzeitalpaka/jwt.secret")
 
 	viper.SetEnvKeyReplacer(strings.NewReplacer(".", "_"))
-	viper.SetEnvPrefix("timekeeper")
+	viper.SetEnvPrefix("rza")
 	viper.AutomaticEnv()
 
 	// Add search paths to find the file
-	viper.SetConfigName("timekeeper")
-	viper.AddConfigPath("/etc/timekeeper/")
-	viper.AddConfigPath("$HOME/.timekeeper")
+	viper.SetConfigName("raumzeitalpaka")
+	viper.AddConfigPath("/etc/raumzeitalpaka/")
+	viper.AddConfigPath("$HOME/.raumzeitalpaka")
 	viper.AddConfigPath(".")
 
 	// Find and read the config file

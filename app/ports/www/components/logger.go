@@ -3,7 +3,7 @@ package components
 import (
 	"fmt"
 	"go.uber.org/zap"
-	"timekeeper/ports/www"
+	"raumzeitalpaka/ports/www"
 )
 
 func Logger(route www.Route) *zap.Logger {

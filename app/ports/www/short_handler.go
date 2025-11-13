@@ -3,9 +3,9 @@ package www
 import (
 	"fmt"
 	"net/http"
+	"raumzeitalpaka/app/database"
+	"raumzeitalpaka/ports/www/render"
 	"time"
-	"timekeeper/app/database"
-	"timekeeper/ports/www/render"
 
 	"github.com/go-chi/chi/v5"
 	"go.uber.org/zap"

@@ -2,7 +2,7 @@ package www
 
 import (
 	"net/http"
-	"timekeeper/ports/www/middleware"
+	"raumzeitalpaka/ports/www/middleware"
 
 	"github.com/go-chi/chi/v5"
 	"go.uber.org/zap"

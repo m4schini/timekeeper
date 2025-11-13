@@ -1,9 +1,9 @@
 package query
 
 import (
+	. "raumzeitalpaka/app/database/model"
+	"raumzeitalpaka/config"
 	"time"
-	. "timekeeper/app/database/model"
-	"timekeeper/config"
 )
 
 func (q *Queries) GetTimeslot(id int) (t TimeslotModel, err error) {

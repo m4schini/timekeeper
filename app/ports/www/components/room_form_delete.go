@@ -8,10 +8,10 @@ import (
 	hx "maragu.dev/gomponents-htmx"
 	. "maragu.dev/gomponents/html"
 	"net/http"
+	"raumzeitalpaka/app/database"
+	"raumzeitalpaka/ports/www/middleware"
+	"raumzeitalpaka/ports/www/render"
 	"strconv"
-	"timekeeper/app/database"
-	"timekeeper/ports/www/middleware"
-	"timekeeper/ports/www/render"
 )
 
 func DeleteRoomButton(roomId int) Node {

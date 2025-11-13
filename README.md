@@ -4,7 +4,7 @@
 
 ----
 
-raumzeitalpaka is an open source system for managing event schedules. 
+raumzeitalpaka (formerly timekeeper) is an open source system for managing event schedules. 
 It is created and optimized for [Jugend hackt](https://jugendhackt.org/) events. 
 
 It provides basic mechanisms for the creation and management of time schedules, locations and rooms for events.

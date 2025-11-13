@@ -2,7 +2,7 @@ package components
 
 import (
 	"fmt"
-	"timekeeper/config"
+	"raumzeitalpaka/config"
 
 	. "maragu.dev/gomponents"
 )

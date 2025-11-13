@@ -2,9 +2,9 @@ package query
 
 import (
 	"database/sql"
+	. "raumzeitalpaka/app/database/model"
+	"raumzeitalpaka/config"
 	"time"
-	. "timekeeper/app/database/model"
-	"timekeeper/config"
 
 	"github.com/lib/pq"
 	"go.uber.org/zap"

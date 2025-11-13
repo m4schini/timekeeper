@@ -4,8 +4,8 @@ import (
 	"context"
 	"go.uber.org/zap"
 	"net/http"
-	"timekeeper/app/auth"
-	"timekeeper/app/database/model"
+	"raumzeitalpaka/app/auth"
+	"raumzeitalpaka/app/database/model"
 )
 
 func UseAuth(authenticator auth.Authenticator) func(next http.Handler) http.Handler {

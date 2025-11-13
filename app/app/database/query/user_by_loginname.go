@@ -1,6 +1,6 @@
 package query
 
-import . "timekeeper/app/database/model"
+import . "raumzeitalpaka/app/database/model"
 
 func (q *Queries) GetUserByLoginName(loginName string) (u UserModel, err error) {
 	row := q.DB.QueryRow(`SELECT id, login_name, password FROM timekeeper.users WHERE login_name = $1`, loginName)

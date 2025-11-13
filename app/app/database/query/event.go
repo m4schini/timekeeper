@@ -1,6 +1,6 @@
 package query
 
-import . "timekeeper/app/database/model"
+import . "raumzeitalpaka/app/database/model"
 
 func (q *Queries) GetEvent(id int) (r EventModel, err error) {
 	row := q.DB.QueryRow(`SELECT id, name, start, slug, guid FROM timekeeper.events WHERE id = $1`, id)

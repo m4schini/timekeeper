@@ -2,14 +2,15 @@ package auth
 
 import (
 	"fmt"
-	"github.com/golang-jwt/jwt/v5"
-	"go.uber.org/zap"
+	"raumzeitalpaka/app/database"
+	"raumzeitalpaka/app/database/model"
+	"raumzeitalpaka/config"
 	"strconv"
 	"sync"
 	"time"
-	"timekeeper/app/database"
-	"timekeeper/app/database/model"
-	"timekeeper/config"
+
+	"github.com/golang-jwt/jwt/v5"
+	"go.uber.org/zap"
 )
 
 var (
@@ -72,7 +73,7 @@ func (a *authy) AuthenticateUser(username, password string) (token string, err e
 	expiresAt := time.Now().Add(72 * time.Hour)
 	jwtId := time.Now().Unix()
 	t := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.RegisteredClaims{
-		Issuer:    "timekeeper",
+		Issuer:    "raumzeitalpaka",
 		Subject:   fmt.Sprintf("%v", user.ID),
 		Audience:  nil,
 		ExpiresAt: jwt.NewNumericDate(expiresAt),

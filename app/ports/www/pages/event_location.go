@@ -6,12 +6,12 @@ import (
 	. "maragu.dev/gomponents"
 	. "maragu.dev/gomponents/html"
 	"net/http"
+	"raumzeitalpaka/adapters/nominatim"
+	"raumzeitalpaka/app/database"
+	"raumzeitalpaka/app/database/model"
+	"raumzeitalpaka/ports/www/components"
+	"raumzeitalpaka/ports/www/render"
 	"strconv"
-	"timekeeper/adapters/nominatim"
-	"timekeeper/app/database"
-	"timekeeper/app/database/model"
-	"timekeeper/ports/www/components"
-	"timekeeper/ports/www/render"
 )
 
 func OsmContainer(el model.EventLocationModel, osm nominatim.LookupResponse) Node {

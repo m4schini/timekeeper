@@ -11,3 +11,9 @@ jwt:
 
 telemetry:
   enabled: false
+
+oidc:
+  issuer: http://localhost:9998/
+  client:
+    id: web
+    secret: secret

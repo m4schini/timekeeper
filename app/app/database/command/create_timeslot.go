@@ -2,7 +2,7 @@ package command
 
 import (
 	"fmt"
-	"timekeeper/app/database/model"
+	"raumzeitalpaka/app/database/model"
 )
 
 var (

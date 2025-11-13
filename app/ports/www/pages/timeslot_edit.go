@@ -3,12 +3,12 @@ package pages
 import (
 	"fmt"
 	"net/http"
+	"raumzeitalpaka/app/database"
+	"raumzeitalpaka/app/database/model"
+	"raumzeitalpaka/ports/www/components"
+	"raumzeitalpaka/ports/www/middleware"
+	"raumzeitalpaka/ports/www/render"
 	"strconv"
-	"timekeeper/app/database"
-	"timekeeper/app/database/model"
-	"timekeeper/ports/www/components"
-	"timekeeper/ports/www/middleware"
-	"timekeeper/ports/www/render"
 
 	"github.com/go-chi/chi/v5"
 	. "maragu.dev/gomponents"

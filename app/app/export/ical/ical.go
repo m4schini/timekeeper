@@ -3,10 +3,10 @@ package ical
 import (
 	"fmt"
 	"net/url"
+	"raumzeitalpaka/app/database/model"
+	"raumzeitalpaka/config"
 	"strings"
 	"time"
-	"timekeeper/app/database/model"
-	"timekeeper/config"
 
 	"github.com/arran4/golang-ical"
 	"go.uber.org/zap"

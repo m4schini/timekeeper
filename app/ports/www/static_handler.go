@@ -5,9 +5,9 @@ import (
 	"fmt"
 	"github.com/go-chi/chi/v5"
 	"net/http"
+	"raumzeitalpaka/ports/www/render"
 	"strings"
 	"time"
-	"timekeeper/ports/www/render"
 )
 
 //go:embed static/*

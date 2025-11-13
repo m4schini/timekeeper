@@ -2,11 +2,11 @@ package pages
 
 import (
 	"net/http"
+	"raumzeitalpaka/app/auth"
+	"raumzeitalpaka/app/database/model"
+	"raumzeitalpaka/ports/www/components"
+	"raumzeitalpaka/ports/www/render"
 	"time"
-	"timekeeper/app/auth"
-	"timekeeper/app/database/model"
-	"timekeeper/ports/www/components"
-	"timekeeper/ports/www/render"
 
 	"go.uber.org/zap"
 	"golang.org/x/time/rate"

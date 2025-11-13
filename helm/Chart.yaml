@@ -1,5 +1,5 @@
 apiVersion: v2
-name: timekeeper
+name: raumzeitalpaka
 description: Timekeeper software for alpakas
 
 # A chart can be either an 'application' or a 'library' chart.

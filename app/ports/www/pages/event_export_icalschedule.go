@@ -3,14 +3,14 @@ package pages
 import (
 	"fmt"
 	"net/http"
+	"raumzeitalpaka/app/cache"
+	"raumzeitalpaka/app/database"
+	"raumzeitalpaka/app/database/model"
+	export "raumzeitalpaka/app/export/ical"
+	"raumzeitalpaka/ports/www/components"
+	"raumzeitalpaka/ports/www/render"
 	"strconv"
 	"time"
-	"timekeeper/app/cache"
-	"timekeeper/app/database"
-	"timekeeper/app/database/model"
-	export "timekeeper/app/export/ical"
-	"timekeeper/ports/www/components"
-	"timekeeper/ports/www/render"
 
 	"github.com/go-chi/chi/v5"
 	"go.uber.org/zap"
@@ -47,7 +47,7 @@ func (v *EventExportIcalScheduleRoute) Handler() http.Handler {
 		if valid {
 			log.Debug("using cached calendar export", zap.Int64("event", eventId), zap.Any("roles", roles), zap.Duration("ttl", expiresAt.Sub(time.Now())))
 			writer.Header().Set("Content-Type", "text/calendar; charset=utf-8")
-			writer.Header().Set("Content-Disposition", fmt.Sprintf("inline; filename=timekeeper_event_%v.ics", eventId))
+			writer.Header().Set("Content-Disposition", fmt.Sprintf("inline; filename=rza_event_%v.ics", eventId))
 			writer.Write(cachedExport)
 			return
 		}
@@ -72,7 +72,7 @@ func (v *EventExportIcalScheduleRoute) Handler() http.Handler {
 
 		cache.Set(cacheKey, []byte(cal), 5*time.Minute)
 		writer.Header().Set("Content-Type", "text/calendar; charset=utf-8")
-		writer.Header().Set("Content-Disposition", fmt.Sprintf("inline; filename=timekeeper_event_%v.ics", event.ID))
+		writer.Header().Set("Content-Disposition", fmt.Sprintf("inline; filename=raumzeitalpaka_event_%v.ics", event.ID))
 		writer.Write([]byte(cal))
 	})
 }

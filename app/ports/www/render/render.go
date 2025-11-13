@@ -5,8 +5,8 @@ import (
 	"go.uber.org/zap"
 	"maragu.dev/gomponents"
 	"net/http"
+	"raumzeitalpaka/ports/www/middleware"
 	"time"
-	"timekeeper/ports/www/middleware"
 )
 
 func HTML(log *zap.Logger, w http.ResponseWriter, r *http.Request, node gomponents.Node) {

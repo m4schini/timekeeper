@@ -2,9 +2,9 @@ package database
 
 import (
 	"database/sql"
-	"timekeeper/app/database/command"
-	"timekeeper/app/database/model"
-	"timekeeper/app/database/query"
+	"raumzeitalpaka/app/database/command"
+	"raumzeitalpaka/app/database/model"
+	"raumzeitalpaka/app/database/query"
 )
 
 type Database struct {
