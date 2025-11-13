@@ -1,10 +1,10 @@
-# timekeeper
+# raumzeitalpaka
 
 <img src="app/ports/www/static/timekeeper.png" width="161">
 
 ----
 
-timekeeper is an open source system for managing event schedules. 
+raumzeitalpaka is an open source system for managing event schedules. 
 It is created and optimized for [Jugend hackt](https://jugendhackt.org/) events. 
 
 It provides basic mechanisms for the creation and management of time schedules, locations and rooms for events.
@@ -34,7 +34,7 @@ It can also export schedules as Calendar (ical), [VOC Schedule](https://github.c
 
 ## Container
 ```shell
-podman run ghcr.io/m4schini/timekeeper:latest \
+podman run ghcr.io/m4schini/raumzeitalpaka:latest \
   -p 8080:80 \
   --env TIMEKEEPER_BASE_URL= \
   --env DATABASE_CONNECTIONSTRING= \
@@ -44,7 +44,7 @@ podman run ghcr.io/m4schini/timekeeper:latest \
 
 ## Helm
 ```shell
-helm install timekeeper ./helm
+helm install raumzeitalpaka ./helm
 ```
 
 ## Oldschool
@@ -71,4 +71,4 @@ CC-BY-SA 4.0 Jugend Hackt (Hanno Sternberg)
 Copyright 2020, Braille Institute of America, Inc. (https://www.brailleinstitute.org/), with Reserved Font Names: “ATKINSON” and “HYPERLEGIBLE”.
 This Font Software is licensed under the SIL Open Font License, Version 1.1. This license is copied below, and is also available with a FAQ at: https://openfontlicense.org
 
-[License](https://github.com/m4schini/timekeeper/blob/8a312ed579c1be3845f79f92294fee7c61a771cc/ports/www/static/font/Atkinson-Hyperlegible-SIL-OPEN-FONT-LICENSE-Version%201.1-v2%20ACC.pdf)
+[License](https://codeberg.org/aur0ra/timekeeper/blob/8a312ed579c1be3845f79f92294fee7c61a771cc/ports/www/static/font/Atkinson-Hyperlegible-SIL-OPEN-FONT-LICENSE-Version%201.1-v2%20ACC.pdf)
