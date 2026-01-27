@@ -13,7 +13,7 @@ func (c *Commands) UpdateTimeslot(m model.UpdateTimeslotModel) (err error) {
 	}
 
 	_, err = c.DB.Exec(`
-UPDATE timekeeper.timeslots
+UPDATE raumzeitalpaka.timeslots
 SET
     event = $1,
     title = $2,

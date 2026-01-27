@@ -13,11 +13,11 @@ func (q *Queries) GetRoomsOfEventLocations(event int) (rs []RoomModel, err error
        l.id as location_id,
        l.name as location_name,
        l.file as file
-FROM timekeeper.rooms r
-         JOIN timekeeper.locations l
+FROM raumzeitalpaka.rooms r
+         JOIN raumzeitalpaka.locations l
               ON r.location = l.id
 WHERE l.id 
-          IN (SELECT location FROM timekeeper.event_has_location WHERE event = $1)
+          IN (SELECT location FROM raumzeitalpaka.event_has_location WHERE event = $1)
           ORDER BY l.name, r.name`,
 		event)
 	if err != nil {

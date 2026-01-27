@@ -11,9 +11,9 @@ func (q *Queries) GetEvents(offset, limit int) (es []model.EventModel, err error
 		e.slug,
 		COUNT(DISTINCT t.day) AS total_days
 	FROM 
-		timekeeper.events e
+		raumzeitalpaka.events e
 	LEFT JOIN 
-		timekeeper.timeslots t 
+		raumzeitalpaka.timeslots t 
 	ON 
 		e.id = t.event
 	GROUP BY 

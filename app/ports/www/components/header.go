@@ -2,11 +2,12 @@ package components
 
 import (
 	"fmt"
-	. "maragu.dev/gomponents"
-	. "maragu.dev/gomponents/html"
 	"raumzeitalpaka/app/database/model"
 	"raumzeitalpaka/config"
 	"time"
+
+	. "maragu.dev/gomponents"
+	. "maragu.dev/gomponents/html"
 )
 
 func PageHeader(event model.EventModel) Node {
@@ -16,16 +17,15 @@ func PageHeader(event model.EventModel) Node {
 	return Header(Class("page-header"),
 		Logo(event.Name, event.ID),
 		Div(Class("last-change"),
-			Text("Generated:"),
-			Br(),
-			Text(now.Format(time.RFC822)),
+			A(Href("/login"), Text("Login")),
+			A(Href("/logout"), Text("Logout")),
 		),
 	)
 }
 
 func Logo(name string, eventId int) Node {
 	if name == "" {
-		name = "Timekeeper"
+		name = "Raumzeitalpaka"
 	}
 	href := "/"
 	if eventId != 0 {

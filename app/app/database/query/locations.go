@@ -5,7 +5,7 @@ import . "raumzeitalpaka/app/database/model"
 func (q *Queries) GetLocations(offset, limit int) (ls []LocationModel, err error) {
 	rows, err := q.DB.Query(`
 SELECT id, name, file 
-FROM timekeeper.locations
+FROM raumzeitalpaka.locations
 ORDER BY name
 LIMIT $1 OFFSET $2`, limit, offset)
 	if err != nil {

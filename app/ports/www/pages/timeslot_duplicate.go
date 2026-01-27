@@ -21,7 +21,7 @@ func DuplicateTimeslotPage(timeslot model.TimeslotModel, parentTimeslot *model.T
 		roomOptions = append(roomOptions, Option(Value(fmt.Sprintf("%v", room.ID)), Text(room.Name)))
 	}
 
-	return Shell(event.Name,
+	return components.Shell(event.Name,
 		components.PageHeader(event),
 		Main(
 			H2(Text("Duplicate Timeslot")),

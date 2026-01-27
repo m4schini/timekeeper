@@ -21,7 +21,7 @@ func CreateTimeslotPage(event model.EventModel, parentTimeslot *model.TimeslotMo
 		roomOptions = append(roomOptions, Option(Value(fmt.Sprintf("%v", room.ID)), Text(room.Name)))
 	}
 
-	return Shell(event.Name,
+	return components.Shell(event.Name,
 		components.PageHeader(event),
 		Main(
 			H2(Text("Create Timeslot")),
@@ -62,11 +62,6 @@ func (l *CreateTimeslotPageRoute) Handler() http.Handler {
 			render.Error(log, writer, http.StatusBadRequest, "invalid eventId", err)
 			return
 		}
-		parentId, err := strconv.ParseInt(parentParam, 10, 64)
-		if err != nil {
-			render.Error(log, writer, http.StatusBadRequest, "invalid parentId", err)
-			return
-		}
 
 		event, err := queries.GetEvent(int(eventId))
 		if err != nil {
@@ -75,6 +70,11 @@ func (l *CreateTimeslotPageRoute) Handler() http.Handler {
 		}
 
 		if hasParentParam {
+			parentId, err := strconv.ParseInt(parentParam, 10, 64)
+			if err != nil {
+				render.Error(log, writer, http.StatusBadRequest, "invalid parentId", err)
+				return
+			}
 			p, err := queries.GetTimeslot(int(parentId))
 			if err == nil {
 				parent = &p

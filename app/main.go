@@ -1,20 +1,24 @@
 package main
 
 import (
+	"context"
 	"net"
 	"raumzeitalpaka/adapters"
 	"raumzeitalpaka/adapters/nominatim"
-	"raumzeitalpaka/app/auth"
+	"raumzeitalpaka/app/auth/local"
+	"raumzeitalpaka/app/auth/oidc"
 	"raumzeitalpaka/app/database"
 	"raumzeitalpaka/config"
 	"raumzeitalpaka/ports/www"
 
+	"github.com/go-chi/chi/v5"
 	"go.uber.org/zap"
 )
 
 var version = "dev"
 
 func main() {
+	ctx := context.TODO()
 	logger := NewLogger()
 	zap.ReplaceGlobals(logger)
 
@@ -30,20 +34,34 @@ func main() {
 	defer dbAdapter.Close()
 
 	// init app
+	_, err = database.InitSchema(dbAdapter)
+	if err != nil {
+		logger.Fatal("failed to initiate database schema", zap.Error(err))
+	}
 	db := database.New(dbAdapter)
-	authy := auth.NewAuthenticator(db)
+	//authy := local.NewAuthenticator(db)
+	if err != nil {
+		logger.Fatal("failed to initiate login server")
+	}
 
-	// create admin user
-	//adminPassword := config.AdminPassword()
-	//if adminPassword != "" {
-	//	id, err := authy.CreateUser("admin", config.AdminPassword())
-	//	if err != nil {
-	//		logger.Debug("tried to create admin user", zap.Error(err), zap.Int("user", id))
-	//	}
-	//}
+	// auth
+	logger.Debug("initiating auth provider")
+	var authHandler chi.Router
+	oidcCfg, oidcEnabled := config.OIDCProviderConfig()
+	if oidcEnabled {
+		logger.Info("using oidc auth provider", zap.Any("issuer", oidcCfg.IssuerURL), zap.String("callbackPath", oidc.CallbackPath))
+		authHandler, err = oidc.NewHandler(ctx, oidcCfg)
+	} else {
+		logger.Info("using local auth provider")
+		authy := local.NewAuthenticator(db)
+		authHandler, err = local.NewHandler(authy)
+	}
+	if err != nil {
+		logger.Fatal("failed to initiate auth", zap.Error(err), zap.Bool("oidc", oidcEnabled))
+	}
 
 	port := config.Port()
-	pages, components := www.NewWWWPort(db, nominatimClient, authy)
+	pages, components := www.NewWWWPort(db, nominatimClient)
 	logger.Info("serving raumzeitalpaka", zap.String("port", port), zap.Int("pages", len(pages)), zap.Int("components", len(components)))
 
 	l, err := net.Listen("tcp", ":"+port)
@@ -51,7 +69,7 @@ func main() {
 		logger.Fatal("failed to listen", zap.Error(err))
 	}
 
-	err = www.Serve(l, authy, pages, components)
+	err = www.Serve(l, authHandler, pages, components)
 	if err != nil {
 		logger.Warn("failed to serve www", zap.Error(err))
 	}

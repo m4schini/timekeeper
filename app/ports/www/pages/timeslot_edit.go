@@ -16,7 +16,7 @@ import (
 )
 
 func EditTimeslotPage(timeslot model.TimeslotModel, parentTimeslot *model.TimeslotModel, event model.EventModel, rooms []model.RoomModel) Node {
-	return Shell(event.Name,
+	return components.Shell(event.Name,
 		components.PageHeader(event),
 		Main(
 			H2(Text("Edit Timeslot")),

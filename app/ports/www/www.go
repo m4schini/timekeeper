@@ -2,18 +2,14 @@ package www
 
 import (
 	"raumzeitalpaka/adapters/nominatim"
-	"raumzeitalpaka/app/auth"
 	"raumzeitalpaka/app/database"
 	c "raumzeitalpaka/ports/www/components"
 	p "raumzeitalpaka/ports/www/pages"
-
-	"golang.org/x/time/rate"
 )
 
 func NewWWWPort(
 	db *database.Database,
 	nominatimClient *nominatim.Client,
-	authy auth.Authenticator,
 ) (pages []Route, components []Route) {
 	pixelHack := PixelHackItems()
 
@@ -41,8 +37,6 @@ func NewWWWPort(
 		&p.UpdateLocationPageRoute{DB: db},
 
 		&p.CreateUserPageRoute{DB: db},
-		&p.LoginPageRoute{Auth: authy},
-		&p.LogoutRoute{},
 
 		&p.PixelHackPageRoute{},
 		&p.AttributionsPageRoute{},
@@ -74,9 +68,6 @@ func NewWWWPort(
 		&c.CreateRoomRoute{DB: db},
 		&c.UpdateRoomRoute{DB: db},
 		&c.DeleteRoomRoute{DB: db},
-
-		&c.CreateUserRoute{Auth: authy},
-		&p.LoginRoute{Auth: authy, RateLimiter: rate.NewLimiter(1, 1)},
 	}
 
 	return pages, components

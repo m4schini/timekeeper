@@ -7,7 +7,7 @@ import (
 func (c *Commands) CreateLocation(m model.CreateLocationModel) (id int, err error) {
 
 	row := c.DB.QueryRow(`
-INSERT INTO timekeeper.locations (name, file, osm_id) 
+INSERT INTO raumzeitalpaka.locations (name, file, osm_id) 
 VALUES ($1, $2, $3)
 RETURNING id`, m.Name, m.MapFile, m.OsmId)
 	if err = row.Err(); err != nil {

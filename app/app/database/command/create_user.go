@@ -6,7 +6,7 @@ import (
 
 func (c *Commands) CreateUser(m CreateUserModel) (id int, err error) {
 	row := c.DB.QueryRow(`
-INSERT INTO timekeeper.users (login_name, password) 
+INSERT INTO raumzeitalpaka.users (login_name, password) 
 VALUES ($1, $2)
 RETURNING id`, m.LoginName, m.PasswordHash)
 	if err = row.Err(); err != nil {

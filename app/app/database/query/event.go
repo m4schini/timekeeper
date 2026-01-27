@@ -3,12 +3,12 @@ package query
 import . "raumzeitalpaka/app/database/model"
 
 func (q *Queries) GetEvent(id int) (r EventModel, err error) {
-	row := q.DB.QueryRow(`SELECT id, name, start, slug, guid FROM timekeeper.events WHERE id = $1`, id)
+	row := q.DB.QueryRow(`SELECT id, name, start, slug, guid FROM raumzeitalpaka.events WHERE id = $1`, id)
 	if err = row.Err(); err != nil {
 		return EventModel{}, err
 	}
 
-	row2 := q.DB.QueryRow(`SELECT count(day) FROM (SELECT DISTINCT day FROM timekeeper.timeslots WHERE event = $1) AS day`, id)
+	row2 := q.DB.QueryRow(`SELECT count(day) FROM (SELECT DISTINCT day FROM raumzeitalpaka.timeslots WHERE event = $1) AS day`, id)
 	if err = row.Err(); err != nil {
 		return EventModel{}, err
 	}

@@ -1,23 +1,29 @@
 package www
 
 import (
-	"github.com/go-chi/chi/v5"
-	"github.com/prometheus/client_golang/prometheus/promhttp"
-	"go.uber.org/zap"
 	"net"
 	"net/http"
 	"raumzeitalpaka/app/auth"
 	"raumzeitalpaka/config"
 	"raumzeitalpaka/ports/www/middleware"
 	"strings"
+
+	"github.com/go-chi/chi/v5"
+	"github.com/prometheus/client_golang/prometheus/promhttp"
+	"go.uber.org/zap"
 )
 
-func Serve(listener net.Listener, authenticator auth.Authenticator, pages []Route, components []Route) error {
+func Serve(listener net.Listener, authHandler chi.Router, pages []Route, components []Route) error {
 	r := chi.NewRouter()
 	r.Use(
 		http.NewCrossOriginProtection().Handler,
-		middleware.UseAuth(authenticator),
+		auth.UseJWT(),
 		middleware.Log,
+		func(handler http.Handler) http.Handler {
+			return http.HandlerFunc(func(writer http.ResponseWriter, request *http.Request) {
+				handler.ServeHTTP(writer, request)
+			})
+		},
 	)
 	for _, route := range pages {
 		HandleRoute(r, route)
@@ -33,6 +39,9 @@ func Serve(listener net.Listener, authenticator auth.Authenticator, pages []Rout
 	} else {
 		zap.L().Named("telemetry").Info("metrics endpoint is disabled")
 	}
+
+	zap.L().Named("auth").Info("mounted auth handlers on /")
+	r.Mount("/", authHandler)
 
 	return http.Serve(listener, r)
 }

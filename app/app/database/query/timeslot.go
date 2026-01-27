@@ -35,10 +35,10 @@ SELECT ts.id as id,
        l.guid as location_guid,
        l.name as location_name,
        l.file as location_file
-FROM timekeeper.timeslots ts
-JOIN timekeeper.rooms r ON r.id = ts.room
-JOIN timekeeper.events e on e.id = ts.event
-JOIN timekeeper.locations l on l.id = r.location
+FROM raumzeitalpaka.timeslots ts
+JOIN raumzeitalpaka.rooms r ON r.id = ts.room
+JOIN raumzeitalpaka.events e on e.id = ts.event
+JOIN raumzeitalpaka.locations l on l.id = r.location
 WHERE ts.id = $1 ORDER BY ts.start `, id)
 	if err = row.Err(); err != nil {
 		return TimeslotModel{}, err

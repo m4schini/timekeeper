@@ -49,12 +49,31 @@ func HmacSecret() []byte {
 	return s
 }
 
+type Config struct {
+	IssuerURL    string
+	ClientID     string
+	ClientSecret string
+}
+
+func OIDCProviderConfig() (cfg Config, enabled bool) {
+	enabled = viper.GetBool("oidc.enabled")
+	if !enabled {
+		return cfg, enabled
+	}
+
+	return Config{
+		IssuerURL:    viper.GetString("oidc.issuer"),
+		ClientID:     viper.GetString("oidc.client.id"),
+		ClientSecret: viper.GetString("oidc.client.secret"),
+	}, true
+}
+
 func AdminPassword() string {
 	return viper.GetString("admin.password")
 }
 
 func BaseUrl() string {
-	return viper.GetString("baseUrl")
+	return viper.GetString("base_url")
 }
 
 func Port() string {
@@ -64,6 +83,7 @@ func Port() string {
 func Load() error {
 	viper.SetDefault("timezone", "Europe/Berlin")
 	viper.SetDefault("telemetry.enabled", false)
+	viper.SetDefault("oidc.enabled", false)
 	viper.SetDefault("baseUrl", "https://zeit.haeck.se")
 	viper.SetDefault("port", "80")
 	viper.SetDefault("jwt.secret.file", "/etc/raumzeitalpaka/jwt.secret")

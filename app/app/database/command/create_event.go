@@ -7,7 +7,7 @@ import (
 func (c *Commands) CreateEvent(m model.CreateEventModel) (id int, err error) {
 
 	row := c.DB.QueryRow(`
-INSERT INTO timekeeper.events (name, slug, start) 
+INSERT INTO raumzeitalpaka.events (name, slug, start) 
 VALUES ($1, $2, $3)
 RETURNING id`, m.Name, m.Slug, m.Start)
 	if err = row.Err(); err != nil {

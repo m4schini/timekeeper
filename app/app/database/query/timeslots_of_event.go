@@ -11,7 +11,7 @@ import (
 )
 
 func (q *Queries) GetTimeslotsOfEvent(event int, roles []Role, offset, limit int) (ts []TimeslotModel, total int, err error) {
-	row := q.DB.QueryRow(`SELECT COUNT(id) FROM timekeeper.timeslots WHERE event = $1`, event)
+	row := q.DB.QueryRow(`SELECT COUNT(id) FROM raumzeitalpaka.timeslots WHERE event = $1`, event)
 	if err = row.Err(); err != nil {
 		return nil, -1, err
 	}
@@ -54,10 +54,10 @@ SELECT ts.id as id,
        l.file as location_file
 
 
-FROM timekeeper.timeslots ts
-JOIN timekeeper.rooms r ON r.id = ts.room
-JOIN timekeeper.events e on e.id = ts.event
-JOIN timekeeper.locations l on l.id = r.location
+FROM raumzeitalpaka.timeslots ts
+JOIN raumzeitalpaka.rooms r ON r.id = ts.room
+JOIN raumzeitalpaka.events e on e.id = ts.event
+JOIN raumzeitalpaka.locations l on l.id = r.location
 WHERE e.id = $1 AND ts.role = ANY($4) ORDER BY ts.start, ts.parent_id NULLS FIRST, ts.note LIMIT $2 OFFSET $3 `,
 		event, limit, offset, pq.Array(roles))
 	if err != nil {

@@ -27,11 +27,11 @@ func Log(next http.Handler) http.Handler {
 			zap.String("route", fmt.Sprintf("%v %v", request.Method, request.URL.Path)),
 		}
 
-		userId, role, isAuthenticated := LoadUser(request)
-		logFields = append(logFields, zap.Bool("is_authenticated", isAuthenticated))
-		if isAuthenticated {
-			logFields = append(logFields, zap.Int("user_id", userId), zap.Any("role", role))
-		}
+		//userId, role, isAuthenticated := LoadUser(request)
+		//logFields = append(logFields, zap.Bool("is_authenticated", isAuthenticated))
+		//if isAuthenticated {
+		//	logFields = append(logFields, zap.Int("user_id", userId), zap.Any("role", role))
+		//}
 
 		log := log.With(logFields...)
 		log.Debug("received www request")

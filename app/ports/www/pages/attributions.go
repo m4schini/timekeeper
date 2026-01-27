@@ -1,17 +1,18 @@
 package pages
 
 import (
-	. "maragu.dev/gomponents"
-	. "maragu.dev/gomponents/html"
 	"net/http"
 	"raumzeitalpaka/app/database/model"
 	"raumzeitalpaka/ports/www/components"
 	"raumzeitalpaka/ports/www/render"
+
+	. "maragu.dev/gomponents"
+	. "maragu.dev/gomponents/html"
 )
 
 func AttributionsPage() Node {
 
-	return Shell("",
+	return components.Shell("",
 		Main(
 			components.PageHeader(model.EventModel{}),
 			H2(Text("Attributions")),

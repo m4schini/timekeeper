@@ -1,18 +1,19 @@
 package pages
 
 import (
-	. "maragu.dev/gomponents"
-	. "maragu.dev/gomponents/html"
 	"net/http"
 	"raumzeitalpaka/app/database"
 	"raumzeitalpaka/app/database/model"
 	"raumzeitalpaka/ports/www/components"
 	"raumzeitalpaka/ports/www/middleware"
 	"raumzeitalpaka/ports/www/render"
+
+	. "maragu.dev/gomponents"
+	. "maragu.dev/gomponents/html"
 )
 
 func CreateLocationPage() Node {
-	return Shell("",
+	return components.Shell("",
 		components.PageHeader(model.EventModel{}),
 		Main(
 			H2(Text("New Location")),

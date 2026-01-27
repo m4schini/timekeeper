@@ -15,8 +15,8 @@ SELECT r.id as id,
        l.id as location_id,
        l.name as location_name,
        l.file as file
-FROM timekeeper.rooms r
-JOIN timekeeper.locations l
+FROM raumzeitalpaka.rooms r
+JOIN raumzeitalpaka.locations l
 ON r.location = l.id
 WHERE r.id = $1`, id)
 	if err = row.Err(); err != nil {

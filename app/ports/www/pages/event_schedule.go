@@ -29,7 +29,7 @@ func SchedulePage(event model.EventModel, withActions bool, days [][]model.Times
 		dayNodes[i] = components.Day(event.ID, i, event.Day(i), withActions, timeslots, fmt.Sprintf("/event/%v/schedule/%v?role=%v", event.ID, i, strings.Join(rolesStr, ",")))
 	}
 
-	return Shell(event.Name,
+	return components.Shell(event.Name,
 		Main(
 			components.PageHeader(event),
 			If(withActions, components.EventActions(event.ID)),
@@ -49,7 +49,7 @@ func CompactSchedulePage(event model.EventModel, days [][]model.TimeslotModel) N
 		dayNodes = append(dayNodes, components.CompactDay(timeslots))
 	}
 
-	return ShellWithHead(event.Name, nil, []Node{},
+	return components.ShellWithHead(event.Name, nil, []Node{},
 		Main(
 			dayNodes,
 		),

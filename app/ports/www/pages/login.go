@@ -2,7 +2,7 @@ package pages
 
 import (
 	"net/http"
-	"raumzeitalpaka/app/auth"
+	"raumzeitalpaka/app/auth/local"
 	"raumzeitalpaka/app/database/model"
 	"raumzeitalpaka/ports/www/components"
 	"raumzeitalpaka/ports/www/render"
@@ -15,7 +15,7 @@ import (
 )
 
 func LoginPage() Node {
-	return Shell("",
+	return components.Shell("",
 		components.PageHeader(model.EventModel{}),
 		Main(Style("width: 100%; height: 100%; display: flex; justify-content: center; align-items: center"),
 			Form(Method("POST"), Action("/_/login"), Class("form"),
@@ -28,7 +28,7 @@ func LoginPage() Node {
 }
 
 type LoginPageRoute struct {
-	Auth auth.Authenticator
+	Auth local.Authenticator
 }
 
 func (l *LoginPageRoute) Method() string {
@@ -48,7 +48,7 @@ func (l *LoginPageRoute) Handler() http.Handler {
 }
 
 type LoginRoute struct {
-	Auth        auth.Authenticator
+	Auth        local.Authenticator
 	RateLimiter *rate.Limiter
 }
 

@@ -6,7 +6,7 @@ import (
 
 func (c *Commands) CreateRoom(m model.CreateRoomModel) (id int, err error) {
 	row := c.DB.QueryRow(`
-INSERT INTO timekeeper.rooms (location, name, description, location_x, location_y, location_w, location_h) 
+INSERT INTO raumzeitalpaka.rooms (location, name, description, location_x, location_y, location_w, location_h) 
 VALUES ($1, $2, $3, $4, $5, $6, $7)
 RETURNING id`, m.Location, m.Name, m.Description, 0, 0, 0, 0)
 	if err = row.Err(); err != nil {

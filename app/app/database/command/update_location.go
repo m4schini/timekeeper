@@ -6,7 +6,7 @@ import (
 
 func (c *Commands) UpdateLocation(m model.UpdateLocationModel) (err error) {
 	_, err = c.DB.Exec(`
-UPDATE timekeeper.locations
+UPDATE raumzeitalpaka.locations
 SET
     name = $1,
     file = $2,

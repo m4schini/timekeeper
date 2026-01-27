@@ -6,7 +6,7 @@ import (
 
 func (c *Commands) UpdateRoom(m model.UpdateRoomModel) (err error) {
 	_, err = c.DB.Exec(`
-UPDATE timekeeper.rooms
+UPDATE raumzeitalpaka.rooms
 SET
     name = $1,
     description = $2

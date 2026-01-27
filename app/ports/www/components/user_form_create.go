@@ -1,21 +1,17 @@
 package components
 
 import (
-	"fmt"
-	"go.uber.org/zap"
+	"net/http"
+
 	. "maragu.dev/gomponents"
 	. "maragu.dev/gomponents/html"
-	"net/http"
-	"raumzeitalpaka/app/auth"
-	"raumzeitalpaka/ports/www/middleware"
-	"raumzeitalpaka/ports/www/render"
 )
 
 func UserForm() Node {
 	return Form(Method("POST"), Action("/_/user/new"), Class("form"),
 		Div(
-			Label(For("username"), Text("Username")),
-			Input(Type("text"), Name("username"), Placeholder("Username"), Required()),
+			Label(For("username"), Text("Name")),
+			Input(Type("text"), Name("username"), Placeholder("Name"), Required()),
 		),
 
 		Div(
@@ -28,7 +24,7 @@ func UserForm() Node {
 }
 
 type CreateUserRoute struct {
-	Auth auth.Authenticator
+	//Auth local.Authenticator
 }
 
 func (l *CreateUserRoute) Method() string {
@@ -40,32 +36,32 @@ func (l *CreateUserRoute) Pattern() string {
 }
 
 func (l *CreateUserRoute) Handler() http.Handler {
-	log := zap.L().Named(l.Pattern())
-	authy := l.Auth
+	//log := zap.L().Named(l.Pattern())
+	//authy := l.Auth
 	return http.HandlerFunc(func(writer http.ResponseWriter, request *http.Request) {
-		if !middleware.IsOrganizer(request) {
-			render.Error(log, writer, http.StatusUnauthorized, "unauthorized request detected", nil)
-			return
-		}
-
-		err := request.ParseForm()
-		if err != nil {
-			render.Error(log, writer, http.StatusBadRequest, "failed to parse form", err)
-			return
-		}
-
-		var (
-			usernameParam = request.PostFormValue("username")
-			passwordParam = request.PostFormValue("password")
-		)
-
-		id, err := authy.CreateUser(usernameParam, passwordParam)
-		if err != nil {
-			render.Error(log, writer, http.StatusInternalServerError, "failed to create user", err)
-			return
-		}
-		log.Debug("created user", zap.Int("id", id))
-
-		http.Redirect(writer, request, fmt.Sprintf("/"), http.StatusSeeOther)
+		//if !middleware.IsOrganizer(request) {
+		//	render.Error(log, writer, http.StatusUnauthorized, "unauthorized request detected", nil)
+		//	return
+		//}
+		//
+		//err := request.ParseForm()
+		//if err != nil {
+		//	render.Error(log, writer, http.StatusBadRequest, "failed to parse form", err)
+		//	return
+		//}
+		//
+		//var (
+		//	usernameParam = request.PostFormValue("username")
+		//	passwordParam = request.PostFormValue("password")
+		//)
+		//
+		//id, err := authy.CreateUser(usernameParam, passwordParam)
+		//if err != nil {
+		//	render.Error(log, writer, http.StatusInternalServerError, "failed to create user", err)
+		//	return
+		//}
+		//log.Debug("created user", zap.Int("id", id))
+		//
+		//http.Redirect(writer, request, fmt.Sprintf("/"), http.StatusSeeOther)
 	})
 }

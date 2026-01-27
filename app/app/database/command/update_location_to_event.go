@@ -6,7 +6,7 @@ import (
 
 func (c *Commands) UpdateLocationToEvent(m model.UpdateLocationToEventModel) (err error) {
 	_, err = c.DB.Exec(`
-UPDATE timekeeper.event_has_location
+UPDATE raumzeitalpaka.event_has_location
 SET
     name = $1,
     note = $2,

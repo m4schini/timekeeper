@@ -37,7 +37,7 @@ func (v *EventsExportIcalRoute) Handler() http.Handler {
 		}
 
 		writer.Header().Set("Content-Type", "text/calendar; charset=utf-8")
-		writer.Header().Set("Content-Disposition", "inline; filename=timekeeper_events.ics")
+		writer.Header().Set("Content-Disposition", "inline; filename=raumzeitalpaka_events.ics")
 		writer.Write([]byte(cal))
 	})
 }

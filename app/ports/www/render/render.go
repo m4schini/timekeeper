@@ -14,8 +14,8 @@ func HTML(log *zap.Logger, w http.ResponseWriter, r *http.Request, node gomponen
 		revalidate := 30 * time.Second
 		SetCache(w, 15*time.Second, &revalidate)
 	} else {
-		w.Header().Set("Cache-Control", "no-cache")
 	}
+	w.Header().Set("Cache-Control", "no-cache")
 	w.Header().Set("Content-Type", "text/html; charset=utf-8")
 	err := node.Render(w)
 	if err != nil {

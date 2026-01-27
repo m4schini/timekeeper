@@ -13,7 +13,7 @@ import (
 )
 
 func CreateEventPage() Node {
-	return Shell("",
+	return components.Shell("",
 		components.PageHeader(model.EventModel{}),
 		Main(
 			H2(Text("Create Event")),

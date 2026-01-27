@@ -1,10 +1,6 @@
 package pages
 
 import (
-	"github.com/go-chi/chi/v5"
-	"go.uber.org/zap"
-	. "maragu.dev/gomponents"
-	. "maragu.dev/gomponents/html"
 	"net/http"
 	"raumzeitalpaka/app/database"
 	"raumzeitalpaka/app/database/model"
@@ -12,6 +8,11 @@ import (
 	"raumzeitalpaka/ports/www/middleware"
 	"raumzeitalpaka/ports/www/render"
 	"strconv"
+
+	"github.com/go-chi/chi/v5"
+	"go.uber.org/zap"
+	. "maragu.dev/gomponents"
+	. "maragu.dev/gomponents/html"
 )
 
 func EditLocationPage(locationModel model.LocationModel, rooms []model.RoomModel) Node {
@@ -20,7 +21,7 @@ func EditLocationPage(locationModel model.LocationModel, rooms []model.RoomModel
 		roomsList = append(roomsList, Li(components.UpdateRoomForm(room)))
 	}
 
-	return Shell("",
+	return components.Shell("",
 		components.PageHeader(model.EventModel{}),
 		Main(
 			H2(Text("Location bearbeiten")),

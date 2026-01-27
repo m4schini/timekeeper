@@ -6,7 +6,7 @@ import (
 
 func (c *Commands) UpdateEvent(m model.UpdateEventModel) (err error) {
 	_, err = c.DB.Exec(`
-UPDATE timekeeper.events
+UPDATE raumzeitalpaka.events
 SET
     name = $1,
     start = $2,

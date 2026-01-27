@@ -2,15 +2,16 @@ package components
 
 import (
 	"fmt"
-	"go.uber.org/zap"
-	. "maragu.dev/gomponents"
-	. "maragu.dev/gomponents/html"
 	"net/http"
 	"raumzeitalpaka/app/database"
 	"raumzeitalpaka/app/database/model"
 	"raumzeitalpaka/ports/www/middleware"
 	"raumzeitalpaka/ports/www/render"
 	"strconv"
+
+	"go.uber.org/zap"
+	. "maragu.dev/gomponents"
+	. "maragu.dev/gomponents/html"
 )
 
 func CreateRoomForm(location model.LocationModel) Node {

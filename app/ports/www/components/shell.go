@@ -1,9 +1,6 @@
-package pages
+package components
 
 import (
-	_ "embed"
-	"raumzeitalpaka/ports/www/components"
-
 	. "maragu.dev/gomponents"
 	. "maragu.dev/gomponents/components"
 	. "maragu.dev/gomponents/html"
@@ -11,7 +8,7 @@ import (
 
 func Shell(title string, children ...Node) Node {
 	if title == "" {
-		title = "Timekeeper"
+		title = "RaumZeitAlpaka"
 	}
 	return ShellWithHead(title, PageFooter(), []Node{}, children...)
 }
@@ -37,9 +34,9 @@ func ShellWithHead(title string, footer Node, head []Node, children ...Node) Nod
 func PageFooter() Node {
 	return Footer(Class("footer"),
 		Div(
-			components.PixelHackIcon("flag_pride", 24),
-			components.PixelHackIcon("flag_trans", 24),
-			components.PixelHackIcon("flag_nonbinary", 24),
+			PixelHackIcon("flag_pride", 24),
+			PixelHackIcon("flag_trans", 24),
+			PixelHackIcon("flag_nonbinary", 24),
 		),
 		Div(
 			A(Text("Code of Conduct"), Href("https://jugendhackt.org/code-of-conduct/")),
@@ -49,9 +46,9 @@ func PageFooter() Node {
 			A(Text("Impressum"), Href("/help/legal")),
 		),
 		Div(
-			components.PixelHackIcon("resitor_nonbinary", 24),
-			components.PixelHackIcon("resistor_trans", 24),
-			components.PixelHackIcon("resistor_pride", 24),
+			PixelHackIcon("resitor_nonbinary", 24),
+			PixelHackIcon("resistor_trans", 24),
+			PixelHackIcon("resistor_pride", 24),
 		),
 	)
 }

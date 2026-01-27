@@ -3,7 +3,7 @@ package query
 import . "raumzeitalpaka/app/database/model"
 
 func (q *Queries) GetRoomsOfLocation(location int, offset, limit int) (rs []RoomModel, total int, err error) {
-	row := q.DB.QueryRow(`SELECT COUNT(id) FROM timekeeper.rooms WHERE location = $1`, location)
+	row := q.DB.QueryRow(`SELECT COUNT(id) FROM raumzeitalpaka.rooms WHERE location = $1`, location)
 	if err = row.Err(); err != nil {
 		return nil, -1, err
 	}
@@ -26,8 +26,8 @@ SELECT r.id as id,
        l.id as location_id,
        l.name as location_name,
        l.file as file
-FROM timekeeper.rooms r
-JOIN timekeeper.locations l
+FROM raumzeitalpaka.rooms r
+JOIN raumzeitalpaka.locations l
 ON r.location = l.id
 WHERE r.location = $1
 ORDER BY location_name, name

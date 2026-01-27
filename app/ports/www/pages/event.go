@@ -20,7 +20,7 @@ import (
 )
 
 func EventPublicPage(event model.EventModel, locations []model.EventLocationModel) Node {
-	return Shell(event.Name,
+	return components.Shell(event.Name,
 		components.PageHeader(event),
 		Main(
 			Div(Class("event-container"),
@@ -33,7 +33,7 @@ func EventPublicPage(event model.EventModel, locations []model.EventLocationMode
 }
 
 func EventOrgaPage(event model.EventModel, locations []model.LocationModel, eventLocations []model.EventLocationModel) Node {
-	return Shell(event.Name,
+	return components.Shell(event.Name,
 		components.PageHeader(event),
 		Main(
 			Div(Class("event-container"),

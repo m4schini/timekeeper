@@ -19,7 +19,7 @@ func PixelHackPage() Node {
 			components.CopyTextBox("", "", fmt.Sprintf(":%v:", name)),
 		))
 	}
-	return Shell("",
+	return components.Shell("",
 		Main(
 			components.PageHeader(model.EventModel{}),
 			Ul(g),
