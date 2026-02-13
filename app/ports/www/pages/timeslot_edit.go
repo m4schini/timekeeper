@@ -3,8 +3,9 @@ package pages
 import (
 	"fmt"
 	"net/http"
-	"raumzeitalpaka/app/database"
+	"raumzeitalpaka/app/auth/authz"
 	"raumzeitalpaka/app/database/model"
+	"raumzeitalpaka/app/database/query"
 	"raumzeitalpaka/ports/www/components"
 	"raumzeitalpaka/ports/www/middleware"
 	"raumzeitalpaka/ports/www/render"
@@ -26,7 +27,9 @@ func EditTimeslotPage(timeslot model.TimeslotModel, parentTimeslot *model.Timesl
 }
 
 type EditTimeslotPageRoute struct {
-	DB *database.Database
+	GetTimeslot              query.GetTimeslot
+	GetRoomsOfEventLocations query.GetRoomsOfEventLocations
+	Authz                    authz.Authorizer
 }
 
 func (l *EditTimeslotPageRoute) Method() string {
@@ -39,9 +42,8 @@ func (l *EditTimeslotPageRoute) Pattern() string {
 
 func (l *EditTimeslotPageRoute) Handler() http.Handler {
 	log := components.Logger(l)
-	queries := l.DB.Queries
 	return http.HandlerFunc(func(writer http.ResponseWriter, request *http.Request) {
-		isOrganizer := middleware.IsOrganizer(request)
+		isOrganizer := middleware.IsOrganizer(request, l.Authz)
 		if !isOrganizer {
 			render.Error(log, writer, http.StatusUnauthorized, "user is not authorized", nil)
 			return
@@ -55,13 +57,13 @@ func (l *EditTimeslotPageRoute) Handler() http.Handler {
 			return
 		}
 
-		timeslot, err := queries.GetTimeslot(int(timeslotId))
+		timeslot, err := l.GetTimeslot.Query(query.GetTimeslotRequest{TimeslotId: int(timeslotId)})
 		if err != nil {
 			render.Error(log, writer, http.StatusInternalServerError, "failed to retrieve timeslot", err)
 			return
 		}
 
-		rooms, err := queries.GetRoomsOfEventLocations(timeslot.Event.ID)
+		rooms, err := l.GetRoomsOfEventLocations.Query(query.GetRoomsOfEventLocationsRequest{EventId: timeslot.Event.ID})
 		if err != nil {
 			render.Error(log, writer, http.StatusInternalServerError, "failed to retrieve rooms", err)
 			return

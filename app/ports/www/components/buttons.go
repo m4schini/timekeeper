@@ -3,6 +3,7 @@ package components
 import (
 	"fmt"
 	"raumzeitalpaka/app/database/model"
+	"raumzeitalpaka/config"
 	"strings"
 
 	. "maragu.dev/gomponents"
@@ -53,9 +54,9 @@ func IFrameCompactDay(event, day int, roles ...model.Role) string {
 			rolesStr[i] = string(role)
 		}
 
-		embedUrl = fmt.Sprintf("https://zeit.haeck.se/event/%v/schedule/%v?role=%v&compact", event, day, strings.Join(rolesStr, ","))
+		embedUrl = fmt.Sprintf("%v/event/%v/schedule/%v?role=%v&compact", config.BaseUrl(), event, day, strings.Join(rolesStr, ","))
 	} else {
-		embedUrl = fmt.Sprintf("https://zeit.haeck.se/event/%v/schedule/%v?compact", event, day)
+		embedUrl = fmt.Sprintf("%v/event/%v/schedule/%v?compact", config.BaseUrl(), event, day)
 	}
 	return fmt.Sprintf(`<iframe src="%v" width="100%%" height="%v" frameborder="0"></iframe>`, embedUrl, height)
 }

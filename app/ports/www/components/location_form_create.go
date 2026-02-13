@@ -2,14 +2,15 @@ package components
 
 import (
 	"fmt"
+	"net/http"
+	"raumzeitalpaka/app/auth/authz"
+	"raumzeitalpaka/app/database/command"
+	"raumzeitalpaka/ports/www/middleware"
+	"raumzeitalpaka/ports/www/render"
+
 	"go.uber.org/zap"
 	. "maragu.dev/gomponents"
 	. "maragu.dev/gomponents/html"
-	"net/http"
-	"raumzeitalpaka/app/database"
-	"raumzeitalpaka/app/database/model"
-	"raumzeitalpaka/ports/www/middleware"
-	"raumzeitalpaka/ports/www/render"
 )
 
 func CreateLocation() Node {
@@ -38,7 +39,8 @@ func CreateLocationForm() Node {
 }
 
 type CreateLocationRoute struct {
-	DB *database.Database
+	CreateLocation command.CreateLocation
+	Authz          authz.Authorizer
 }
 
 func (l *CreateLocationRoute) Method() string {
@@ -51,9 +53,8 @@ func (l *CreateLocationRoute) Pattern() string {
 
 func (l *CreateLocationRoute) Handler() http.Handler {
 	log := Logger(l)
-	commands := l.DB.Commands
 	return http.HandlerFunc(func(writer http.ResponseWriter, request *http.Request) {
-		if !middleware.IsOrganizer(request) {
+		if !middleware.IsOrganizer(request, l.Authz) {
 			render.Error(log, writer, http.StatusUnauthorized, "unauthorized request detected", nil)
 			return
 		}
@@ -76,7 +77,7 @@ func (l *CreateLocationRoute) Handler() http.Handler {
 		}
 		log.Debug("parsed create location form", zap.Any("model", model))
 
-		id, err := commands.CreateLocation(model)
+		id, err := l.CreateLocation.Execute(model)
 		if err != nil {
 			render.Error(log, writer, http.StatusInternalServerError, "failed to create location", err)
 			return
@@ -87,8 +88,8 @@ func (l *CreateLocationRoute) Handler() http.Handler {
 	})
 }
 
-func ParseCreateLocationModel(name, mapFile, osmId string) (model.CreateLocationModel, error) {
-	return model.CreateLocationModel{
+func ParseCreateLocationModel(name, mapFile, osmId string) (command.CreateLocationRequest, error) {
+	return command.CreateLocationRequest{
 		Name:    name,
 		MapFile: mapFile,
 		OsmId:   osmId,

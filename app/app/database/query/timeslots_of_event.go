@@ -2,7 +2,7 @@ package query
 
 import (
 	"database/sql"
-	. "raumzeitalpaka/app/database/model"
+	"raumzeitalpaka/app/database/model"
 	"raumzeitalpaka/config"
 	"time"
 
@@ -10,17 +10,42 @@ import (
 	"go.uber.org/zap"
 )
 
-func (q *Queries) GetTimeslotsOfEvent(event int, roles []Role, offset, limit int) (ts []TimeslotModel, total int, err error) {
+type GetTimeslotsOfEvent Handler[GetTimeslotsOfEventRequest, GetTimeslotsOfEventResponse]
+
+type GetTimeslotsOfEventRequest struct {
+	EventId int
+	Roles   []model.Role
+	Offset  int
+	Limit   int
+}
+
+type GetTimeslotsOfEventResponse struct {
+	Timeslots []model.TimeslotModel
+	Total     int
+}
+
+type GetTimeslotsOfEventHandler struct {
+	DB Database
+}
+
+func (q *GetTimeslotsOfEventHandler) Query(request GetTimeslotsOfEventRequest) (GetTimeslotsOfEventResponse, error) {
+	var (
+		total  int
+		event  = request.EventId
+		roles  = request.Roles
+		limit  = request.Limit
+		offset = request.Offset
+	)
 	row := q.DB.QueryRow(`SELECT COUNT(id) FROM raumzeitalpaka.timeslots WHERE event = $1`, event)
-	if err = row.Err(); err != nil {
-		return nil, -1, err
+	if err := row.Err(); err != nil {
+		return GetTimeslotsOfEventResponse{}, err
 	}
-	err = row.Scan(&total)
+	err := row.Scan(&total)
 	if err != nil {
-		return nil, -1, err
+		return GetTimeslotsOfEventResponse{}, err
 	}
 	if total == 0 || limit == 0 {
-		return []TimeslotModel{}, total, err
+		return GetTimeslotsOfEventResponse{}, err
 	}
 
 	rows, err := q.DB.Query(`
@@ -61,17 +86,17 @@ JOIN raumzeitalpaka.locations l on l.id = r.location
 WHERE e.id = $1 AND ts.role = ANY($4) ORDER BY ts.start, ts.parent_id NULLS FIRST, ts.note LIMIT $2 OFFSET $3 `,
 		event, limit, offset, pq.Array(roles))
 	if err != nil {
-		return nil, total, err
+		return GetTimeslotsOfEventResponse{}, err
 	}
 
-	_ts := make([]*TimeslotModel, 0, limit)
-	_tsMap := make(map[int64]*TimeslotModel)
+	_ts := make([]*model.TimeslotModel, 0, limit)
+	_tsMap := make(map[int64]*model.TimeslotModel)
 	for rows.Next() {
 		var parentId sql.NullInt64
-		var e EventModel
-		var r RoomModel
-		var l LocationModel
-		var t TimeslotModel
+		var e model.EventModel
+		var r model.RoomModel
+		var l model.LocationModel
+		var t model.TimeslotModel
 		var durationInSeconds int
 		err = rows.Scan(
 			&t.ID, &parentId, &t.GUID, &t.Title, &t.Note, &t.Day, &t.Start, &t.Role, &durationInSeconds,
@@ -79,7 +104,7 @@ WHERE e.id = $1 AND ts.role = ANY($4) ORDER BY ts.start, ts.parent_id NULLS FIRS
 			&r.ID, &r.GUID, &r.Name, &r.LocationX, &r.LocationY, &r.LocationW, &r.LocationH, &r.Description,
 			&l.ID, &l.GUID, &l.Name, &l.File)
 		if err != nil {
-			return nil, 0, err
+			return GetTimeslotsOfEventResponse{}, err
 		}
 		t.Duration = time.Duration(durationInSeconds) * time.Second
 		e.Start = e.Start.In(config.Timezone())
@@ -95,7 +120,7 @@ WHERE e.id = $1 AND ts.role = ANY($4) ORDER BY ts.start, ts.parent_id NULLS FIRS
 			if ok {
 				chldrn := parent.Children
 				if chldrn == nil {
-					chldrn = make([]TimeslotModel, 0)
+					chldrn = make([]model.TimeslotModel, 0)
 				}
 				chldrn = append(chldrn, t)
 				parent.Children = chldrn
@@ -104,10 +129,13 @@ WHERE e.id = $1 AND ts.role = ANY($4) ORDER BY ts.start, ts.parent_id NULLS FIRS
 			}
 		}
 	}
-	ts = make([]TimeslotModel, len(_ts))
+	ts := make([]model.TimeslotModel, len(_ts))
 	for i, t := range _ts {
 		ts[i] = *t
 	}
 
-	return ts, total, nil
+	return GetTimeslotsOfEventResponse{
+		Timeslots: ts,
+		Total:     total,
+	}, nil
 }

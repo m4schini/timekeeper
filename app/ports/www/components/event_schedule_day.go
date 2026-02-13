@@ -3,8 +3,9 @@ package components
 import (
 	"fmt"
 	"net/http"
-	"raumzeitalpaka/app/database"
+	"raumzeitalpaka/app/auth/authz"
 	"raumzeitalpaka/app/database/model"
+	"raumzeitalpaka/app/database/query"
 	"raumzeitalpaka/app/export/md"
 	"raumzeitalpaka/config"
 	"raumzeitalpaka/ports/www/middleware"
@@ -111,7 +112,9 @@ func NowInTimezone(location *time.Location) time.Time {
 }
 
 type DayRoute struct {
-	DB *database.Database
+	GetEvent            query.GetEvent
+	GetTimeslotsOfEvent query.GetTimeslotsOfEvent
+	Authz               authz.Authorizer
 }
 
 func (d *DayRoute) Method() string {
@@ -124,12 +127,11 @@ func (d *DayRoute) Pattern() string {
 
 func (d *DayRoute) Handler() http.Handler {
 	log := Logger(d)
-	queries := d.DB.Queries
 	return http.HandlerFunc(func(writer http.ResponseWriter, request *http.Request) {
 		var (
 			eventParam  = strings.ToLower(chi.URLParam(request, "eventId"))
 			dayParam    = strings.ToLower(chi.URLParam(request, "day"))
-			isOrganizer = middleware.IsOrganizer(request)
+			isOrganizer = middleware.IsOrganizer(request, d.Authz)
 		)
 		log.Debug("rendering day", zap.Bool("isOrganizer", isOrganizer), zap.String("eventParam", eventParam), zap.String("dayParam", dayParam))
 		eventId, err := strconv.ParseInt(eventParam, 10, 64)
@@ -143,17 +145,23 @@ func (d *DayRoute) Handler() http.Handler {
 			return
 		}
 
-		event, err := queries.GetEvent(int(eventId))
+		event, err := d.GetEvent.Query(query.GetEventRequest{EventId: int(eventId)})
 		if err != nil {
 			render.Error(log, writer, http.StatusInternalServerError, "failed to retrieve event", err)
 			return
 		}
 
-		timeslots, _, err := queries.GetTimeslotsOfEvent(int(eventId), []model.Role{model.RoleMentor}, 0, 100)
+		response, err := d.GetTimeslotsOfEvent.Query(query.GetTimeslotsOfEventRequest{
+			EventId: int(eventId),
+			Roles:   []model.Role{model.RoleMentor},
+			Offset:  0,
+			Limit:   100,
+		})
 		if err != nil {
 			render.Error(log, writer, http.StatusInternalServerError, "failed to retrieve day", err)
 			return
 		}
+		timeslots := response.Timeslots
 
 		dayData := make([]model.TimeslotModel, 0, len(timeslots))
 		for _, timeslot := range timeslots {

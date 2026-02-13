@@ -1,18 +1,38 @@
 package query
 
-import . "raumzeitalpaka/app/database/model"
+import (
+	"raumzeitalpaka/app/database/model"
+)
 
-func (q *Queries) GetRoomsOfLocation(location int, offset, limit int) (rs []RoomModel, total int, err error) {
-	row := q.DB.QueryRow(`SELECT COUNT(id) FROM raumzeitalpaka.rooms WHERE location = $1`, location)
+type GetRoomsOfLocation Handler[GetRoomsOfLocationRequest, GetRoomsOfLocationResponse]
+
+type GetRoomsOfLocationRequest struct {
+	LocationId int
+	Offset     int
+	Limit      int
+}
+
+type GetRoomsOfLocationResponse struct {
+	Rooms []model.RoomModel
+	Total int
+}
+
+type GetRoomsOfLocationHandler struct {
+	DB Database
+}
+
+func (q *GetRoomsOfLocationHandler) Query(request GetRoomsOfLocationRequest) (res GetRoomsOfLocationResponse, err error) {
+	var total int
+	row := q.DB.QueryRow(`SELECT COUNT(id) FROM raumzeitalpaka.rooms WHERE location = $1`, request.LocationId)
 	if err = row.Err(); err != nil {
-		return nil, -1, err
+		return GetRoomsOfLocationResponse{}, err
 	}
 	err = row.Scan(&total)
 	if err != nil {
-		return nil, -1, err
+		return GetRoomsOfLocationResponse{}, err
 	}
-	if total == 0 || limit == 0 {
-		return []RoomModel{}, total, nil
+	if total == 0 || request.Limit == 0 {
+		return GetRoomsOfLocationResponse{}, nil
 	}
 
 	rows, err := q.DB.Query(`
@@ -32,23 +52,26 @@ ON r.location = l.id
 WHERE r.location = $1
 ORDER BY location_name, name
 LIMIT $2 OFFSET $3`,
-		location, limit, offset)
+		request.LocationId, request.Limit, request.Offset)
 	if err != nil {
-		return nil, total, err
+		return GetRoomsOfLocationResponse{}, err
 	}
 
-	rs = make([]RoomModel, 0, limit)
+	rs := make([]model.RoomModel, 0, request.Limit)
 	for rows.Next() {
-		var r RoomModel
-		var l LocationModel
+		var r model.RoomModel
+		var l model.LocationModel
 		err = rows.Scan(&r.ID, &r.Name, &r.LocationX, &r.LocationY, &r.LocationW, &r.LocationH, &r.Description,
 			&l.ID, &l.Name, &l.File)
 		if err != nil {
-			return nil, 0, err
+			return GetRoomsOfLocationResponse{}, err
 		}
 		r.Location = l
 
 		rs = append(rs, r)
 	}
-	return rs, total, nil
+	return GetRoomsOfLocationResponse{
+		Rooms: rs,
+		Total: total,
+	}, nil
 }

@@ -2,16 +2,18 @@ package components
 
 import (
 	"fmt"
+	"net/http"
+	"raumzeitalpaka/app/auth/authz"
+	"raumzeitalpaka/app/database/command"
+	"raumzeitalpaka/ports/www/middleware"
+	"raumzeitalpaka/ports/www/render"
+	"strconv"
+
 	"github.com/go-chi/chi/v5"
 	"go.uber.org/zap"
 	. "maragu.dev/gomponents"
 	hx "maragu.dev/gomponents-htmx"
 	. "maragu.dev/gomponents/html"
-	"net/http"
-	"raumzeitalpaka/app/database"
-	"raumzeitalpaka/ports/www/middleware"
-	"raumzeitalpaka/ports/www/render"
-	"strconv"
 )
 
 func DeleteRoomButton(roomId int) Node {
@@ -23,7 +25,8 @@ func DeleteRoomButton(roomId int) Node {
 }
 
 type DeleteRoomRoute struct {
-	DB *database.Database
+	DeleteRoom command.DeleteRoom
+	Authz      authz.Authorizer
 }
 
 func (l *DeleteRoomRoute) Method() string {
@@ -36,9 +39,8 @@ func (l *DeleteRoomRoute) Pattern() string {
 
 func (l *DeleteRoomRoute) Handler() http.Handler {
 	log := zap.L().Named(l.Pattern())
-	commands := l.DB.Commands
 	return http.HandlerFunc(func(writer http.ResponseWriter, request *http.Request) {
-		if !middleware.IsOrganizer(request) {
+		if !middleware.IsOrganizer(request, l.Authz) {
 			render.Error(log, writer, http.StatusUnauthorized, "unauthorized request detected", nil)
 			return
 		}
@@ -49,7 +51,7 @@ func (l *DeleteRoomRoute) Handler() http.Handler {
 			return
 		}
 
-		err = commands.DeleteRoom(int(roomId))
+		err = l.DeleteRoom.Execute(command.DeleteRoomRequest{RoomID: int(roomId)})
 		if err != nil {
 			render.Error(log, writer, http.StatusInternalServerError, "failed to delete room", err)
 			return

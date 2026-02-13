@@ -3,7 +3,8 @@ package components
 import (
 	"fmt"
 	"net/http"
-	"raumzeitalpaka/app/database"
+	"raumzeitalpaka/app/auth/authz"
+	"raumzeitalpaka/app/database/command"
 	"raumzeitalpaka/app/database/model"
 	"raumzeitalpaka/ports/www/middleware"
 	"raumzeitalpaka/ports/www/render"
@@ -98,7 +99,8 @@ func TimeslotForm(ts *model.TimeslotModel, parentTs *model.TimeslotModel, event 
 }
 
 type CreateTimeslotRoute struct {
-	DB *database.Database
+	CreateTimeslot command.CreateTimeslot
+	Authz          authz.Authorizer
 }
 
 func (l *CreateTimeslotRoute) Method() string {
@@ -111,9 +113,8 @@ func (l *CreateTimeslotRoute) Pattern() string {
 
 func (l *CreateTimeslotRoute) Handler() http.Handler {
 	log := Logger(l)
-	commands := l.DB.Commands
 	return http.HandlerFunc(func(writer http.ResponseWriter, request *http.Request) {
-		if !middleware.IsOrganizer(request) {
+		if !middleware.IsOrganizer(request, l.Authz) {
 			render.Error(log, writer, http.StatusUnauthorized, "unauthorized request detected", nil)
 			return
 		}
@@ -142,7 +143,7 @@ func (l *CreateTimeslotRoute) Handler() http.Handler {
 		}
 		log.Debug("parsed create timeslot form", zap.Any("model", model))
 
-		id, err := commands.CreateTimeslot(model)
+		id, err := l.CreateTimeslot.Execute(model)
 		if err != nil {
 			render.Error(log, writer, http.StatusInternalServerError, "failed to create timeslot", err)
 			return
@@ -153,11 +154,11 @@ func (l *CreateTimeslotRoute) Handler() http.Handler {
 	})
 }
 
-func ParseCreateTimeslotModel(event, parent, role, day, timeslot, duration, title, note, room string) (model.CreateTimeslotModel, error) {
+func ParseCreateTimeslotModel(event, parent, role, day, timeslot, duration, title, note, room string) (command.CreateTimeslotRequest, error) {
 	var parentIdp *int64
 	eventId, err := strconv.ParseInt(event, 10, 64)
 	if err != nil {
-		return model.CreateTimeslotModel{}, err
+		return command.CreateTimeslotRequest{}, err
 	}
 	parentId, err := strconv.ParseInt(parent, 10, 64)
 	if err != nil {
@@ -167,22 +168,22 @@ func ParseCreateTimeslotModel(event, parent, role, day, timeslot, duration, titl
 	}
 	dayValue, err := strconv.ParseInt(day, 10, 64)
 	if err != nil {
-		return model.CreateTimeslotModel{}, err
+		return command.CreateTimeslotRequest{}, err
 	}
 	timeslotValue, err := time.Parse("15:04", timeslot)
 	if err != nil {
-		return model.CreateTimeslotModel{}, err
+		return command.CreateTimeslotRequest{}, err
 	}
 	roomValue, err := strconv.ParseInt(room, 10, 64)
 	if err != nil {
-		return model.CreateTimeslotModel{}, err
+		return command.CreateTimeslotRequest{}, err
 	}
 	durationValue, err := strconv.ParseInt(duration, 10, 64)
 	if err != nil {
-		return model.CreateTimeslotModel{}, err
+		return command.CreateTimeslotRequest{}, err
 	}
 
-	return model.CreateTimeslotModel{
+	return command.CreateTimeslotRequest{
 		Event:    int(eventId),
 		Parent:   parentIdp,
 		Role:     model.RoleFrom(role),

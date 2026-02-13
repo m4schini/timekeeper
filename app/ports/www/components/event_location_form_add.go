@@ -2,15 +2,17 @@ package components
 
 import (
 	"fmt"
+	"net/http"
+	"raumzeitalpaka/app/auth"
+	"raumzeitalpaka/app/auth/authz"
+	"raumzeitalpaka/app/database/command"
+	"raumzeitalpaka/app/database/model"
+	"raumzeitalpaka/ports/www/render"
+	"strconv"
+
 	"go.uber.org/zap"
 	. "maragu.dev/gomponents"
 	. "maragu.dev/gomponents/html"
-	"net/http"
-	"raumzeitalpaka/app/database"
-	"raumzeitalpaka/app/database/model"
-	"raumzeitalpaka/ports/www/middleware"
-	"raumzeitalpaka/ports/www/render"
-	"strconv"
 )
 
 func AddLocationForm(eventId int, locations []model.LocationModel) Node {
@@ -40,7 +42,8 @@ func AddLocationForm(eventId int, locations []model.LocationModel) Node {
 }
 
 type AddLocationToEventRoute struct {
-	DB *database.Database
+	AddLocationToEvent command.AddLocationToEvent
+	Authz              authz.Authorizer
 }
 
 func (l *AddLocationToEventRoute) Method() string {
@@ -53,9 +56,9 @@ func (l *AddLocationToEventRoute) Pattern() string {
 
 func (l *AddLocationToEventRoute) Handler() http.Handler {
 	log := Logger(l)
-	commands := l.DB.Commands
 	return http.HandlerFunc(func(writer http.ResponseWriter, request *http.Request) {
-		if !middleware.IsOrganizer(request) {
+		userId, authenticated := auth.UserFrom(request)
+		if !authenticated {
 			render.Error(log, writer, http.StatusUnauthorized, "unauthorized request detected", nil)
 			return
 		}
@@ -71,14 +74,19 @@ func (l *AddLocationToEventRoute) Handler() http.Handler {
 			locationRoleParam = request.PostFormValue("location_role")
 			locationParam     = request.PostFormValue("location")
 		)
-		model, err := ParseAddLocationToEventModel(eventParam, locationRoleParam, locationParam)
+		dbmodel, err := ParseAddLocationToEventModel(eventParam, locationRoleParam, locationParam)
 		if err != nil {
 			render.Error(log, writer, http.StatusBadRequest, "failed to parse form", err)
 			return
 		}
-		log.Debug("parsed add location to event form", zap.Any("model", model))
+		log.Debug("parsed add location to event form", zap.Any("dbmodel", dbmodel))
 
-		id, err := commands.AddLocationToEvent(model)
+		if _, isAuthorized := l.Authz.HasEventRole(userId, dbmodel.EventId, model.RoleOrganizer); !isAuthorized {
+			render.Error(log, writer, http.StatusUnauthorized, "unauthorized request detected", nil)
+			return
+		}
+
+		id, err := l.AddLocationToEvent.Execute(dbmodel)
 		if err != nil {
 			render.Error(log, writer, http.StatusInternalServerError, "failed to add location to event", err)
 			return
@@ -89,17 +97,17 @@ func (l *AddLocationToEventRoute) Handler() http.Handler {
 	})
 }
 
-func ParseAddLocationToEventModel(event, name, location string) (model.AddLocationToEventModel, error) {
+func ParseAddLocationToEventModel(event, name, location string) (command.AddLocationToEventRequest, error) {
 	eventId, err := strconv.ParseInt(event, 10, 64)
 	if err != nil {
-		return model.AddLocationToEventModel{}, err
+		return command.AddLocationToEventRequest{}, err
 	}
 	locationId, err := strconv.ParseInt(location, 10, 64)
 	if err != nil {
-		return model.AddLocationToEventModel{}, err
+		return command.AddLocationToEventRequest{}, err
 	}
 
-	return model.AddLocationToEventModel{
+	return command.AddLocationToEventRequest{
 		Name:       name,
 		EventId:    int(eventId),
 		LocationId: int(locationId),

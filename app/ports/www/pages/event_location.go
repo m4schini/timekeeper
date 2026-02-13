@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"net/http"
 	"raumzeitalpaka/adapters/nominatim"
-	"raumzeitalpaka/app/database"
 	"raumzeitalpaka/app/database/model"
+	"raumzeitalpaka/app/database/query"
 	"raumzeitalpaka/ports/www/components"
 	"raumzeitalpaka/ports/www/render"
 	"strconv"
@@ -112,8 +112,10 @@ func ImageWithBoxes(imgSrc string, imgWidth, imgHeight float64, boxes []Box) Nod
 }
 
 type LocationPageRoute struct {
-	DB        *database.Database
-	Nominatim *nominatim.Client
+	GetEvent           query.GetEvent
+	GetEventLocation   query.GetEventLocation
+	GetRoomsOfLocation query.GetRoomsOfLocation
+	Nominatim          *nominatim.Client
 }
 
 func (l *LocationPageRoute) Method() string {
@@ -126,7 +128,6 @@ func (l *LocationPageRoute) Pattern() string {
 
 func (l *LocationPageRoute) Handler() http.Handler {
 	log := components.Logger(l)
-	queries := l.DB.Queries
 	osm := l.Nominatim
 	return http.HandlerFunc(func(writer http.ResponseWriter, request *http.Request) {
 		eventId, err := strconv.ParseInt(chi.URLParam(request, "event"), 10, 64)
@@ -140,13 +141,16 @@ func (l *LocationPageRoute) Handler() http.Handler {
 			return
 		}
 
-		event, err := queries.GetEvent(int(eventId))
+		event, err := l.GetEvent.Query(query.GetEventRequest{EventId: int(eventId)})
 		if err != nil {
 			render.Error(log, writer, http.StatusInternalServerError, "failed to get event", err)
 			return
 		}
 
-		location, err := queries.GetEventLocation(int(eventId), int(locationId))
+		location, err := l.GetEventLocation.Query(query.GetEventLocationRequest{
+			EventId:    int(eventId),
+			LocationId: int(locationId),
+		})
 		if err != nil {
 			render.Error(log, writer, http.StatusInternalServerError, "failed to get location", err)
 			return
@@ -158,12 +162,16 @@ func (l *LocationPageRoute) Handler() http.Handler {
 			locationOsmData = &resp
 		}
 
-		rooms, _, err := queries.GetRoomsOfLocation(int(locationId), 0, 100)
+		rooms, err := l.GetRoomsOfLocation.Query(query.GetRoomsOfLocationRequest{
+			LocationId: int(locationId),
+			Offset:     0,
+			Limit:      100,
+		})
 		if err != nil {
 			render.Error(log, writer, http.StatusInternalServerError, "failed to get rooms", err)
 			return
 		}
 
-		render.HTML(log, writer, request, LocationPage(event, location, locationOsmData, rooms))
+		render.HTML(log, writer, request, LocationPage(event, location, locationOsmData, rooms.Rooms))
 	})
 }

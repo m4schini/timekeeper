@@ -17,7 +17,7 @@ func Serve(listener net.Listener, authHandler chi.Router, pages []Route, compone
 	r := chi.NewRouter()
 	r.Use(
 		http.NewCrossOriginProtection().Handler,
-		auth.UseJWT(),
+		auth.UseJWT(), //TODO userQuery
 		middleware.Log,
 		func(handler http.Handler) http.Handler {
 			return http.HandlerFunc(func(writer http.ResponseWriter, request *http.Request) {

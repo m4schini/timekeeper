@@ -2,15 +2,17 @@ package components
 
 import (
 	"fmt"
-	"go.uber.org/zap"
-	. "maragu.dev/gomponents"
-	. "maragu.dev/gomponents/html"
 	"net/http"
-	"raumzeitalpaka/app/database"
+	"raumzeitalpaka/app/auth/authz"
+	"raumzeitalpaka/app/database/command"
 	"raumzeitalpaka/app/database/model"
 	"raumzeitalpaka/ports/www/middleware"
 	"raumzeitalpaka/ports/www/render"
 	"strconv"
+
+	"go.uber.org/zap"
+	. "maragu.dev/gomponents"
+	. "maragu.dev/gomponents/html"
 )
 
 func EditLocationButton(locationId int) Node {
@@ -41,7 +43,8 @@ func EditLocationForm(location model.LocationModel) Node {
 }
 
 type EditLocationRoute struct {
-	DB *database.Database
+	UpdateLocation command.UpdateLocation
+	Authz          authz.Authorizer
 }
 
 func (l *EditLocationRoute) Method() string {
@@ -54,9 +57,8 @@ func (l *EditLocationRoute) Pattern() string {
 
 func (l *EditLocationRoute) Handler() http.Handler {
 	log := Logger(l)
-	commands := l.DB.Commands
 	return http.HandlerFunc(func(writer http.ResponseWriter, request *http.Request) {
-		if !middleware.IsOrganizer(request) {
+		if !middleware.IsOrganizer(request, l.Authz) {
 			render.Error(log, writer, http.StatusUnauthorized, "unauthorized request detected", nil)
 			return
 		}
@@ -80,7 +82,7 @@ func (l *EditLocationRoute) Handler() http.Handler {
 		}
 		log.Debug("parsed update location form", zap.Any("model", model))
 
-		err = commands.UpdateLocation(model)
+		err = l.UpdateLocation.Execute(model)
 		if err != nil {
 			render.Error(log, writer, http.StatusInternalServerError, "failed to update location", err)
 			return
@@ -91,13 +93,13 @@ func (l *EditLocationRoute) Handler() http.Handler {
 	})
 }
 
-func ParseUpdateLocationModel(location, name, mapFile, osmId string) (model.UpdateLocationModel, error) {
+func ParseUpdateLocationModel(location, name, mapFile, osmId string) (command.UpdateLocationRequest, error) {
 	locationId, err := strconv.ParseInt(location, 10, 64)
 	if err != nil {
-		return model.UpdateLocationModel{}, err
+		return command.UpdateLocationRequest{}, err
 	}
 
-	return model.UpdateLocationModel{
+	return command.UpdateLocationRequest{
 		ID:      int(locationId),
 		Name:    name,
 		MapFile: mapFile,

@@ -4,8 +4,9 @@ import (
 	"fmt"
 	"net/http"
 	"raumzeitalpaka/adapters/nominatim"
-	"raumzeitalpaka/app/database"
+	"raumzeitalpaka/app/auth/authz"
 	"raumzeitalpaka/app/database/model"
+	"raumzeitalpaka/app/database/query"
 	"raumzeitalpaka/config"
 	"raumzeitalpaka/ports/www/components"
 	"raumzeitalpaka/ports/www/middleware"
@@ -132,8 +133,11 @@ func EventSectionLocations(event model.EventModel, locations []model.LocationMod
 }
 
 type EventPageRoute struct {
-	DB        *database.Database
-	Nominatim *nominatim.Client
+	GetEvent          query.GetEvent
+	GetEventLocations query.GetEventLocations
+	GetLocations      query.GetLocations
+	Nominatim         *nominatim.Client
+	Authz             authz.Authorizer
 }
 
 func (l *EventPageRoute) Method() string {
@@ -146,9 +150,8 @@ func (l *EventPageRoute) Pattern() string {
 
 func (l *EventPageRoute) Handler() http.Handler {
 	log := components.Logger(l)
-	queries := l.DB.Queries
 	return http.HandlerFunc(func(writer http.ResponseWriter, request *http.Request) {
-		isOrganizer := middleware.IsOrganizer(request)
+		isOrganizer := middleware.IsOrganizer(request, l.Authz)
 		eventParam := chi.URLParam(request, "event")
 		eventId, err := strconv.ParseInt(eventParam, 10, 64)
 		if err != nil {
@@ -156,13 +159,13 @@ func (l *EventPageRoute) Handler() http.Handler {
 			return
 		}
 
-		event, err := queries.GetEvent(int(eventId))
+		event, err := l.GetEvent.Query(query.GetEventRequest{EventId: int(eventId)})
 		if err != nil {
 			render.Error(log, writer, http.StatusInternalServerError, "failed to get event", err)
 			return
 		}
 
-		eventLocations, err := queries.GetLocationsOfEvent(int(eventId))
+		eventLocations, err := l.GetEventLocations.Query(query.GetEventLocationsRequest{EventId: int(eventId)})
 		if err != nil {
 			log.Warn("failed to get event locations", zap.Error(err))
 			eventLocations = make([]model.EventLocationModel, 0)
@@ -181,7 +184,10 @@ func (l *EventPageRoute) Handler() http.Handler {
 
 		var page Node
 		if isOrganizer {
-			locations, err := queries.GetLocations(0, 100)
+			locations, err := l.GetLocations.Query(query.GetLocationsRequest{
+				Offset: 0,
+				Limit:  100,
+			})
 			if err != nil {
 				log.Warn("failed to get locations", zap.Error(err))
 				locations = make([]model.LocationModel, 0)

@@ -3,8 +3,9 @@ package pages
 import (
 	"fmt"
 	"net/http"
-	"raumzeitalpaka/app/database"
+	"raumzeitalpaka/app/auth/authz"
 	"raumzeitalpaka/app/database/model"
+	"raumzeitalpaka/app/database/query"
 	"raumzeitalpaka/ports/www/components"
 	"raumzeitalpaka/ports/www/middleware"
 	"raumzeitalpaka/ports/www/render"
@@ -31,7 +32,10 @@ func CreateTimeslotPage(event model.EventModel, parentTimeslot *model.TimeslotMo
 }
 
 type CreateTimeslotPageRoute struct {
-	DB *database.Database
+	GetEvent                 query.GetEvent
+	GetTimeslot              query.GetTimeslot
+	GetRoomsOfEventLocations query.GetRoomsOfEventLocations
+	Authz                    authz.Authorizer
 }
 
 func (l *CreateTimeslotPageRoute) Method() string {
@@ -44,9 +48,8 @@ func (l *CreateTimeslotPageRoute) Pattern() string {
 
 func (l *CreateTimeslotPageRoute) Handler() http.Handler {
 	log := components.Logger(l)
-	queries := l.DB.Queries
 	return http.HandlerFunc(func(writer http.ResponseWriter, request *http.Request) {
-		isOrganizer := middleware.IsOrganizer(request)
+		isOrganizer := middleware.IsOrganizer(request, l.Authz)
 		if !isOrganizer {
 			render.Error(log, writer, http.StatusUnauthorized, "user is not authorized", nil)
 			return
@@ -63,7 +66,7 @@ func (l *CreateTimeslotPageRoute) Handler() http.Handler {
 			return
 		}
 
-		event, err := queries.GetEvent(int(eventId))
+		event, err := l.GetEvent.Query(query.GetEventRequest{EventId: int(eventId)})
 		if err != nil {
 			render.Error(log, writer, http.StatusInternalServerError, "failed to retrieve event", err)
 			return
@@ -75,7 +78,7 @@ func (l *CreateTimeslotPageRoute) Handler() http.Handler {
 				render.Error(log, writer, http.StatusBadRequest, "invalid parentId", err)
 				return
 			}
-			p, err := queries.GetTimeslot(int(parentId))
+			p, err := l.GetTimeslot.Query(query.GetTimeslotRequest{TimeslotId: int(parentId)})
 			if err == nil {
 				parent = &p
 			} else {
@@ -83,7 +86,7 @@ func (l *CreateTimeslotPageRoute) Handler() http.Handler {
 			}
 		}
 
-		rooms, err := queries.GetRoomsOfEventLocations(event.ID)
+		rooms, err := l.GetRoomsOfEventLocations.Query(query.GetRoomsOfEventLocationsRequest{EventId: event.ID})
 		if err != nil {
 			render.Error(log, writer, http.StatusInternalServerError, "failed to retrieve rooms", err)
 			return

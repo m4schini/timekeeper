@@ -1,10 +1,18 @@
 package command
 
-import (
-	"raumzeitalpaka/app/database/model"
-)
+type CreateRoom InsertHandler[CreateRoomRequest, int]
 
-func (c *Commands) CreateRoom(m model.CreateRoomModel) (id int, err error) {
+type CreateRoomRequest struct {
+	Location    int
+	Name        string
+	Description string
+}
+
+type CreateRoomHandler struct {
+	DB Database
+}
+
+func (c *CreateRoomHandler) Execute(m CreateRoomRequest) (id int, err error) {
 	row := c.DB.QueryRow(`
 INSERT INTO raumzeitalpaka.rooms (location, name, description, location_x, location_y, location_w, location_h) 
 VALUES ($1, $2, $3, $4, $5, $6, $7)

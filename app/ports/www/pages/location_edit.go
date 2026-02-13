@@ -2,8 +2,9 @@ package pages
 
 import (
 	"net/http"
-	"raumzeitalpaka/app/database"
+	"raumzeitalpaka/app/auth/authz"
 	"raumzeitalpaka/app/database/model"
+	"raumzeitalpaka/app/database/query"
 	"raumzeitalpaka/ports/www/components"
 	"raumzeitalpaka/ports/www/middleware"
 	"raumzeitalpaka/ports/www/render"
@@ -34,7 +35,9 @@ func EditLocationPage(locationModel model.LocationModel, rooms []model.RoomModel
 }
 
 type UpdateLocationPageRoute struct {
-	DB *database.Database
+	GetLocation        query.GetLocation
+	GetRoomsOfLocation query.GetRoomsOfLocation
+	Authz              authz.Authorizer
 }
 
 func (l *UpdateLocationPageRoute) Method() string {
@@ -47,9 +50,8 @@ func (l *UpdateLocationPageRoute) Pattern() string {
 
 func (l *UpdateLocationPageRoute) Handler() http.Handler {
 	log := components.Logger(l)
-	queries := l.DB.Queries
 	return http.HandlerFunc(func(writer http.ResponseWriter, request *http.Request) {
-		isOrganizer := middleware.IsOrganizer(request)
+		isOrganizer := middleware.IsOrganizer(request, l.Authz)
 		if !isOrganizer {
 			render.Error(log, writer, http.StatusUnauthorized, "user is not authorized", nil)
 			return
@@ -63,20 +65,24 @@ func (l *UpdateLocationPageRoute) Handler() http.Handler {
 			return
 		}
 
-		location, err := queries.GetLocation(int(locationId))
+		location, err := l.GetLocation.Query(query.GetLocationRequest{LocationId: int(locationId)})
 		if err != nil {
 			render.Error(log, writer, http.StatusInternalServerError, "failed to get location", err)
 			return
 		}
 		log.Debug("retrieved location", zap.Any("model", location))
 
-		rooms, total, err := queries.GetRoomsOfLocation(location.ID, 0, 100)
+		rooms, err := l.GetRoomsOfLocation.Query(query.GetRoomsOfLocationRequest{
+			LocationId: location.ID,
+			Offset:     0,
+			Limit:      100,
+		})
 		if err != nil {
 			render.Error(log, writer, http.StatusInternalServerError, "failed to get rooms of location", err)
 			return
 		}
-		log.Debug("retrieved rooms of location", zap.Int("total", total), zap.Int("rooms", len(rooms)))
+		log.Debug("retrieved rooms of location", zap.Int("total", rooms.Total), zap.Int("rooms", len(rooms.Rooms)))
 
-		render.HTML(log, writer, request, EditLocationPage(location, rooms))
+		render.HTML(log, writer, request, EditLocationPage(location, rooms.Rooms))
 	})
 }

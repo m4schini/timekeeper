@@ -8,6 +8,8 @@ const (
 	RoleParticipant Role = "Participant"
 )
 
+var RoleHierarchy = []Role{RoleOrganizer, RoleMentor, RoleParticipant}
+
 func (r Role) Title() string {
 	switch r {
 	case RoleOrganizer:
@@ -45,4 +47,27 @@ func RoleFrom(role string) Role {
 	default:
 		return RoleParticipant
 	}
+}
+
+func ValidRole(role Role) bool {
+	return role == RoleOrganizer || role == RoleMentor || role == RoleParticipant
+}
+
+func HigherRole(r1, r2 Role) Role {
+	if r1 == "" {
+		return r2
+	}
+	if r2 == "" {
+		return r1
+	}
+	for _, role := range RoleHierarchy {
+		if r1 == role {
+			return r1
+		}
+		if r2 == role {
+			return r2
+		}
+	}
+
+	return r1
 }

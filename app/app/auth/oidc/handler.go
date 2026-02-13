@@ -19,7 +19,7 @@ var (
 	CallbackPath = "/login/callback"
 )
 
-func NewHandler(ctx context.Context, cfg config.Config) (r chi.Router, err error) {
+func NewHandler(ctx context.Context, cfg config.Config, syncer Syncer) (r chi.Router, err error) {
 	log := zap.L()
 	redirectURI := config.BaseUrl() + CallbackPath
 
@@ -39,7 +39,7 @@ func NewHandler(ctx context.Context, cfg config.Config) (r chi.Router, err error
 		Endpoint: provider.Endpoint(),
 
 		// "openid" is a required scope for OpenID Connect flows.
-		Scopes: []string{oidc.ScopeOpenID, "profile", "email"},
+		Scopes: []string{oidc.ScopeOpenID, "profile", "email", "groups"},
 	}
 
 	// State generator for CSRF protection
@@ -75,12 +75,7 @@ func NewHandler(ctx context.Context, cfg config.Config) (r chi.Router, err error
 		}
 
 		// Extract custom claims
-		var claims struct {
-			Email    string   `json:"email"`
-			Username string   `json:"preferred_username"`
-			Groups   []string `json:"groups"`
-			UserId   string   `json:"sub"`
-		}
+		var claims claims
 		//var claims = make(map[string]any)
 		if err := idToken.Claims(&claims); err != nil {
 			render.Error(log, w, http.StatusUnauthorized, "failed to parse ID Token claims", err)
@@ -94,17 +89,14 @@ func NewHandler(ctx context.Context, cfg config.Config) (r chi.Router, err error
 			return
 		}
 
-		role, err := auth.AlpakaRoleRules{}.Role(claims.Groups)
+		err = syncer.Sync(int(userId), claims.Username, claims.Groups)
 		if err != nil {
-			render.Error(log, w, http.StatusBadRequest, "failed to parse userId", err)
+			render.Error(log, w, http.StatusInternalServerError, "failed to sync user", err)
 			return
 		}
 
 		jwt, err := auth.NewJWT(auth.Claims{
-			UserId:   int(userId),
-			Email:    claims.Email,
-			Username: claims.Username,
-			Role:     role,
+			UserId: int(userId),
 		})
 		auth.SetSessionCookie(w, jwt)
 		http.Redirect(w, r, "/", http.StatusFound)
@@ -118,4 +110,11 @@ func NewHandler(ctx context.Context, cfg config.Config) (r chi.Router, err error
 		writer.Write([]byte("logged out"))
 	}))
 	return mux, nil
+}
+
+type claims struct {
+	Email    string   `json:"email"`
+	Username string   `json:"preferred_username"`
+	Groups   []string `json:"groups"`
+	UserId   string   `json:"sub"`
 }

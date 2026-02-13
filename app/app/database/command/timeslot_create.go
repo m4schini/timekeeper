@@ -3,6 +3,7 @@ package command
 import (
 	"fmt"
 	"raumzeitalpaka/app/database/model"
+	"time"
 )
 
 var (
@@ -10,7 +11,25 @@ var (
 	ErrInvalidRoomId  = fmt.Errorf("invalid roomId")
 )
 
-func (c *Commands) CreateTimeslot(m model.CreateTimeslotModel) (id int, err error) {
+type CreateTimeslot InsertHandler[CreateTimeslotRequest, int]
+
+type CreateTimeslotRequest struct {
+	Event    int
+	Parent   *int64
+	Role     model.Role
+	Day      int
+	Timeslot time.Time
+	Duration time.Duration
+	Title    string
+	Note     string
+	Room     int
+}
+
+type CreateTimeslotHandler struct {
+	DB Database
+}
+
+func (c *CreateTimeslotHandler) Execute(m CreateTimeslotRequest) (id int, err error) {
 	if m.Event == 0 {
 		return 0, ErrInvalidEventId
 	}

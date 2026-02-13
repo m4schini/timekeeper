@@ -1,8 +1,21 @@
 package query
 
-import . "raumzeitalpaka/app/database/model"
+import (
+	"raumzeitalpaka/app/database/model"
+)
 
-func (q *Queries) GetLocationsOfEvent(eventId int) (ls []EventLocationModel, err error) {
+type GetEventLocations Handler[GetEventLocationsRequest, []model.EventLocationModel]
+
+type GetEventLocationsRequest struct {
+	EventId int
+}
+
+type GetEventLocationsHandler struct {
+	DB Database
+}
+
+func (q *GetEventLocationsHandler) Query(request GetEventLocationsRequest) (ls []model.EventLocationModel, err error) {
+	eventId := request.EventId
 	rows, err := q.DB.Query(`
 SELECT l.id, l.name, l.file, l.osm_id, ehl.name as relationship, ehl.id as relationship_id, ehl.note as relationship_note, ehl.visible as visible
 FROM raumzeitalpaka.event_has_location ehl JOIN raumzeitalpaka.locations l ON l.id = ehl.location 
@@ -12,9 +25,9 @@ ORDER BY relationship, name`, eventId)
 		return nil, err
 	}
 
-	ls = make([]EventLocationModel, 0)
+	ls = make([]model.EventLocationModel, 0)
 	for rows.Next() {
-		var l EventLocationModel
+		var l model.EventLocationModel
 		err = rows.Scan(&l.ID, &l.Name, &l.File, &l.OsmId, &l.Relationship, &l.RelationshipId, &l.RelationshipNote, &l.Visible)
 		if err != nil {
 			return nil, err

@@ -2,6 +2,7 @@ package www
 
 import (
 	"raumzeitalpaka/adapters/nominatim"
+	authz "raumzeitalpaka/app/auth/authz"
 	"raumzeitalpaka/app/database"
 	c "raumzeitalpaka/ports/www/components"
 	p "raumzeitalpaka/ports/www/pages"
@@ -12,38 +13,86 @@ func NewWWWPort(
 	nominatimClient *nominatim.Client,
 ) (pages []Route, components []Route) {
 	pixelHack := PixelHackItems()
+	q := db.Queries
+	cmd := db.Commands
+	az := authz.NewDatabaseAuthz(db)
 
 	// init ports/frontend
 	pages = []Route{
-		&p.LandingPageRoute{DB: db},
+		&p.LandingPageRoute{GetEvents: q.Events, Authz: az},
 
-		&p.CreateEventPageRoute{DB: db},
-		&p.EditEventPageRoute{DB: db},
-		&p.EventPageRoute{DB: db, Nominatim: nominatimClient},
+		&p.CreateEventPageRoute{Authz: az},
+		&p.EditEventPageRoute{GetEvent: q.Event, Authz: az},
+		&p.EventPageRoute{
+			GetEvent:          q.Event,
+			GetEventLocations: q.EventLocations,
+			GetLocations:      q.Locations,
+			Nominatim:         nominatimClient,
+			Authz:             az,
+		},
 
-		&p.SchedulePageRoute{DB: db},
-		&p.CreateTimeslotPageRoute{DB: db},
-		&p.EditTimeslotPageRoute{DB: db},
-		&p.DuplicateTimeslotPageRoute{DB: db},
+		&p.SchedulePageRoute{
+			GetEvent:            q.Event,
+			GetTimeslotsOfEvent: q.TimeslotsOfEvent,
+			Authz:               az,
+		},
+		&p.CreateTimeslotPageRoute{
+			GetEvent:                 q.Event,
+			GetTimeslot:              q.Timeslot,
+			GetRoomsOfEventLocations: q.RoomsOfEventLocations,
+			Authz:                    az,
+		},
+		&p.EditTimeslotPageRoute{
+			GetTimeslot:              q.Timeslot,
+			GetRoomsOfEventLocations: q.RoomsOfEventLocations,
+			Authz:                    az,
+		},
+		&p.DuplicateTimeslotPageRoute{
+			GetTimeslot:              q.Timeslot,
+			GetRoomsOfEventLocations: q.RoomsOfEventLocations,
+			Authz:                    az,
+		},
 
-		&p.EventScheduleDayRoute{DB: db},
-		&p.EventExportVocScheduleRoute{DB: db},
-		&p.EventExportIcalScheduleRoute{DB: db},
-		&p.EventsExportIcalRoute{DB: db},
-		&p.EventScheduleExportMarkdownRoute{DB: db},
+		&p.EventScheduleDayRoute{
+			GetEvent:            q.Event,
+			GetTimeslotsOfEvent: q.TimeslotsOfEvent,
+			Authz:               az,
+		},
+		&p.EventExportVocScheduleRoute{
+			GetEvent:            q.Event,
+			GetTimeslotsOfEvent: q.TimeslotsOfEvent,
+		},
+		&p.EventExportIcalScheduleRoute{
+			GetEvent:            q.Event,
+			GetTimeslotsOfEvent: q.TimeslotsOfEvent,
+		},
+		&p.EventsExportIcalRoute{GetEvents: q.Events},
+		&p.EventScheduleExportMarkdownRoute{
+			GetEvent:            q.Event,
+			GetTimeslotsOfEvent: q.TimeslotsOfEvent,
+		},
 
-		&p.LocationPageRoute{DB: db, Nominatim: nominatimClient},
-		&p.CreateLocationPageRoute{DB: db},
-		&p.UpdateLocationPageRoute{DB: db},
+		&p.LocationPageRoute{
+			GetEvent:           q.Event,
+			GetEventLocation:   q.EventLocation,
+			GetRoomsOfLocation: q.RoomsOfLocation,
+			Nominatim:          nominatimClient,
+		},
+		&p.CreateLocationPageRoute{Authz: az},
+		&p.UpdateLocationPageRoute{
+			GetLocation:        q.Location,
+			GetRoomsOfLocation: q.RoomsOfLocation,
+			Authz:              az,
+		},
 
-		&p.CreateUserPageRoute{DB: db},
+		&p.CreateUserPageRoute{Authz: az},
 
 		&p.PixelHackPageRoute{},
 		&p.AttributionsPageRoute{},
 
-		&ShortEventHandler{DB: db},
-		&ShortEventScheduleHandler{DB: db},
-		&ShortEventScheduleMHandler{DB: db},
+		&ShortEventHandler{GetEventBySlug: q.EventBySlug},
+		&ShortEventScheduleHandler{GetEventBySlug: q.EventBySlug},
+		&ShortEventScheduleMHandler{GetEventBySlug: q.EventBySlug},
 
 		StaticFileRoute{},
 		FontFileRoute{},
@@ -51,23 +100,40 @@ func NewWWWPort(
 	}
 	c.SetAvailablePixelHackIcons(pixelHack)
 	components = []Route{
-		&c.CreateEventRoute{DB: db},
-		&c.UpdateEventRoute{DB: db},
-		&c.DayRoute{DB: db},
+		&c.CreateEventRoute{CreateEvent: db.Commands.CreateEvent,
+			Authz: az},
+		&c.UpdateEventRoute{UpdateEvent: db.Commands.UpdateEvent,
+			Authz: az},
+		&c.DayRoute{
+			GetEvent:            q.Event,
+			GetTimeslotsOfEvent: q.TimeslotsOfEvent,
+			Authz:               az,
+		},
 
-		&c.CreateLocationRoute{DB: db},
-		&c.EditLocationRoute{DB: db},
-		&c.AddLocationToEventRoute{DB: db},
-		&c.DeleteLocationFromEventRoute{DB: db},
-		&c.UpdateEventLocationRoute{DB: db},
+		&c.CreateLocationRoute{CreateLocation: cmd.CreateLocation,
+			Authz: az},
+		&c.EditLocationRoute{UpdateLocation: cmd.UpdateLocation,
+			Authz: az},
+		&c.AddLocationToEventRoute{AddLocationToEvent: db.Commands.AddLocationToEvent,
+			Authz: az},
+		&c.DeleteLocationFromEventRoute{RemoveLocationFromEvent: db.Commands.RemoveLocationFromEvent,
+			Authz: az},
+		&c.UpdateEventLocationRoute{UpdateLocationFromEvent: cmd.UpdateLocationFromEvent,
+			Authz: az},
 
-		&c.CreateTimeslotRoute{DB: db},
-		&c.UpdateTimeslotRoute{DB: db},
-		&c.DeleteTimeslotRoute{DB: db},
+		&c.CreateTimeslotRoute{CreateTimeslot: cmd.CreateTimeslot,
+			Authz: az},
+		&c.UpdateTimeslotRoute{UpdateTimeslot: cmd.UpdateTimeslot,
+			Authz: az},
+		&c.DeleteTimeslotRoute{DeleteTimeslot: cmd.DeleteTimeslot,
+			Authz: az},
 
-		&c.CreateRoomRoute{DB: db},
-		&c.UpdateRoomRoute{DB: db},
-		&c.DeleteRoomRoute{DB: db},
+		&c.CreateRoomRoute{CreateRoom: cmd.CreateRoom,
+			Authz: az},
+		&c.UpdateRoomRoute{UpdateRoom: cmd.UpdateRoom,
+			Authz: az},
+		&c.DeleteRoomRoute{DeleteRoom: cmd.DeleteRoom,
+			Authz: az},
 	}
 
 	return pages, components

@@ -3,7 +3,9 @@ package local
 import (
 	"fmt"
 	"raumzeitalpaka/app/database"
+	"raumzeitalpaka/app/database/command"
 	"raumzeitalpaka/app/database/model"
+	"raumzeitalpaka/app/database/query"
 	"raumzeitalpaka/config"
 	"strconv"
 	"sync"
@@ -26,20 +28,22 @@ type Authenticator interface {
 }
 
 type authy struct {
-	DB     *database.Database
-	userMu sync.Mutex
+	getUserByLoginName query.GetUserByLoginName
+	createUser         command.CreateUser
+	userMu             sync.Mutex
 }
 
 func NewAuthenticator(db *database.Database) *authy {
 	a := new(authy)
-	a.DB = db
+	a.getUserByLoginName = db.Queries.UserByLoginName
+	a.createUser = db.Commands.CreateUser
 	return a
 }
 
 func (a *authy) CreateUser(username, password string) (id int, err error) {
 	a.userMu.Lock()
 	defer a.userMu.Unlock()
-	user, err := a.DB.Queries.GetUserByLoginName(username)
+	user, err := a.getUserByLoginName.Query(query.GetUserByLoginNameRequest{LoginName: username})
 	if err == nil {
 		return user.ID, ErrUserExists
 	}
@@ -49,7 +53,7 @@ func (a *authy) CreateUser(username, password string) (id int, err error) {
 		return -1, err
 	}
 
-	return a.DB.Commands.CreateUser(model.CreateUserModel{
+	return a.createUser.Execute(command.CreateUserRequest{
 		LoginName:    username,
 		PasswordHash: hash,
 	})
@@ -57,7 +61,7 @@ func (a *authy) CreateUser(username, password string) (id int, err error) {
 
 func (a *authy) AuthenticateUser(username, password string) (token string, err error) {
 	log := zap.L().Named("auth")
-	user, err := a.DB.Queries.GetUserByLoginName(username)
+	user, err := a.getUserByLoginName.Query(query.GetUserByLoginNameRequest{LoginName: username})
 	if err != nil {
 		return "", err
 	}

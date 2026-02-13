@@ -3,13 +3,12 @@ package pages
 import (
 	"fmt"
 	"net/http"
-	"raumzeitalpaka/app/database"
+	"raumzeitalpaka/app/auth/authz"
 	"raumzeitalpaka/app/database/model"
+	"raumzeitalpaka/app/database/query"
 	"raumzeitalpaka/ports/www/components"
-	"raumzeitalpaka/ports/www/middleware"
 	"raumzeitalpaka/ports/www/render"
 
-	"go.uber.org/zap"
 	. "maragu.dev/gomponents"
 	. "maragu.dev/gomponents/html"
 )
@@ -29,7 +28,8 @@ func LandingPage(events []model.EventModel) Node {
 }
 
 type LandingPageRoute struct {
-	DB *database.Database
+	GetEvents query.GetEvents
+	Authz     authz.Authorizer
 }
 
 func (l *LandingPageRoute) Method() string {
@@ -42,15 +42,16 @@ func (l *LandingPageRoute) Pattern() string {
 
 func (l *LandingPageRoute) Handler() http.Handler {
 	log := components.Logger(l)
-	queries := l.DB.Queries
 	return http.HandlerFunc(func(writer http.ResponseWriter, request *http.Request) {
 		//if !middleware.IsOrganizer(request) {
 		//	http.Redirect(writer, request, "/login", http.StatusTemporaryRedirect)
 		//	return
 		//}
 
-		log.Info("USER IS ORGANIZER?", zap.Bool("is_organizer", middleware.IsOrganizer(request)))
-		events, err := queries.GetEvents(0, 100)
+		events, err := l.GetEvents.Query(query.GetEventsRequest{
+			Offset: 0,
+			Limit:  1000,
+		})
 		if err != nil {
 			render.Error(log, writer, http.StatusInternalServerError, "failed to get events", err)
 			return

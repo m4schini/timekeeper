@@ -50,7 +50,8 @@ func main() {
 	oidcCfg, oidcEnabled := config.OIDCProviderConfig()
 	if oidcEnabled {
 		logger.Info("using oidc auth provider", zap.Any("issuer", oidcCfg.IssuerURL), zap.String("callbackPath", oidc.CallbackPath))
-		authHandler, err = oidc.NewHandler(ctx, oidcCfg)
+		syncer := oidc.NewAlpakaSyncer(db)
+		authHandler, err = oidc.NewHandler(ctx, oidcCfg, syncer)
 	} else {
 		logger.Info("using local auth provider")
 		authy := local.NewAuthenticator(db)

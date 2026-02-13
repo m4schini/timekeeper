@@ -2,14 +2,14 @@ package pages
 
 import (
 	"net/http"
-	"raumzeitalpaka/app/database"
+	"raumzeitalpaka/app/database/query"
 	export "raumzeitalpaka/app/export/ical"
 	"raumzeitalpaka/ports/www/components"
 	"raumzeitalpaka/ports/www/render"
 )
 
 type EventsExportIcalRoute struct {
-	DB *database.Database
+	GetEvents query.GetEvents
 }
 
 func (v *EventsExportIcalRoute) Method() string {
@@ -22,9 +22,11 @@ func (v *EventsExportIcalRoute) Pattern() string {
 
 func (v *EventsExportIcalRoute) Handler() http.Handler {
 	log := components.Logger(v)
-	queries := v.DB.Queries
 	return http.HandlerFunc(func(writer http.ResponseWriter, request *http.Request) {
-		events, err := queries.GetEvents(0, 100)
+		events, err := v.GetEvents.Query(query.GetEventsRequest{
+			Offset: 0,
+			Limit:  1000,
+		})
 		if err != nil {
 			render.Error(log, writer, http.StatusInternalServerError, "failed to get events", err)
 			return

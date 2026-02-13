@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"net/http"
 	"raumzeitalpaka/app/cache"
-	"raumzeitalpaka/app/database"
 	"raumzeitalpaka/app/database/model"
+	"raumzeitalpaka/app/database/query"
 	export "raumzeitalpaka/app/export/ical"
 	"raumzeitalpaka/ports/www/components"
 	"raumzeitalpaka/ports/www/render"
@@ -17,7 +17,8 @@ import (
 )
 
 type EventExportIcalScheduleRoute struct {
-	DB *database.Database
+	GetEvent            query.GetEvent
+	GetTimeslotsOfEvent query.GetTimeslotsOfEvent
 }
 
 func (v *EventExportIcalScheduleRoute) Method() string {
@@ -30,7 +31,6 @@ func (v *EventExportIcalScheduleRoute) Pattern() string {
 
 func (v *EventExportIcalScheduleRoute) Handler() http.Handler {
 	log := components.Logger(v)
-	queries := v.DB.Queries
 	cache := cache.NewInMemory()
 
 	return http.HandlerFunc(func(writer http.ResponseWriter, request *http.Request) {
@@ -52,19 +52,24 @@ func (v *EventExportIcalScheduleRoute) Handler() http.Handler {
 			return
 		}
 
-		event, err := queries.GetEvent(int(eventId))
+		event, err := v.GetEvent.Query(query.GetEventRequest{EventId: int(eventId)})
 		if err != nil {
 			render.Error(log, writer, http.StatusInternalServerError, "failed to get event", err)
 			return
 		}
 
-		timeslots, _, err := queries.GetTimeslotsOfEvent(int(eventId), roles, 0, 1000)
+		timeslots, err := v.GetTimeslotsOfEvent.Query(query.GetTimeslotsOfEventRequest{
+			EventId: int(eventId),
+			Roles:   roles,
+			Offset:  0,
+			Limit:   1000,
+		})
 		if err != nil {
 			render.Error(log, writer, http.StatusInternalServerError, "failed to get timeslots of event", err)
 			return
 		}
 
-		cal, err := export.ExportCalendarSchedule(event, timeslots)
+		cal, err := export.ExportCalendarSchedule(event, timeslots.Timeslots)
 		if err != nil {
 			render.Error(log, writer, http.StatusInternalServerError, "failed to generate ical schedule", err)
 			return

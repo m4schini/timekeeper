@@ -2,7 +2,7 @@ package pages
 
 import (
 	"net/http"
-	"raumzeitalpaka/app/database"
+	"raumzeitalpaka/app/auth/authz"
 	"raumzeitalpaka/app/database/model"
 	"raumzeitalpaka/ports/www/components"
 	"raumzeitalpaka/ports/www/middleware"
@@ -23,7 +23,7 @@ func CreateEventPage() Node {
 }
 
 type CreateEventPageRoute struct {
-	DB *database.Database
+	Authz authz.Authorizer
 }
 
 func (l *CreateEventPageRoute) Method() string {
@@ -38,7 +38,7 @@ func (l *CreateEventPageRoute) Handler() http.Handler {
 	log := components.Logger(l)
 	page := CreateEventPage()
 	return http.HandlerFunc(func(writer http.ResponseWriter, request *http.Request) {
-		isOrganizer := middleware.IsOrganizer(request)
+		isOrganizer := middleware.IsOrganizer(request, l.Authz)
 		if !isOrganizer {
 			render.Error(log, writer, http.StatusUnauthorized, "user is not authorized", nil)
 			return

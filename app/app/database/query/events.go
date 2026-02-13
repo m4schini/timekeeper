@@ -1,8 +1,23 @@
 package query
 
-import "raumzeitalpaka/app/database/model"
+import (
+	"raumzeitalpaka/app/database/model"
+)
 
-func (q *Queries) GetEvents(offset, limit int) (es []model.EventModel, err error) {
+type GetEvents Handler[GetEventsRequest, []model.EventModel]
+
+type GetEventsRequest struct {
+	Offset int
+	Limit  int
+}
+
+type GetEventsHandler struct {
+	DB Database
+}
+
+func (q *GetEventsHandler) Query(request GetEventsRequest) (es []model.EventModel, err error) {
+	offset := request.Offset
+	limit := request.Limit
 	rows, err := q.DB.Query(`
 	SELECT 
 		e.id, 

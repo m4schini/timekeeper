@@ -84,7 +84,7 @@ func Load() error {
 	viper.SetDefault("timezone", "Europe/Berlin")
 	viper.SetDefault("telemetry.enabled", false)
 	viper.SetDefault("oidc.enabled", false)
-	viper.SetDefault("baseUrl", "https://zeit.haeck.se")
+	viper.SetDefault("base_url", "https://zeit.haeck.se")
 	viper.SetDefault("port", "80")
 	viper.SetDefault("jwt.secret.file", "/etc/raumzeitalpaka/jwt.secret")
 

@@ -1,8 +1,23 @@
 package query
 
-import . "raumzeitalpaka/app/database/model"
+import (
+	"raumzeitalpaka/app/database/model"
+)
 
-func (q *Queries) GetLocations(offset, limit int) (ls []LocationModel, err error) {
+type GetLocations Handler[GetLocationsRequest, []model.LocationModel]
+
+type GetLocationsRequest struct {
+	Offset int
+	Limit  int
+}
+
+type GetLocationsHandler struct {
+	DB Database
+}
+
+func (q *GetLocationsHandler) Query(request GetLocationsRequest) (ls []model.LocationModel, err error) {
+	limit := request.Limit
+	offset := request.Offset
 	rows, err := q.DB.Query(`
 SELECT id, name, file 
 FROM raumzeitalpaka.locations
@@ -12,9 +27,9 @@ LIMIT $1 OFFSET $2`, limit, offset)
 		return nil, err
 	}
 
-	ls = make([]LocationModel, 0, limit)
+	ls = make([]model.LocationModel, 0, limit)
 	for rows.Next() {
-		var l LocationModel
+		var l model.LocationModel
 		err = rows.Scan(&l.ID, &l.Name, &l.File)
 		if err != nil {
 			return nil, err

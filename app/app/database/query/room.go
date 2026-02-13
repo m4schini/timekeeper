@@ -1,8 +1,21 @@
 package query
 
-import . "raumzeitalpaka/app/database/model"
+import (
+	"raumzeitalpaka/app/database/model"
+)
 
-func (q *Queries) GetRoom(id int) (r RoomModel, err error) {
+type GetRoom Handler[GetRoomRequest, model.RoomModel]
+
+type GetRoomRequest struct {
+	RoomId int
+}
+
+type GetRoomHandler struct {
+	DB Database
+}
+
+func (q *GetRoomHandler) Query(request GetRoomRequest) (r model.RoomModel, err error) {
+	id := request.RoomId
 	row := q.DB.QueryRow(`
 SELECT r.id as id,
        location,
@@ -20,10 +33,10 @@ JOIN raumzeitalpaka.locations l
 ON r.location = l.id
 WHERE r.id = $1`, id)
 	if err = row.Err(); err != nil {
-		return RoomModel{}, err
+		return model.RoomModel{}, err
 	}
 
-	var l LocationModel
+	var l model.LocationModel
 	err = row.Scan(&r.ID, &r.Name, &r.LocationX, &r.LocationY, &r.LocationW, &r.LocationH, &r.Description,
 		l.ID, l.Name, l.File)
 	r.Location = l

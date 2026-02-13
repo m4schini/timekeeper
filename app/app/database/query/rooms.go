@@ -1,18 +1,39 @@
 package query
 
-import . "raumzeitalpaka/app/database/model"
+import (
+	"raumzeitalpaka/app/database/model"
+)
 
-func (q *Queries) GetRooms(offset, limit int) (rs []RoomModel, total int, err error) {
+type GetRooms Handler[GetRoomsRequest, GetRoomsResponse]
+
+type GetRoomsRequest struct {
+	Offset int
+	Limit  int
+}
+
+type GetRoomsResponse struct {
+	Rooms []model.RoomModel
+	Total int
+}
+
+type GetRoomsHandler struct {
+	DB Database
+}
+
+func (q *GetRoomsHandler) Query(request GetRoomsRequest) (res GetRoomsResponse, err error) {
+	offset := request.Offset
+	limit := request.Limit
+	var total int
 	row := q.DB.QueryRow(`SELECT COUNT(id) FROM raumzeitalpaka.rooms`)
 	if err = row.Err(); err != nil {
-		return nil, -1, err
+		return GetRoomsResponse{}, err
 	}
 	err = row.Scan(&total)
 	if err != nil {
-		return nil, -1, err
+		return GetRoomsResponse{}, err
 	}
 	if total == 0 {
-		return []RoomModel{}, total, nil
+		return GetRoomsResponse{}, nil
 	}
 
 	rows, err := q.DB.Query(`
@@ -32,21 +53,25 @@ ON r.location = l.id
 ORDER BY location_name, name
 LIMIT $1 OFFSET $2`, limit, offset)
 	if err != nil {
-		return nil, -1, err
+		return GetRoomsResponse{}, err
 	}
 
-	rs = make([]RoomModel, 0, limit)
+	rs := make([]model.RoomModel, 0, limit)
 	for rows.Next() {
-		var r RoomModel
-		var l LocationModel
+		var r model.RoomModel
+		var l model.LocationModel
 		err = rows.Scan(&r.ID, &r.Name, &r.LocationX, &r.LocationY, &r.LocationW, &r.LocationH, &r.Description,
 			&l.ID, &l.Name, &l.File)
 		if err != nil {
-			return nil, 0, err
+			return GetRoomsResponse{}, err
 		}
 		r.Location = l
 
 		rs = append(rs, r)
 	}
-	return rs, -1, nil
+
+	return GetRoomsResponse{
+		Rooms: rs,
+		Total: total,
+	}, nil
 }

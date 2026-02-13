@@ -1,20 +1,35 @@
 CREATE SCHEMA raumzeitalpaka;
+CREATE TYPE EVENT_ROLE AS ENUM ('Organizer', 'Mentor', 'Participant');
 
 CREATE TABLE raumzeitalpaka.users
 (
     id         SERIAL PRIMARY KEY,
     login_name VARCHAR NOT NULL UNIQUE,
-    password   VARCHAR NOT NULL
+    password   VARCHAR NOT NULL,
+    role EVENT_ROLE NOT NULL DEFAULT 'Participant'
 );
 
-CREATE TYPE EVENT_ROLE AS ENUM ('Organizer', 'Mentor', 'Participant');
+CREATE TABLE raumzeitalpaka.groups
+(
+    id SERIAL PRIMARY KEY ,
+    slug VARCHAR NOT NULL UNIQUE ,
+    name VARCHAR NOT NULL
+);
+
+CREATE TABLE raumzeitalpaka.group_has_user
+(
+  user_id INT NOT NULL REFERENCES raumzeitalpaka.users(id),
+  group_id INT NOT NULL REFERENCES raumzeitalpaka.groups(id),
+  role EVENT_ROLE NOT NULL DEFAULT 'Participant',
+  managed BOOLEAN NOT NULL DEFAULT false,
+  UNIQUE (user_id, group_id, managed)
+);
 
 CREATE TABLE raumzeitalpaka.events
 (
     id    SERIAL PRIMARY KEY,
     name  VARCHAR NOT NULL,
     start DATE    NOT NULL,
---     owner INT NOT NULL REFERENCES raumzeitalpaka.users(id),
     slug  VARCHAR NOT NULL UNIQUE,
     guid  uuid    NOT NULL UNIQUE DEFAULT gen_random_uuid()
 );
@@ -66,5 +81,10 @@ CREATE TABLE raumzeitalpaka.timeslots
     room      INT REFERENCES raumzeitalpaka.rooms (id),
     role      EVENT_ROLE         NOT NULL        DEFAULT 'Organizer',
     duration  INTERVAL SECOND(0) NOT NULL,
-    guid      uuid               NOT NULL UNIQUE DEFAULT gen_random_uuid()
+    guid      uuid               NOT NULL UNIQUE DEFAULT gen_random_uuid(),
+
+    created_by INT REFERENCES raumzeitalpaka.users(id),
+    created_at TIME NOT NULL DEFAULT now(),
+    modified_by INT REFERENCES raumzeitalpaka.users(id),
+    modified_at TIME NOT NULL DEFAULT now()
 );

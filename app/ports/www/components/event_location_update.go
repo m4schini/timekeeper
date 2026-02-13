@@ -2,16 +2,18 @@ package components
 
 import (
 	"fmt"
+	"net/http"
+	"raumzeitalpaka/app/auth"
+	"raumzeitalpaka/app/auth/authz"
+	"raumzeitalpaka/app/database/command"
+	"raumzeitalpaka/app/database/model"
+	"raumzeitalpaka/ports/www/render"
+	"strconv"
+
 	"github.com/go-chi/chi/v5"
 	"go.uber.org/zap"
 	. "maragu.dev/gomponents"
 	. "maragu.dev/gomponents/html"
-	"net/http"
-	"raumzeitalpaka/app/database"
-	"raumzeitalpaka/app/database/model"
-	"raumzeitalpaka/ports/www/middleware"
-	"raumzeitalpaka/ports/www/render"
-	"strconv"
 )
 
 func EventLocationUpdateForm(eventId int, eventLocation model.EventLocationModel) Node {
@@ -34,7 +36,8 @@ func EventLocationUpdateForm(eventId int, eventLocation model.EventLocationModel
 }
 
 type UpdateEventLocationRoute struct {
-	DB *database.Database
+	UpdateLocationFromEvent command.UpdateLocationFromEvent
+	Authz                   authz.Authorizer
 }
 
 func (l *UpdateEventLocationRoute) Method() string {
@@ -47,9 +50,9 @@ func (l *UpdateEventLocationRoute) Pattern() string {
 
 func (l *UpdateEventLocationRoute) Handler() http.Handler {
 	log := Logger(l)
-	commands := l.DB.Commands
 	return http.HandlerFunc(func(writer http.ResponseWriter, request *http.Request) {
-		if !middleware.IsOrganizer(request) {
+		userId, authenticated := auth.UserFrom(request)
+		if !authenticated {
 			render.Error(log, writer, http.StatusUnauthorized, "unauthorized request detected", nil)
 			return
 		}
@@ -67,31 +70,36 @@ func (l *UpdateEventLocationRoute) Handler() http.Handler {
 			relationshipName = request.PostFormValue("relationship_name")
 			relationshipNote = request.PostFormValue("relationship_note")
 		)
-		model, err := ParseUpdateEventLocationModel(relationshipId, visible, relationshipName, relationshipNote)
+		dbmodel, err := ParseUpdateEventLocationModel(relationshipId, visible, relationshipName, relationshipNote)
 		if err != nil {
 			render.Error(log, writer, http.StatusBadRequest, "failed to parse form", err)
 			return
 		}
-		log.Debug("parsed update event location form", zap.Any("model", model))
+		log.Debug("parsed update event location form", zap.Any("dbmodel", dbmodel))
 
-		err = commands.UpdateLocationToEvent(model)
+		if isAuthorized := l.Authz.HasRole(userId, model.RoleOrganizer); !isAuthorized {
+			render.Error(log, writer, http.StatusUnauthorized, "unauthorized request detected", nil)
+			return
+		}
+
+		err = l.UpdateLocationFromEvent.Execute(dbmodel)
 		if err != nil {
 			render.Error(log, writer, http.StatusInternalServerError, "failed to update event location", err)
 			return
 		}
-		log.Debug("updated timeslot", zap.Int("id", model.ID))
+		log.Debug("updated timeslot", zap.Int("id", dbmodel.ID))
 
 		http.Redirect(writer, request, fmt.Sprintf("/event/%v", eventId), http.StatusSeeOther)
 	})
 }
 
-func ParseUpdateEventLocationModel(relationship, visible, relationshipName, relationshipNote string) (model.UpdateLocationToEventModel, error) {
+func ParseUpdateEventLocationModel(relationship, visible, relationshipName, relationshipNote string) (command.UpdateLocationFromEventRequest, error) {
 	relationshipId, err := strconv.ParseInt(relationship, 10, 64)
 	if err != nil {
-		return model.UpdateLocationToEventModel{}, err
+		return command.UpdateLocationFromEventRequest{}, err
 	}
 
-	return model.UpdateLocationToEventModel{
+	return command.UpdateLocationFromEventRequest{
 		ID:      int(relationshipId),
 		Name:    relationshipName,
 		Note:    relationshipNote,

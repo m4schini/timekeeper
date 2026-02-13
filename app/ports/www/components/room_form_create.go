@@ -3,7 +3,8 @@ package components
 import (
 	"fmt"
 	"net/http"
-	"raumzeitalpaka/app/database"
+	"raumzeitalpaka/app/auth/authz"
+	"raumzeitalpaka/app/database/command"
 	"raumzeitalpaka/app/database/model"
 	"raumzeitalpaka/ports/www/middleware"
 	"raumzeitalpaka/ports/www/render"
@@ -27,7 +28,8 @@ func CreateRoomForm(location model.LocationModel) Node {
 }
 
 type CreateRoomRoute struct {
-	DB *database.Database
+	CreateRoom command.CreateRoom
+	Authz      authz.Authorizer
 }
 
 func (l *CreateRoomRoute) Method() string {
@@ -40,9 +42,8 @@ func (l *CreateRoomRoute) Pattern() string {
 
 func (l *CreateRoomRoute) Handler() http.Handler {
 	log := Logger(l)
-	commands := l.DB.Commands
 	return http.HandlerFunc(func(writer http.ResponseWriter, request *http.Request) {
-		if !middleware.IsOrganizer(request) {
+		if !middleware.IsOrganizer(request, l.Authz) {
 			render.Error(log, writer, http.StatusUnauthorized, "unauthorized request detected", nil)
 			return
 		}
@@ -64,7 +65,7 @@ func (l *CreateRoomRoute) Handler() http.Handler {
 		}
 		log.Debug("parsed create room form", zap.Any("model", model))
 
-		id, err := commands.CreateRoom(model)
+		id, err := l.CreateRoom.Execute(model)
 		if err != nil {
 			render.Error(log, writer, http.StatusInternalServerError, "failed to create room", err)
 			return
@@ -75,13 +76,13 @@ func (l *CreateRoomRoute) Handler() http.Handler {
 	})
 }
 
-func ParseCreateRoomModel(location, name string) (model.CreateRoomModel, error) {
+func ParseCreateRoomModel(location, name string) (command.CreateRoomRequest, error) {
 	locationId, err := strconv.ParseInt(location, 10, 64)
 	if err != nil {
-		return model.CreateRoomModel{}, err
+		return command.CreateRoomRequest{}, err
 	}
 
-	return model.CreateRoomModel{
+	return command.CreateRoomRequest{
 		Location: int(locationId),
 		Name:     name,
 	}, nil

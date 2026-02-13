@@ -2,8 +2,9 @@ package pages
 
 import (
 	"net/http"
-	"raumzeitalpaka/app/database"
+	"raumzeitalpaka/app/auth/authz"
 	"raumzeitalpaka/app/database/model"
+	"raumzeitalpaka/app/database/query"
 	"raumzeitalpaka/ports/www/components"
 	"raumzeitalpaka/ports/www/middleware"
 	"raumzeitalpaka/ports/www/render"
@@ -24,7 +25,9 @@ func CompactDayPage(event model.EventModel, data []model.TimeslotModel) Node {
 }
 
 type EventScheduleDayRoute struct {
-	DB *database.Database
+	GetEvent            query.GetEvent
+	GetTimeslotsOfEvent query.GetTimeslotsOfEvent
+	Authz               authz.Authorizer
 }
 
 func (l *EventScheduleDayRoute) Method() string {
@@ -37,12 +40,11 @@ func (l *EventScheduleDayRoute) Pattern() string {
 
 func (l *EventScheduleDayRoute) Handler() http.Handler {
 	log := components.Logger(l)
-	queries := l.DB.Queries
 	return http.HandlerFunc(func(writer http.ResponseWriter, request *http.Request) {
 		var (
 			eventParam  = strings.ToLower(chi.URLParam(request, "event"))
 			dayParam    = strings.ToLower(chi.URLParam(request, "day"))
-			isOrganizer = middleware.IsOrganizer(request)
+			isOrganizer = middleware.IsOrganizer(request, l.Authz)
 			roles, _    = ParseRolesQuery(request.URL.Query(), isOrganizer)
 		)
 
@@ -57,18 +59,23 @@ func (l *EventScheduleDayRoute) Handler() http.Handler {
 			return
 		}
 
-		event, err := queries.GetEvent(int(eventId))
+		event, err := l.GetEvent.Query(query.GetEventRequest{EventId: int(eventId)})
 		if err != nil {
 			render.Error(log, writer, http.StatusInternalServerError, "failed to get event", err)
 			return
 		}
 
-		timeslots, _, err := queries.GetTimeslotsOfEvent(int(eventId), roles, 0, 100)
+		timeslotsResponse, err := l.GetTimeslotsOfEvent.Query(query.GetTimeslotsOfEventRequest{
+			EventId: int(eventId),
+			Roles:   roles,
+			Offset:  0,
+			Limit:   1000,
+		})
 		if err != nil {
 			render.Error(log, writer, http.StatusInternalServerError, "failed to retrieve day", err)
 			return
 		}
-		timeslots = model.FilterTimeslotDay(timeslots, int(day))
+		timeslots := model.FilterTimeslotDay(timeslotsResponse.Timeslots, int(day))
 
 		render.HTML(log, writer, request, CompactDayPage(event, timeslots))
 	})

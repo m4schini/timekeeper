@@ -3,9 +3,9 @@ package components
 import (
 	"fmt"
 	"net/http"
-	"raumzeitalpaka/app/database"
-	"raumzeitalpaka/app/database/model"
-	"raumzeitalpaka/ports/www/middleware"
+	"raumzeitalpaka/app/auth"
+	"raumzeitalpaka/app/auth/authz"
+	"raumzeitalpaka/app/database/command"
 	"raumzeitalpaka/ports/www/render"
 	"time"
 
@@ -18,7 +18,8 @@ func EventCreateForm() gomponents.Node {
 }
 
 type CreateEventRoute struct {
-	DB *database.Database
+	CreateEvent command.CreateEvent
+	Authz       authz.Authorizer
 }
 
 func (l *CreateEventRoute) Method() string {
@@ -31,9 +32,9 @@ func (l *CreateEventRoute) Pattern() string {
 
 func (l *CreateEventRoute) Handler() http.Handler {
 	log := zap.L().Named(l.Pattern())
-	commands := l.DB.Commands
 	return http.HandlerFunc(func(writer http.ResponseWriter, request *http.Request) {
-		if !middleware.IsOrganizer(request) {
+		_, authenticated := auth.UserFrom(request)
+		if !authenticated {
 			render.Error(log, writer, http.StatusUnauthorized, "unauthorized request detected", nil)
 			return
 		}
@@ -56,7 +57,7 @@ func (l *CreateEventRoute) Handler() http.Handler {
 		}
 		log.Debug("parsed create event form", zap.Any("model", model))
 
-		id, err := commands.CreateEvent(model)
+		id, err := l.CreateEvent.Execute(model)
 		if err != nil {
 			render.Error(log, writer, http.StatusInternalServerError, "failed to create event", err)
 			return
@@ -67,17 +68,17 @@ func (l *CreateEventRoute) Handler() http.Handler {
 	})
 }
 
-func ParseCreateEventModel(name, start, slug string) (model.CreateEventModel, error) {
+func ParseCreateEventModel(name, start, slug string) (command.CreateEventRequest, error) {
 	startDate, err := time.Parse("02.01.2006", start)
 	if err != nil {
-		return model.CreateEventModel{}, err
+		return command.CreateEventRequest{}, err
 	}
 
 	if !EventSlugRegex.MatchString(slug) {
-		return model.CreateEventModel{}, fmt.Errorf("invalid slug")
+		return command.CreateEventRequest{}, fmt.Errorf("invalid slug")
 	}
 
-	return model.CreateEventModel{
+	return command.CreateEventRequest{
 		Name:  name,
 		Start: startDate,
 		Slug:  slug,

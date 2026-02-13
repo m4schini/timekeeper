@@ -2,19 +2,14 @@ package render
 
 import (
 	"fmt"
+	"net/http"
+	"time"
+
 	"go.uber.org/zap"
 	"maragu.dev/gomponents"
-	"net/http"
-	"raumzeitalpaka/ports/www/middleware"
-	"time"
 )
 
 func HTML(log *zap.Logger, w http.ResponseWriter, r *http.Request, node gomponents.Node) {
-	if !middleware.IsOrganizer(r) {
-		revalidate := 30 * time.Second
-		SetCache(w, 15*time.Second, &revalidate)
-	} else {
-	}
 	w.Header().Set("Cache-Control", "no-cache")
 	w.Header().Set("Content-Type", "text/html; charset=utf-8")
 	err := node.Render(w)
@@ -24,7 +19,7 @@ func HTML(log *zap.Logger, w http.ResponseWriter, r *http.Request, node gomponen
 }
 
 func Error(log *zap.Logger, w http.ResponseWriter, code int, message string, err error) {
-	log.Error(message, zap.Error(err), zap.Int("status", code))
+	log.WithOptions(zap.AddCallerSkip(1)).Error(message, zap.Error(err), zap.Int("status", code))
 	http.Error(w, message, code)
 }
 

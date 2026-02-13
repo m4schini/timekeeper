@@ -3,8 +3,8 @@ package pages
 import (
 	"fmt"
 	"net/http"
-	"raumzeitalpaka/app/database"
 	"raumzeitalpaka/app/database/model"
+	"raumzeitalpaka/app/database/query"
 	export "raumzeitalpaka/app/export/md"
 	"raumzeitalpaka/ports/www/components"
 	"raumzeitalpaka/ports/www/render"
@@ -22,7 +22,8 @@ type Day struct {
 }
 
 type EventScheduleExportMarkdownRoute struct {
-	DB *database.Database
+	GetEvent            query.GetEvent
+	GetTimeslotsOfEvent query.GetTimeslotsOfEvent
 }
 
 func (l *EventScheduleExportMarkdownRoute) Method() string {
@@ -35,7 +36,6 @@ func (l *EventScheduleExportMarkdownRoute) Pattern() string {
 
 func (l *EventScheduleExportMarkdownRoute) Handler() http.Handler {
 	log := components.Logger(l)
-	queries := l.DB.Queries
 	return http.HandlerFunc(func(writer http.ResponseWriter, request *http.Request) {
 		var (
 			eventParam = strings.ToLower(chi.URLParam(request, "event"))
@@ -48,19 +48,24 @@ func (l *EventScheduleExportMarkdownRoute) Handler() http.Handler {
 		}
 		roles, _ := ParseRolesQuery(request.URL.Query(), false)
 
-		event, err := queries.GetEvent(int(eventId))
+		event, err := l.GetEvent.Query(query.GetEventRequest{EventId: int(eventId)})
 		if err != nil {
 			render.Error(log, writer, http.StatusInternalServerError, "failed to get event", err)
 			return
 		}
 
-		timeslots, _, err := queries.GetTimeslotsOfEvent(int(eventId), roles, 0, 100)
+		timeslots, err := l.GetTimeslotsOfEvent.Query(query.GetTimeslotsOfEventRequest{
+			EventId: int(eventId),
+			Roles:   roles,
+			Offset:  0,
+			Limit:   1000,
+		})
 		if err != nil {
 			render.Error(log, writer, http.StatusInternalServerError, "failed to retrieve day", err)
 			return
 		}
 
-		eventDays := model.MapTimeslotsToDays(timeslots)
+		eventDays := model.MapTimeslotsToDays(timeslots.Timeslots)
 		days := make([]Day, 0, len(eventDays))
 		for i, models := range eventDays {
 			days = append(days, Day{

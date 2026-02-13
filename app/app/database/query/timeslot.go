@@ -1,12 +1,23 @@
 package query
 
 import (
-	. "raumzeitalpaka/app/database/model"
+	"raumzeitalpaka/app/database/model"
 	"raumzeitalpaka/config"
 	"time"
 )
 
-func (q *Queries) GetTimeslot(id int) (t TimeslotModel, err error) {
+type GetTimeslot Handler[GetTimeslotRequest, model.TimeslotModel]
+
+type GetTimeslotRequest struct {
+	TimeslotId int
+}
+
+type GetTimeslotHandler struct {
+	DB Database
+}
+
+func (q *GetTimeslotHandler) Query(request GetTimeslotRequest) (t model.TimeslotModel, err error) {
+	id := request.TimeslotId
 	row := q.DB.QueryRow(`
 SELECT ts.id as id,
        ts.guid as ts_guid,
@@ -41,12 +52,12 @@ JOIN raumzeitalpaka.events e on e.id = ts.event
 JOIN raumzeitalpaka.locations l on l.id = r.location
 WHERE ts.id = $1 ORDER BY ts.start `, id)
 	if err = row.Err(); err != nil {
-		return TimeslotModel{}, err
+		return model.TimeslotModel{}, err
 	}
 
-	var e EventModel
-	var r RoomModel
-	var l LocationModel
+	var e model.EventModel
+	var r model.RoomModel
+	var l model.LocationModel
 	var durationInSeconds int
 	err = row.Scan(
 		&t.ID, &t.GUID, &t.Title, &t.Note, &t.Day, &t.Start, &t.Role, &durationInSeconds,

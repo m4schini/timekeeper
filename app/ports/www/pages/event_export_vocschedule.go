@@ -3,7 +3,7 @@ package pages
 import (
 	"net/http"
 	"raumzeitalpaka/app/cache"
-	"raumzeitalpaka/app/database"
+	"raumzeitalpaka/app/database/query"
 	export "raumzeitalpaka/app/export/voc"
 	"raumzeitalpaka/ports/www/components"
 	"raumzeitalpaka/ports/www/render"
@@ -15,7 +15,8 @@ import (
 )
 
 type EventExportVocScheduleRoute struct {
-	DB *database.Database
+	GetEvent            query.GetEvent
+	GetTimeslotsOfEvent query.GetTimeslotsOfEvent
 }
 
 func (v *EventExportVocScheduleRoute) Method() string {
@@ -28,7 +29,6 @@ func (v *EventExportVocScheduleRoute) Pattern() string {
 
 func (v *EventExportVocScheduleRoute) Handler() http.Handler {
 	log := components.Logger(v)
-	queries := v.DB.Queries
 	cache := cache.NewInMemory()
 
 	return http.HandlerFunc(func(writer http.ResponseWriter, request *http.Request) {
@@ -49,19 +49,24 @@ func (v *EventExportVocScheduleRoute) Handler() http.Handler {
 			return
 		}
 
-		event, err := queries.GetEvent(int(eventId))
+		event, err := v.GetEvent.Query(query.GetEventRequest{EventId: int(eventId)})
 		if err != nil {
 			render.Error(log, writer, http.StatusInternalServerError, "failed to get event", err)
 			return
 		}
 
-		timeslots, _, err := queries.GetTimeslotsOfEvent(int(eventId), roles, 0, 1000)
+		timeslots, err := v.GetTimeslotsOfEvent.Query(query.GetTimeslotsOfEventRequest{
+			EventId: int(eventId),
+			Roles:   roles,
+			Offset:  0,
+			Limit:   1000,
+		})
 		if err != nil {
 			render.Error(log, writer, http.StatusInternalServerError, "failed to get timeslots of event", err)
 			return
 		}
 
-		export, err := export.ExportVocSchedule(event, timeslots)
+		export, err := export.ExportVocSchedule(event, timeslots.Timeslots)
 		if err != nil {
 			render.Error(log, writer, http.StatusInternalServerError, "failed to generate voc schedule", err)
 			return

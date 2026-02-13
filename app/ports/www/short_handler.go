@@ -3,7 +3,7 @@ package www
 import (
 	"fmt"
 	"net/http"
-	"raumzeitalpaka/app/database"
+	"raumzeitalpaka/app/database/query"
 	"raumzeitalpaka/ports/www/render"
 	"time"
 
@@ -12,7 +12,7 @@ import (
 )
 
 type ShortEventHandler struct {
-	DB *database.Database
+	GetEventBySlug query.GetEventBySlug
 }
 
 func (s *ShortEventHandler) Method() string {
@@ -24,13 +24,12 @@ func (s *ShortEventHandler) Pattern() string {
 }
 
 func (s *ShortEventHandler) Handler() http.Handler {
-	queries := s.DB.Queries
 	log := zap.L().Named("ports").Named("www").Named("short")
-	return permanentRedirectHandler(log, queries, "/event/%v")
+	return permanentRedirectHandler(log, s.GetEventBySlug, "/event/%v")
 }
 
 type ShortEventScheduleHandler struct {
-	DB *database.Database
+	GetEventBySlug query.GetEventBySlug
 }
 
 func (s *ShortEventScheduleHandler) Method() string {
@@ -42,14 +41,13 @@ func (s *ShortEventScheduleHandler) Pattern() string {
 }
 
 func (s *ShortEventScheduleHandler) Handler() http.Handler {
-	queries := s.DB.Queries
 	log := zap.L().Named("ports").Named("www").Named("short")
-	return permanentRedirectHandler(log, queries, "/event/%v/schedule")
+	return permanentRedirectHandler(log, s.GetEventBySlug, "/event/%v/schedule")
 
 }
 
 type ShortEventScheduleMHandler struct {
-	DB *database.Database
+	GetEventBySlug query.GetEventBySlug
 }
 
 func (s *ShortEventScheduleMHandler) Method() string {
@@ -61,17 +59,16 @@ func (s *ShortEventScheduleMHandler) Pattern() string {
 }
 
 func (s *ShortEventScheduleMHandler) Handler() http.Handler {
-	queries := s.DB.Queries
 	log := zap.L().Named("ports").Named("www").Named("short")
-	return permanentRedirectHandler(log, queries, "/event/%v/schedule?role=Participant,Mentor")
+	return permanentRedirectHandler(log, s.GetEventBySlug, "/event/%v/schedule?role=Participant,Mentor")
 
 }
 
-func permanentRedirectHandler(log *zap.Logger, queries database.Queries, urltemplate string) http.Handler {
+func permanentRedirectHandler(log *zap.Logger, getEventBySlug query.GetEventBySlug, urltemplate string) http.Handler {
 	return http.HandlerFunc(func(writer http.ResponseWriter, request *http.Request) {
 		slug := chi.URLParam(request, "slug")
 
-		id, err := queries.GetEventIdBySlug(slug)
+		id, err := getEventBySlug.Query(query.GetEventBySlugRequest{Slug: slug})
 		if err != nil {
 			render.Error(log, writer, http.StatusNotFound, "failed to get event by slug", err)
 			return

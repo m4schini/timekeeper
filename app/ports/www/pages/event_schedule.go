@@ -4,8 +4,9 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
-	"raumzeitalpaka/app/database"
+	"raumzeitalpaka/app/auth/authz"
 	"raumzeitalpaka/app/database/model"
+	"raumzeitalpaka/app/database/query"
 	"raumzeitalpaka/app/export/md"
 	"raumzeitalpaka/ports/www/components"
 	"raumzeitalpaka/ports/www/middleware"
@@ -78,7 +79,9 @@ func ParseRolesQuery(query url.Values, userIsOrganizer bool) (roles []model.Role
 }
 
 type SchedulePageRoute struct {
-	DB *database.Database
+	GetEvent            query.GetEvent
+	GetTimeslotsOfEvent query.GetTimeslotsOfEvent
+	Authz               authz.Authorizer
 }
 
 func (l *SchedulePageRoute) Method() string {
@@ -91,7 +94,6 @@ func (l *SchedulePageRoute) Pattern() string {
 
 func (l *SchedulePageRoute) Handler() http.Handler {
 	log := components.Logger(l)
-	queries := l.DB.Queries
 	return http.HandlerFunc(func(writer http.ResponseWriter, request *http.Request) {
 		eventParam := chi.URLParam(request, "event")
 		eventId, err := strconv.ParseInt(eventParam, 10, 64)
@@ -100,22 +102,27 @@ func (l *SchedulePageRoute) Handler() http.Handler {
 			return
 		}
 		useCompact := request.URL.Query().Has("compact")
-		isOrganizer := middleware.IsOrganizer(request)
+		isOrganizer := middleware.IsOrganizer(request, l.Authz)
 		roles, _ := ParseRolesQuery(request.URL.Query(), isOrganizer)
 
-		event, err := queries.GetEvent(int(eventId))
+		event, err := l.GetEvent.Query(query.GetEventRequest{EventId: int(eventId)})
 		if err != nil {
 			render.Error(log, writer, http.StatusInternalServerError, "failed to get event", err)
 			return
 		}
 
-		timeslots, _, err := queries.GetTimeslotsOfEvent(int(eventId), roles, 0, 1000)
+		timeslots, err := l.GetTimeslotsOfEvent.Query(query.GetTimeslotsOfEventRequest{
+			EventId: int(eventId),
+			Roles:   roles,
+			Offset:  0,
+			Limit:   1000,
+		})
 		if err != nil {
 			render.Error(log, writer, http.StatusInternalServerError, "failed to get timeslots", err)
 			return
 		}
 
-		eventDays := model.MapTimeslotsToDays(timeslots)
+		eventDays := model.MapTimeslotsToDays(timeslots.Timeslots)
 		renderData := make([][]model.TimeslotModel, len(eventDays))
 		for day, timeslotsOfDay := range eventDays {
 			renderData[day] = timeslotsOfDay

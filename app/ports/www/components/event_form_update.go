@@ -3,9 +3,10 @@ package components
 import (
 	"fmt"
 	"net/http"
-	"raumzeitalpaka/app/database"
+	"raumzeitalpaka/app/auth"
+	"raumzeitalpaka/app/auth/authz"
+	"raumzeitalpaka/app/database/command"
 	"raumzeitalpaka/app/database/model"
-	"raumzeitalpaka/ports/www/middleware"
 	"raumzeitalpaka/ports/www/render"
 	"strconv"
 	"time"
@@ -25,7 +26,8 @@ func EventUpdateForm(event model.EventModel) gomponents.Node {
 }
 
 type UpdateEventRoute struct {
-	DB *database.Database
+	UpdateEvent command.UpdateEvent
+	Authz       authz.Authorizer
 }
 
 func (l *UpdateEventRoute) Method() string {
@@ -38,9 +40,9 @@ func (l *UpdateEventRoute) Pattern() string {
 
 func (l *UpdateEventRoute) Handler() http.Handler {
 	log := Logger(l)
-	commands := l.DB.Commands
 	return http.HandlerFunc(func(writer http.ResponseWriter, request *http.Request) {
-		if !middleware.IsOrganizer(request) {
+		userId, authenticated := auth.UserFrom(request)
+		if !authenticated {
 			render.Error(log, writer, http.StatusUnauthorized, "unauthorized request detected", nil)
 			return
 		}
@@ -57,14 +59,19 @@ func (l *UpdateEventRoute) Handler() http.Handler {
 			slugParam  = request.PostFormValue("slug")
 			startParam = request.PostFormValue("start")
 		)
-		model, err := ParseUpdateEventModel(eventParam, nameParam, slugParam, startParam)
+		eventModel, err := ParseUpdateEventModel(eventParam, nameParam, slugParam, startParam)
 		if err != nil {
 			render.Error(log, writer, http.StatusBadRequest, "failed to parse form", err)
 			return
 		}
-		log.Debug("parsed create event form", zap.Any("model", model))
+		log.Debug("parsed create event form", zap.Any("eventModel", eventModel))
 
-		err = commands.UpdateEvent(model)
+		if _, isAuthorized := l.Authz.HasEventRole(userId, eventModel.ID, model.RoleOrganizer); !isAuthorized {
+			render.Error(log, writer, http.StatusUnauthorized, "unauthorized request detected", nil)
+			return
+		}
+
+		err = l.UpdateEvent.Execute(eventModel)
 		if err != nil {
 			render.Error(log, writer, http.StatusInternalServerError, "failed to create event", err)
 			return
@@ -75,22 +82,22 @@ func (l *UpdateEventRoute) Handler() http.Handler {
 	})
 }
 
-func ParseUpdateEventModel(event, name, slug, start string) (model.UpdateEventModel, error) {
+func ParseUpdateEventModel(event, name, slug, start string) (command.UpdateEventRequest, error) {
 	eventId, err := strconv.ParseInt(event, 10, 64)
 	if err != nil {
-		return model.UpdateEventModel{}, err
+		return command.UpdateEventRequest{}, err
 	}
 
 	startDate, err := time.Parse("02.01.2006", start)
 	if err != nil {
-		return model.UpdateEventModel{}, err
+		return command.UpdateEventRequest{}, err
 	}
 
 	if !EventSlugRegex.MatchString(slug) {
-		return model.UpdateEventModel{}, fmt.Errorf("invalid slug")
+		return command.UpdateEventRequest{}, fmt.Errorf("invalid slug")
 	}
 
-	return model.UpdateEventModel{
+	return command.UpdateEventRequest{
 		ID:    int(eventId),
 		Name:  name,
 		Slug:  slug,
