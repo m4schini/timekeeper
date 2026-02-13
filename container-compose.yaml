@@ -1,0 +1,48 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: docker.io/library/postgres:16-alpine
+    container_name: raumzeitalpaka-db
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: raumzeitalpaka
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - raumzeitalpaka-network
+
+  app:
+    image: codeberg.org/aur0ra/raumzeitalpaka:latest
+    container_name: raumzeitalpaka-app
+    build:
+      context: ./app
+      dockerfile: Containerfile
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      RZA_DEV: true
+      RZA_BASE_URL: "http://localhost:8080"
+      RZA_DATABASE_CONNECTIONSTRING: "postgres://postgres:postgres@postgres:5432/raumzeitalpaka?sslmode=disable"
+      RZA_JWT_SECRET_KEY: password123password123password123password123password123password123
+      RZA_PORT: "8080"
+    ports:
+      - "8080:8080"
+    networks:
+      - raumzeitalpaka-network
+
+volumes:
+  postgres_data:
+
+networks:
+  raumzeitalpaka-network:
+    driver: bridge
