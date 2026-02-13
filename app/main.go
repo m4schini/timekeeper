@@ -5,6 +5,7 @@ import (
 	"net"
 	"raumzeitalpaka/adapters"
 	"raumzeitalpaka/adapters/nominatim"
+	"raumzeitalpaka/app/auth/dev"
 	"raumzeitalpaka/app/auth/local"
 	"raumzeitalpaka/app/auth/oidc"
 	"raumzeitalpaka/app/database"
@@ -48,11 +49,18 @@ func main() {
 	logger.Debug("initiating auth provider")
 	var authHandler chi.Router
 	oidcCfg, oidcEnabled := config.OIDCProviderConfig()
-	if oidcEnabled {
+	switch {
+	case config.DevAuthEnabled():
+		logger.Info("using dev auth provider")
+		authy := local.NewAuthenticator(db)
+		authHandler, err = dev.NewHandler(db.Commands.InsertUser, authy)
+		break
+	case oidcEnabled:
 		logger.Info("using oidc auth provider", zap.Any("issuer", oidcCfg.IssuerURL), zap.String("callbackPath", oidc.CallbackPath))
 		syncer := oidc.NewAlpakaSyncer(db)
 		authHandler, err = oidc.NewHandler(ctx, oidcCfg, syncer)
-	} else {
+		break
+	default:
 		logger.Info("using local auth provider")
 		authy := local.NewAuthenticator(db)
 		authHandler, err = local.NewHandler(authy)

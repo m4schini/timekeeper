@@ -68,6 +68,10 @@ func OIDCProviderConfig() (cfg Config, enabled bool) {
 	}, true
 }
 
+func DevAuthEnabled() bool {
+	return viper.GetBool("dev")
+}
+
 func AdminPassword() string {
 	return viper.GetString("admin.password")
 }

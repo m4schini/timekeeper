@@ -1,35 +1,26 @@
-package local
+package dev
 
 import (
 	"net/http"
 	"raumzeitalpaka/app/auth"
+	"raumzeitalpaka/app/auth/local"
+	"raumzeitalpaka/app/database/command"
 	"raumzeitalpaka/app/database/model"
-	"raumzeitalpaka/ports/www/components"
 	"raumzeitalpaka/ports/www/render"
 
 	"github.com/go-chi/chi/v5"
 	"go.uber.org/zap"
-	"golang.org/x/time/rate"
-	. "maragu.dev/gomponents"
-	. "maragu.dev/gomponents/html"
 )
 
-func NewHandler(authy Authenticator) (r chi.Router, err error) {
+func NewHandler(upsertUser command.UpsertUser, authenticator local.Authenticator) (r chi.Router, err error) {
 	log := zap.L()
-	var rateLimiter *rate.Limiter
-	loginPage := LoginPage()
-	rateLimiter = rate.NewLimiter(rate.Limit(1), 1)
+	loginPage := local.LoginPage()
 
 	mux := chi.NewMux()
 	mux.Get("/login", func(writer http.ResponseWriter, request *http.Request) {
 		render.HTML(log, writer, request, loginPage)
 	})
 	mux.Post("/login", func(writer http.ResponseWriter, request *http.Request) {
-		err := rateLimiter.Wait(request.Context())
-		if err != nil {
-			log.Info("login was cancelled while waiting on rate limiter")
-			return
-		}
 		err = request.ParseForm()
 		if err != nil {
 			render.Error(log, writer, http.StatusBadRequest, "failed to parse form", err)
@@ -41,8 +32,25 @@ func NewHandler(authy Authenticator) (r chi.Router, err error) {
 			password = request.PostFormValue("password")
 		)
 
+		pwHash, err := local.GeneratePasswordHash(password, &local.DefaultPasswordParams)
+		if err != nil {
+			render.Error(log, writer, http.StatusInternalServerError, "failed to generate password", err)
+			return
+		}
+
 		log.Debug("authenticating user")
-		token, err := authy.AuthenticateUser(username, password)
+		_, err = upsertUser.Execute(command.UpsertUserRequest{
+			ID:           1,
+			LoginName:    username,
+			PasswordHash: pwHash,
+			Role:         model.RoleOrganizer,
+		})
+		if err != nil {
+			render.Error(log, writer, http.StatusInternalServerError, "failed to upsert", err)
+			return
+		}
+
+		token, err := authenticator.AuthenticateUser(username, password)
 		if err != nil {
 			log.Warn("failed login", zap.Error(err))
 			http.Redirect(writer, request, "/login", http.StatusSeeOther)
@@ -62,17 +70,4 @@ func NewHandler(authy Authenticator) (r chi.Router, err error) {
 		}))
 	})
 	return mux, nil
-}
-
-func LoginPage() Node {
-	return components.Shell("",
-		components.PageHeader(model.EventModel{}),
-		Main(Style("width: 100%; height: 100%; display: flex; justify-content: center; align-items: center"),
-			Form(Method("POST"), Action("/login"), Class("form"),
-				Input(Type("text"), Name("username"), Placeholder("username")),
-				Input(Type("password"), Name("password"), Placeholder("password")),
-				Input(Type("submit"), Value("Login")),
-			),
-		),
-	)
 }
