@@ -1,6 +1,8 @@
 package query
 
-import "database/sql"
+import (
+	"database/sql"
+)
 
 type Handler[R, T any] interface {
 	Query(request R) (T, error)
@@ -24,6 +26,7 @@ type Queries struct {
 	Timeslot         GetTimeslot
 	TimeslotsOfEvent GetTimeslotsOfEvent
 
+	User             GetUser
 	UserByLoginName  GetUserByLoginName
 	UserHasRole      UserHasRole
 	UserHasGroupRole UserHasGroupRole
@@ -50,6 +53,7 @@ func NewQueries(db Database) Queries {
 		Timeslot:         &GetTimeslotHandler{DB: db},
 		TimeslotsOfEvent: &GetTimeslotsOfEventHandler{DB: db},
 
+		User:             &GetUserHandler{DB: db},
 		UserByLoginName:  &GetUserByLoginNameHandler{DB: db},
 		UserHasRole:      &UserHasRoleHandler{DB: db},
 		UserHasGroupRole: &UserHasGroupRoleHandler{DB: db},

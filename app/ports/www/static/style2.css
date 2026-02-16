@@ -319,12 +319,16 @@ h2 > a {
 .page-header .last-change {
     display: flex;
     justify-content: center;
-    align-items: center;
+    align-items: end;
     flex-direction: column;
 }
+.last-change p {
+    margin: 0;
+}
+
 
 .last-change a {
-    text-decoration: none;
+    text-decoration: underline;
     color: white;
 }
 

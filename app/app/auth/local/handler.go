@@ -56,10 +56,8 @@ func NewHandler(authy Authenticator) (r chi.Router, err error) {
 	mux.HandleFunc("/logout", func(writer http.ResponseWriter, request *http.Request) {
 		log.Debug("clearing SESSSION Cookie")
 		auth.ClearSessionCookie(writer)
-		mux.Handle("/logout", http.HandlerFunc(func(writer http.ResponseWriter, request *http.Request) {
-			auth.ClearSessionCookie(writer)
-			writer.Write([]byte("logged out"))
-		}))
+		http.Redirect(writer, request, "/", http.StatusSeeOther)
+		//writer.Write([]byte("logged out"))
 	})
 	return mux, nil
 }

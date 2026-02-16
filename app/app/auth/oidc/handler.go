@@ -107,7 +107,8 @@ func NewHandler(ctx context.Context, cfg config.Config, syncer Syncer) (r chi.Ro
 	mux.Handle(CallbackPath, handleOAuth2Callback)
 	mux.Handle("/logout", http.HandlerFunc(func(writer http.ResponseWriter, request *http.Request) {
 		auth.ClearSessionCookie(writer)
-		writer.Write([]byte("logged out"))
+		http.Redirect(writer, request, "/", http.StatusSeeOther)
+		//writer.Write([]byte("logged out"))
 	}))
 	return mux, nil
 }

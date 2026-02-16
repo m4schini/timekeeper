@@ -134,6 +134,8 @@ func NewWWWPort(
 			Authz: az},
 		&c.DeleteRoomRoute{DeleteRoom: cmd.DeleteRoom,
 			Authz: az},
+
+		&c.UserHeaderWidgetRoute{User: q.User},
 	}
 
 	return pages, components
