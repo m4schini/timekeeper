@@ -94,7 +94,20 @@ func TimeslotForm(ts *model.TimeslotModel, parentTs *model.TimeslotModel, event 
 			),
 		),
 
+		Div(Class("param"),
+			Accordion(Text("Erweiterte Einstellungen"),
+				Div(Class("param"),
+					Label(For("rank"), Text("Rank")),
+					Input(Type("number"), Name("rank"), Placeholder("0"), Min("0"), Required(),
+						If(hasTs, Value(fmt.Sprint(ts.Rank))),
+						If(!hasTs, Value(fmt.Sprint(0))),
+					),
+				),
+			),
+		),
+
 		Input(Type("submit"), Value(actionText)),
+		AccordionScript(),
 	)
 }
 
@@ -135,8 +148,9 @@ func (l *CreateTimeslotRoute) Handler() http.Handler {
 			titleParam    = request.PostFormValue("title")
 			noteParam     = request.PostFormValue("note")
 			roomParam     = request.PostFormValue("room")
+			rankParam     = request.PostFormValue("rank")
 		)
-		model, err := ParseCreateTimeslotModel(eventParam, parentParam, roleParam, dayParam, timeslotParam, durationParam, titleParam, noteParam, roomParam)
+		model, err := ParseCreateTimeslotModel(eventParam, parentParam, roleParam, dayParam, timeslotParam, durationParam, titleParam, noteParam, roomParam, rankParam)
 		if err != nil {
 			render.Error(log, writer, http.StatusBadRequest, "failed to parse form", err)
 			return
@@ -154,9 +168,13 @@ func (l *CreateTimeslotRoute) Handler() http.Handler {
 	})
 }
 
-func ParseCreateTimeslotModel(event, parent, role, day, timeslot, duration, title, note, room string) (command.CreateTimeslotRequest, error) {
+func ParseCreateTimeslotModel(event, parent, role, day, timeslot, duration, title, note, room, rankRaw string) (command.CreateTimeslotRequest, error) {
 	var parentIdp *int64
 	eventId, err := strconv.ParseInt(event, 10, 64)
+	if err != nil {
+		return command.CreateTimeslotRequest{}, err
+	}
+	rank, err := strconv.ParseInt(rankRaw, 10, 64)
 	if err != nil {
 		return command.CreateTimeslotRequest{}, err
 	}
@@ -193,5 +211,6 @@ func ParseCreateTimeslotModel(event, parent, role, day, timeslot, duration, titl
 		Title:    title,
 		Note:     note,
 		Room:     int(roomValue),
+		Rank:     int(rank),
 	}, nil
 }

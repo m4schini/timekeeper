@@ -20,6 +20,7 @@ func (q *GetTimeslotHandler) Query(request GetTimeslotRequest) (t model.Timeslot
 	id := request.TimeslotId
 	row := q.DB.QueryRow(`
 SELECT ts.id as id,
+       ts.rank,
        ts.guid as ts_guid,
        title,
        note,
@@ -50,7 +51,7 @@ FROM raumzeitalpaka.timeslots ts
 JOIN raumzeitalpaka.rooms r ON r.id = ts.room
 JOIN raumzeitalpaka.events e on e.id = ts.event
 JOIN raumzeitalpaka.locations l on l.id = r.location
-WHERE ts.id = $1 ORDER BY ts.start `, id)
+WHERE ts.id = $1 ORDER BY ts.start, ts.rank `, id)
 	if err = row.Err(); err != nil {
 		return model.TimeslotModel{}, err
 	}
@@ -60,7 +61,7 @@ WHERE ts.id = $1 ORDER BY ts.start `, id)
 	var l model.LocationModel
 	var durationInSeconds int
 	err = row.Scan(
-		&t.ID, &t.GUID, &t.Title, &t.Note, &t.Day, &t.Start, &t.Role, &durationInSeconds,
+		&t.ID, &t.Rank, &t.GUID, &t.Title, &t.Note, &t.Day, &t.Start, &t.Role, &durationInSeconds,
 		&e.ID, &e.GUID, &e.Name, &e.Start,
 		&r.ID, &r.GUID, &r.Name, &r.LocationX, &r.LocationY, &r.LocationW, &r.LocationH, &r.Description,
 		&l.ID, &l.GUID, &l.Name, &l.File)

@@ -8,6 +8,7 @@ import (
 
 type TimeslotModel struct {
 	ID       int
+	Rank     int
 	GUID     string
 	Event    EventModel
 	Title    string

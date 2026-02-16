@@ -52,8 +52,9 @@ func (l *UpdateTimeslotRoute) Handler() http.Handler {
 			titleParam      = request.PostFormValue("title")
 			noteParam       = request.PostFormValue("note")
 			roomParam       = request.PostFormValue("room")
+			rankParam       = request.PostFormValue("rank")
 		)
-		model, err := ParseUpdateTimeslotModel(timeslotIdParam, eventParam, roleParam, dayParam, timeslotParam, durationParam, titleParam, noteParam, roomParam)
+		model, err := ParseUpdateTimeslotModel(timeslotIdParam, eventParam, roleParam, dayParam, timeslotParam, durationParam, titleParam, noteParam, roomParam, rankParam)
 		if err != nil {
 			render.Error(log, writer, http.StatusBadRequest, "failed to parse form", err)
 			return
@@ -71,8 +72,12 @@ func (l *UpdateTimeslotRoute) Handler() http.Handler {
 	})
 }
 
-func ParseUpdateTimeslotModel(timeslotId, event, role, day, timeslot, duration, title, note, room string) (command.UpdateTimeslotRequest, error) {
+func ParseUpdateTimeslotModel(timeslotId, event, role, day, timeslot, duration, title, note, room, rankRaw string) (command.UpdateTimeslotRequest, error) {
 	timeslotIdValue, err := strconv.ParseInt(timeslotId, 10, 64)
+	if err != nil {
+		return command.UpdateTimeslotRequest{}, err
+	}
+	rank, err := strconv.ParseInt(rankRaw, 10, 64)
 	if err != nil {
 		return command.UpdateTimeslotRequest{}, err
 	}
@@ -108,5 +113,6 @@ func ParseUpdateTimeslotModel(timeslotId, event, role, day, timeslot, duration, 
 		Title:      title,
 		Note:       note,
 		Room:       int(roomValue),
+		Rank:       int(rank),
 	}, nil
 }

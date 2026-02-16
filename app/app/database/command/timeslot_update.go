@@ -17,6 +17,7 @@ type UpdateTimeslotRequest struct {
 	Title      string
 	Note       string
 	Room       int
+	Rank       int
 }
 
 type UpdateTimeslotHandler struct {
@@ -41,7 +42,8 @@ SET
     start = $5,
     room = $6,
     role = $7,
-    duration = ($8 * interval '1 second')
-WHERE id = $9`, m.Event, m.Title, m.Note, m.Day, m.Timeslot, m.Room, m.Role, int(m.Duration.Seconds()), m.TimeslotID)
+    duration = ($8 * interval '1 second'),
+	rank = $10
+WHERE id = $9`, m.Event, m.Title, m.Note, m.Day, m.Timeslot, m.Room, m.Role, int(m.Duration.Seconds()), m.TimeslotID, m.Rank)
 	return err
 }
