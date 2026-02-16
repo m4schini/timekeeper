@@ -4,6 +4,8 @@
     <file url="file://$PROJECT_DIR$/app/app/database/command/group_create.go" dialect="GenericSQL" />
     <file url="file://$PROJECT_DIR$/app/app/database/migrations/000001_initial_schema.down.sql" dialect="PostgreSQL" />
     <file url="file://$PROJECT_DIR$/app/app/database/migrations/000001_initial_schema.up.sql" dialect="PostgreSQL" />
+    <file url="file://$PROJECT_DIR$/app/app/database/migrations/000002_add_timeslot_rank.down.sql" dialect="PostgreSQL" />
+    <file url="file://$PROJECT_DIR$/app/app/database/migrations/000002_add_timeslot_rank.up.sql" dialect="PostgreSQL" />
     <file url="file://$PROJECT_DIR$/database/jhhh25.sql" dialect="PostgreSQL" />
     <file url="file://$PROJECT_DIR$/database/schema.sql" dialect="PostgreSQL" />
     <file url="PROJECT" dialect="PostgreSQL" />

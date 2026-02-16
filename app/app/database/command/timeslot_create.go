@@ -23,6 +23,7 @@ type CreateTimeslotRequest struct {
 	Title    string
 	Note     string
 	Room     int
+	Rank     int
 }
 
 type CreateTimeslotHandler struct {
@@ -38,9 +39,9 @@ func (c *CreateTimeslotHandler) Execute(m CreateTimeslotRequest) (id int, err er
 	}
 
 	row := c.DB.QueryRow(`
-INSERT INTO raumzeitalpaka.timeslots (event, parent_id, title, note, day, start, room, role, duration) 
-VALUES ($1, $2, $3, $4, $5, $6, $7, $8, ($9 * interval '1 second'))
-RETURNING id`, m.Event, m.Parent, m.Title, m.Note, m.Day, m.Timeslot, m.Room, m.Role, int(m.Duration.Seconds()))
+INSERT INTO raumzeitalpaka.timeslots (event, parent_id, title, note, day, start, room, role, duration, rank) 
+VALUES ($1, $2, $3, $4, $5, $6, $7, $8, ($9 * interval '1 second'), $10)
+RETURNING id`, m.Event, m.Parent, m.Title, m.Note, m.Day, m.Timeslot, m.Room, m.Role, int(m.Duration.Seconds()), m.Rank)
 	if err = row.Err(); err != nil {
 		return -1, err
 	}

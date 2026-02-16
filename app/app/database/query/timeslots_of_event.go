@@ -83,7 +83,7 @@ FROM raumzeitalpaka.timeslots ts
 JOIN raumzeitalpaka.rooms r ON r.id = ts.room
 JOIN raumzeitalpaka.events e on e.id = ts.event
 JOIN raumzeitalpaka.locations l on l.id = r.location
-WHERE e.id = $1 AND ts.role = ANY($4) ORDER BY ts.start, ts.parent_id NULLS FIRST, ts.note LIMIT $2 OFFSET $3 `,
+WHERE e.id = $1 AND ts.role = ANY($4) ORDER BY ts.start, ts.parent_id NULLS FIRST, ts.rank, ts.note LIMIT $2 OFFSET $3 `,
 		event, limit, offset, pq.Array(roles))
 	if err != nil {
 		return GetTimeslotsOfEventResponse{}, err
