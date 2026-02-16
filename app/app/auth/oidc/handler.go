@@ -89,7 +89,12 @@ func NewHandler(ctx context.Context, cfg config.Config, syncer Syncer) (r chi.Ro
 			return
 		}
 
-		err = syncer.Sync(int(userId), claims.Username, claims.Groups)
+		name := claims.Name
+		if name == "" {
+			name = claims.Username
+		}
+
+		err = syncer.Sync(int(userId), name, claims.Groups)
 		if err != nil {
 			render.Error(log, w, http.StatusInternalServerError, "failed to sync user", err)
 			return
@@ -115,6 +120,7 @@ func NewHandler(ctx context.Context, cfg config.Config, syncer Syncer) (r chi.Ro
 
 type claims struct {
 	Email    string   `json:"email"`
+	Name     string   `json:"name"`
 	Username string   `json:"preferred_username"`
 	Groups   []string `json:"groups"`
 	UserId   string   `json:"sub"`
