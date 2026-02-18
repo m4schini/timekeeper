@@ -30,6 +30,7 @@ type Authenticator interface {
 type authy struct {
 	getUserByLoginName query.GetUserByLoginName
 	createUser         command.CreateUser
+	updateLastLogin    command.UpdateLastLogin
 	userMu             sync.Mutex
 }
 
@@ -73,6 +74,11 @@ func (a *authy) AuthenticateUser(username, password string) (token string, err e
 	if !matches {
 		return "", ErrInvalidPassword
 	}
+
+	go a.updateLastLogin.Execute(command.UpdateLastLoginRequest{
+		ID:        user.ID,
+		Timestamp: time.Now(),
+	})
 
 	expiresAt := time.Now().Add(72 * time.Hour)
 	jwtId := time.Now().Unix()

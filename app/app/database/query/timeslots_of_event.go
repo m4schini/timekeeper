@@ -125,7 +125,7 @@ WHERE e.id = $1 AND ts.role = ANY($4) ORDER BY ts.start, ts.parent_id NULLS FIRS
 				chldrn = append(chldrn, t)
 				parent.Children = chldrn
 			} else {
-				zap.L().Warn("parent timeslot doesn't exist yet", zap.Int64("parent_id", parentId.Int64), zap.Int("child_id", t.ID))
+				zap.L().Debug("parent timeslot doesn't exist yet", zap.Int64("parent_id", parentId.Int64), zap.Int("child_id", t.ID))
 			}
 		}
 	}

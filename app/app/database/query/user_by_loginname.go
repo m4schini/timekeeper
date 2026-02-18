@@ -1,6 +1,7 @@
 package query
 
 import (
+	"database/sql"
 	"raumzeitalpaka/app/database/model"
 )
 
@@ -16,11 +17,15 @@ type GetUserByLoginNameHandler struct {
 
 func (q *GetUserByLoginNameHandler) Query(request GetUserByLoginNameRequest) (u model.UserModel, err error) {
 	loginName := request.LoginName
-	row := q.DB.QueryRow(`SELECT id, login_name, password FROM raumzeitalpaka.users WHERE login_name = $1`, loginName)
+	row := q.DB.QueryRow(`SELECT id, login_name, display_name, password, last_login FROM raumzeitalpaka.users WHERE login_name = $1`, loginName)
 	if err = row.Err(); err != nil {
 		return model.UserModel{}, err
 	}
 
-	err = row.Scan(&u.ID, &u.LoginName, &u.PasswordHash)
+	var ts sql.NullTime
+	err = row.Scan(&u.ID, &u.LoginName, &u.DisplayName, &u.PasswordHash, &ts)
+	if ts.Valid {
+		u.LastLogin = ts.Time
+	}
 	return u, err
 }

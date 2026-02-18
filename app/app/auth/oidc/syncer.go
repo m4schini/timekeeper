@@ -12,7 +12,7 @@ import (
 )
 
 type Syncer interface {
-	Sync(userId int, userName string, groups []string) error
+	Sync(userId int, userName, displayName string, groups []string) error
 }
 
 type AlpakaSyncer struct {
@@ -31,7 +31,7 @@ func NewAlpakaSyncer(db *database.Database) *AlpakaSyncer {
 	}
 }
 
-func (s *AlpakaSyncer) Sync(userId int, userName string, groups []string) error {
+func (s *AlpakaSyncer) Sync(userId int, userName, displayName string, groups []string) error {
 	log := zap.L()
 	log.Info("syncing user", zap.Int("user", userId), zap.Strings("groups", groups))
 	//groupAssignments := make(map[int]model.Role)
@@ -84,6 +84,7 @@ func (s *AlpakaSyncer) Sync(userId int, userName string, groups []string) error 
 	_, err := s.insertUser.Execute(command.UpsertUserRequest{
 		ID:           userId,
 		LoginName:    userName,
+		DisplayName:  displayName,
 		PasswordHash: "",
 		Role:         role,
 	})

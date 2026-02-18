@@ -4,9 +4,11 @@ import (
 	"context"
 	"net/http"
 	"raumzeitalpaka/app/auth"
+	"raumzeitalpaka/app/database/command"
 	"raumzeitalpaka/config"
 	"raumzeitalpaka/ports/www/render"
 	"strconv"
+	"time"
 
 	"github.com/coreos/go-oidc/v3/oidc"
 	"github.com/go-chi/chi/v5"
@@ -19,7 +21,7 @@ var (
 	CallbackPath = "/login/callback"
 )
 
-func NewHandler(ctx context.Context, cfg config.Config, syncer Syncer) (r chi.Router, err error) {
+func NewHandler(ctx context.Context, cfg config.Config, syncer Syncer, updateLastLogin command.UpdateLastLogin) (r chi.Router, err error) {
 	log := zap.L()
 	redirectURI := config.BaseUrl() + CallbackPath
 
@@ -94,7 +96,7 @@ func NewHandler(ctx context.Context, cfg config.Config, syncer Syncer) (r chi.Ro
 			name = claims.Username
 		}
 
-		err = syncer.Sync(int(userId), name, claims.Groups)
+		err = syncer.Sync(int(userId), claims.Username, name, claims.Groups)
 		if err != nil {
 			render.Error(log, w, http.StatusInternalServerError, "failed to sync user", err)
 			return
@@ -105,6 +107,10 @@ func NewHandler(ctx context.Context, cfg config.Config, syncer Syncer) (r chi.Ro
 		})
 		auth.SetSessionCookie(w, jwt)
 		http.Redirect(w, r, "/", http.StatusFound)
+		go updateLastLogin.Execute(command.UpdateLastLoginRequest{
+			ID:        int(userId),
+			Timestamp: time.Now(),
+		})
 	})
 
 	mux := chi.NewMux()

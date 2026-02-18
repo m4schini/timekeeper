@@ -58,7 +58,7 @@ func main() {
 	case oidcEnabled:
 		logger.Info("using oidc auth provider", zap.Any("issuer", oidcCfg.IssuerURL), zap.String("callbackPath", oidc.CallbackPath))
 		syncer := oidc.NewAlpakaSyncer(db)
-		authHandler, err = oidc.NewHandler(ctx, oidcCfg, syncer)
+		authHandler, err = oidc.NewHandler(ctx, oidcCfg, syncer, db.Commands.UpdateLastLogin)
 		break
 	default:
 		logger.Info("using local auth provider")
