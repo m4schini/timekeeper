@@ -3,6 +3,7 @@ package middleware
 import (
 	"fmt"
 	"net/http"
+	"raumzeitalpaka/app/auth"
 	"raumzeitalpaka/config"
 	"time"
 
@@ -27,11 +28,10 @@ func Log(next http.Handler) http.Handler {
 			zap.String("route", fmt.Sprintf("%v %v", request.Method, request.URL.Path)),
 		}
 
-		//userId, role, isAuthenticated := LoadUser(request)
-		//logFields = append(logFields, zap.Bool("is_authenticated", isAuthenticated))
-		//if isAuthenticated {
-		//	logFields = append(logFields, zap.Int("user_id", userId), zap.Any("role", role))
-		//}
+		userId, isAuthenticated := auth.UserFrom(request)
+		if isAuthenticated {
+			logFields = append(logFields, zap.Int("user_id", userId))
+		}
 
 		log := log.With(logFields...)
 		log.Debug("received www request")
