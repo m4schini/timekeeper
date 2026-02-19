@@ -42,6 +42,7 @@ func NewHandler(upsertUser command.UpsertUser, authenticator local.Authenticator
 		_, err = upsertUser.Execute(command.UpsertUserRequest{
 			ID:           1,
 			LoginName:    username,
+			DisplayName:  username,
 			PasswordHash: pwHash,
 			Role:         model.RoleOrganizer,
 		})

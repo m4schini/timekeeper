@@ -91,12 +91,7 @@ func NewHandler(ctx context.Context, cfg config.Config, syncer Syncer, updateLas
 			return
 		}
 
-		name := claims.Name
-		if name == "" {
-			name = claims.Username
-		}
-
-		err = syncer.Sync(int(userId), claims.Username, name, claims.Groups)
+		err = syncer.Sync(int(userId), claims.Username, claims.Name, claims.Groups)
 		if err != nil {
 			render.Error(log, w, http.StatusInternalServerError, "failed to sync user", err)
 			return
