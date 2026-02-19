@@ -15,7 +15,7 @@ func SetSessionCookie(w http.ResponseWriter, token string) {
 		Value:    token,
 		Path:     "/",
 		Domain:   "localhost:8080",
-		Expires:  time.Now().Add(18 * time.Hour),
+		Expires:  time.Now().Add(24 * 6 * time.Hour),
 		MaxAge:   int((18 * time.Hour).Seconds()),
 		Secure:   false,
 		HttpOnly: true,

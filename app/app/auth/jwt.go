@@ -16,7 +16,7 @@ type Claims struct {
 }
 
 func NewJWT(claims Claims) (string, error) {
-	expiresAt := time.Now().Add(72 * time.Hour)
+	expiresAt := time.Now().Add(24 * 7 * time.Hour)
 	jwtId := time.Now().Unix()
 
 	if claims.Issuer == "" {
