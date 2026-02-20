@@ -102,7 +102,7 @@ func NewHandler(ctx context.Context, cfg config.Config, syncer Syncer, updateLas
 		})
 		auth.SetSessionCookie(w, jwt)
 		http.Redirect(w, r, "/", http.StatusFound)
-		go updateLastLogin.Execute(command.UpdateLastLoginRequest{
+		go updateLastLogin.Execute(context.TODO(), command.UpdateLastLoginRequest{
 			ID:        int(userId),
 			Timestamp: time.Now(),
 		})

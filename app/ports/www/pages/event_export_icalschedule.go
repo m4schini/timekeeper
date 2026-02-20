@@ -34,6 +34,7 @@ func (v *EventExportIcalScheduleRoute) Handler() http.Handler {
 	cache := cache.NewInMemory()
 
 	return http.HandlerFunc(func(writer http.ResponseWriter, request *http.Request) {
+		ctx := request.Context()
 		eventParam := chi.URLParam(request, "event")
 		eventId, err := strconv.ParseInt(eventParam, 10, 64)
 		if err != nil {
@@ -52,13 +53,13 @@ func (v *EventExportIcalScheduleRoute) Handler() http.Handler {
 			return
 		}
 
-		event, err := v.GetEvent.Query(query.GetEventRequest{EventId: int(eventId)})
+		event, err := v.GetEvent.Query(ctx, query.GetEventRequest{EventId: int(eventId)})
 		if err != nil {
 			render.Error(log, writer, http.StatusInternalServerError, "failed to get event", err)
 			return
 		}
 
-		timeslots, err := v.GetTimeslotsOfEvent.Query(query.GetTimeslotsOfEventRequest{
+		timeslots, err := v.GetTimeslotsOfEvent.Query(ctx, query.GetTimeslotsOfEventRequest{
 			EventId: int(eventId),
 			Roles:   roles,
 			Offset:  0,

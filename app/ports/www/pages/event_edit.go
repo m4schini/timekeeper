@@ -41,6 +41,7 @@ func (l *EditEventPageRoute) Pattern() string {
 func (l *EditEventPageRoute) Handler() http.Handler {
 	log := components.Logger(l)
 	return http.HandlerFunc(func(writer http.ResponseWriter, request *http.Request) {
+		ctx := request.Context()
 		isOrganizer := middleware.IsOrganizer(request, l.Authz)
 		if !isOrganizer {
 			render.Error(log, writer, http.StatusUnauthorized, "user is not authorized", nil)
@@ -56,7 +57,7 @@ func (l *EditEventPageRoute) Handler() http.Handler {
 			return
 		}
 
-		event, err := l.GetEvent.Query(query.GetEventRequest{EventId: int(eventId)})
+		event, err := l.GetEvent.Query(ctx, query.GetEventRequest{EventId: int(eventId)})
 		if err != nil {
 			render.Error(log, writer, http.StatusInternalServerError, "failed to get event", err)
 			return

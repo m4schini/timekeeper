@@ -1,6 +1,7 @@
 package query
 
 import (
+	"context"
 	"raumzeitalpaka/app/database/model"
 )
 
@@ -22,7 +23,7 @@ type UserHasGroupRoleHandler struct {
 	DB Database
 }
 
-func (q *UserHasGroupRoleHandler) Query(request UserHasGroupRoleRequest) (UserHasGroupRoleResponse, error) {
+func (q *UserHasGroupRoleHandler) Query(ctx context.Context, request UserHasGroupRoleRequest) (UserHasGroupRoleResponse, error) {
 
 	row := q.DB.QueryRow(`SELECT role FROM raumzeitalpaka.group_has_user WHERE user_id = $1 AND group_id = $2`,
 		request.UserId, request.GroupId)

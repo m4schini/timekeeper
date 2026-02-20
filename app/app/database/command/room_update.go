@@ -1,5 +1,7 @@
 package command
 
+import "context"
+
 type UpdateRoom Handler[UpdateRoomRequest]
 
 type UpdateRoomRequest struct {
@@ -12,7 +14,7 @@ type UpdateRoomHandler struct {
 	DB Database
 }
 
-func (c *UpdateRoomHandler) Execute(m UpdateRoomRequest) (err error) {
+func (c *UpdateRoomHandler) Execute(ctx context.Context, m UpdateRoomRequest) (err error) {
 	_, err = c.DB.Exec(`
 UPDATE raumzeitalpaka.rooms
 SET

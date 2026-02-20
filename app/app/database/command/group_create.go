@@ -1,6 +1,7 @@
 package command
 
 import (
+	"context"
 	"strings"
 )
 
@@ -15,7 +16,7 @@ type CreateGroupHandler struct {
 	DB Database
 }
 
-func (c *CreateGroupHandler) Execute(m CreateGroupRequest) (id int, err error) {
+func (c *CreateGroupHandler) Execute(ctx context.Context, m CreateGroupRequest) (id int, err error) {
 	row := c.DB.QueryRow(`
 INSERT INTO raumzeitalpaka.groups (slug, name) 
 VALUES ($1, $2)

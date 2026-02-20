@@ -40,6 +40,7 @@ func (l *DeleteRoomRoute) Pattern() string {
 func (l *DeleteRoomRoute) Handler() http.Handler {
 	log := zap.L().Named(l.Pattern())
 	return http.HandlerFunc(func(writer http.ResponseWriter, request *http.Request) {
+		ctx := request.Context()
 		if !middleware.IsOrganizer(request, l.Authz) {
 			render.Error(log, writer, http.StatusUnauthorized, "unauthorized request detected", nil)
 			return
@@ -51,7 +52,7 @@ func (l *DeleteRoomRoute) Handler() http.Handler {
 			return
 		}
 
-		err = l.DeleteRoom.Execute(command.DeleteRoomRequest{RoomID: int(roomId)})
+		err = l.DeleteRoom.Execute(ctx, command.DeleteRoomRequest{RoomID: int(roomId)})
 		if err != nil {
 			render.Error(log, writer, http.StatusInternalServerError, "failed to delete room", err)
 			return

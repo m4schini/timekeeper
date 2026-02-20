@@ -38,6 +38,7 @@ func (l *EventScheduleExportMarkdownRoute) Handler() http.Handler {
 	log := components.Logger(l)
 	return http.HandlerFunc(func(writer http.ResponseWriter, request *http.Request) {
 		var (
+			ctx        = request.Context()
 			eventParam = strings.ToLower(chi.URLParam(request, "event"))
 		)
 		log.Debug("export event markdown", zap.String("event", eventParam))
@@ -48,13 +49,13 @@ func (l *EventScheduleExportMarkdownRoute) Handler() http.Handler {
 		}
 		roles, _ := ParseRolesQuery(request.URL.Query(), false)
 
-		event, err := l.GetEvent.Query(query.GetEventRequest{EventId: int(eventId)})
+		event, err := l.GetEvent.Query(ctx, query.GetEventRequest{EventId: int(eventId)})
 		if err != nil {
 			render.Error(log, writer, http.StatusInternalServerError, "failed to get event", err)
 			return
 		}
 
-		timeslots, err := l.GetTimeslotsOfEvent.Query(query.GetTimeslotsOfEventRequest{
+		timeslots, err := l.GetTimeslotsOfEvent.Query(ctx, query.GetTimeslotsOfEventRequest{
 			EventId: int(eventId),
 			Roles:   roles,
 			Offset:  0,

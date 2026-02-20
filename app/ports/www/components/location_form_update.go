@@ -58,6 +58,7 @@ func (l *EditLocationRoute) Pattern() string {
 func (l *EditLocationRoute) Handler() http.Handler {
 	log := Logger(l)
 	return http.HandlerFunc(func(writer http.ResponseWriter, request *http.Request) {
+		ctx := request.Context()
 		if !middleware.IsOrganizer(request, l.Authz) {
 			render.Error(log, writer, http.StatusUnauthorized, "unauthorized request detected", nil)
 			return
@@ -82,7 +83,7 @@ func (l *EditLocationRoute) Handler() http.Handler {
 		}
 		log.Debug("parsed update location form", zap.Any("model", model))
 
-		err = l.UpdateLocation.Execute(model)
+		err = l.UpdateLocation.Execute(ctx, model)
 		if err != nil {
 			render.Error(log, writer, http.StatusInternalServerError, "failed to update location", err)
 			return

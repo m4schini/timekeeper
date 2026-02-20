@@ -1,6 +1,7 @@
 package query
 
 import (
+	"context"
 	"raumzeitalpaka/app/database/model"
 )
 
@@ -20,7 +21,7 @@ type UserHasRoleHandler struct {
 	DB Database
 }
 
-func (q *UserHasRoleHandler) Query(request UserHasRoleRequest) (UserHasRoleResponse, error) {
+func (q *UserHasRoleHandler) Query(ctx context.Context, request UserHasRoleRequest) (UserHasRoleResponse, error) {
 
 	row := q.DB.QueryRow(`SELECT role FROM raumzeitalpaka.users WHERE id = $1`,
 		request.UserId)

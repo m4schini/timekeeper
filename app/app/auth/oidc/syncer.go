@@ -1,6 +1,7 @@
 package oidc
 
 import (
+	"context"
 	"raumzeitalpaka/app/database"
 	"raumzeitalpaka/app/database/command"
 	"raumzeitalpaka/app/database/model"
@@ -81,7 +82,7 @@ func (s *AlpakaSyncer) Sync(userId int, userName, displayName string, groups []s
 	}
 
 	log.Info("upserting user", zap.Int("user", userId), zap.Any("role", role))
-	_, err := s.insertUser.Execute(command.UpsertUserRequest{
+	_, err := s.insertUser.Execute(context.TODO(), command.UpsertUserRequest{
 		ID:           userId,
 		LoginName:    userName,
 		DisplayName:  displayName,
@@ -147,10 +148,10 @@ func parseGroup(oidcGroup string, roleMapper map[string]model.Role) (groupName s
 }
 
 func createGroupIfNew(createGroup command.CreateGroup, getGroupBySlug query.GetGroupBySlug, request command.CreateGroupRequest) (groupId int, err error) {
-	groupId, err = createGroup.Execute(request)
+	groupId, err = createGroup.Execute(context.TODO(), request)
 	if err != nil {
 		if strings.Contains(err.Error(), "duplicate key") {
-			group, err2 := getGroupBySlug.Query(query.GetGroupBySlugRequest{Slug: request.Slug})
+			group, err2 := getGroupBySlug.Query(context.TODO(), query.GetGroupBySlugRequest{Slug: request.Slug})
 			if err2 != nil {
 				return -1, err
 			}

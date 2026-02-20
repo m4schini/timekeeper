@@ -41,6 +41,7 @@ func (l *DeleteLocationFromEventRoute) Pattern() string {
 func (l *DeleteLocationFromEventRoute) Handler() http.Handler {
 	log := zap.L().Named(l.Pattern())
 	return http.HandlerFunc(func(writer http.ResponseWriter, request *http.Request) {
+		ctx := request.Context()
 		userId, authenticated := auth.UserFrom(request)
 		if !authenticated {
 			render.Error(log, writer, http.StatusUnauthorized, "unauthorized request detected", nil)
@@ -61,7 +62,7 @@ func (l *DeleteLocationFromEventRoute) Handler() http.Handler {
 			return
 		}
 
-		err = l.RemoveLocationFromEvent.Execute(command.RemoveLocationFromEventRequest{EventLocationRelationID: int(eventLocationId)})
+		err = l.RemoveLocationFromEvent.Execute(ctx, command.RemoveLocationFromEventRequest{EventLocationRelationID: int(eventLocationId)})
 		if err != nil {
 			render.Error(log, writer, http.StatusInternalServerError, "failed to delete location from event", err)
 			return

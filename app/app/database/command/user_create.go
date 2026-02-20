@@ -1,5 +1,7 @@
 package command
 
+import "context"
+
 type CreateUser InsertHandler[CreateUserRequest, int]
 
 type CreateUserRequest struct {
@@ -11,7 +13,7 @@ type CreateUserHandler struct {
 	DB Database
 }
 
-func (c *CreateUserHandler) Execute(m CreateUserRequest) (id int, err error) {
+func (c *CreateUserHandler) Execute(ctx context.Context, m CreateUserRequest) (id int, err error) {
 	row := c.DB.QueryRow(`
 INSERT INTO raumzeitalpaka.users (login_name, password) 
 VALUES ($1, $2)

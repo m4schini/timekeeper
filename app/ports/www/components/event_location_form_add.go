@@ -57,6 +57,7 @@ func (l *AddLocationToEventRoute) Pattern() string {
 func (l *AddLocationToEventRoute) Handler() http.Handler {
 	log := Logger(l)
 	return http.HandlerFunc(func(writer http.ResponseWriter, request *http.Request) {
+		ctx := request.Context()
 		userId, authenticated := auth.UserFrom(request)
 		if !authenticated {
 			render.Error(log, writer, http.StatusUnauthorized, "unauthorized request detected", nil)
@@ -86,7 +87,7 @@ func (l *AddLocationToEventRoute) Handler() http.Handler {
 			return
 		}
 
-		id, err := l.AddLocationToEvent.Execute(dbmodel)
+		id, err := l.AddLocationToEvent.Execute(ctx, dbmodel)
 		if err != nil {
 			render.Error(log, writer, http.StatusInternalServerError, "failed to add location to event", err)
 			return

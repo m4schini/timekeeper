@@ -1,5 +1,7 @@
 package command
 
+import "context"
+
 type UpdateLocationFromEvent Handler[UpdateLocationFromEventRequest]
 
 type UpdateLocationFromEventRequest struct {
@@ -13,7 +15,7 @@ type UpdateLocationFromEventHandler struct {
 	DB Database
 }
 
-func (c *UpdateLocationFromEventHandler) Execute(m UpdateLocationFromEventRequest) (err error) {
+func (c *UpdateLocationFromEventHandler) Execute(ctx context.Context, m UpdateLocationFromEventRequest) (err error) {
 	_, err = c.DB.Exec(`
 UPDATE raumzeitalpaka.event_has_location
 SET

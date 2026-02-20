@@ -1,6 +1,8 @@
 package command
 
 import (
+	"context"
+	"raumzeitalpaka/app/auth/user"
 	"raumzeitalpaka/app/database/model"
 	"time"
 )
@@ -24,13 +26,15 @@ type UpdateTimeslotHandler struct {
 	DB Database
 }
 
-func (c *UpdateTimeslotHandler) Execute(m UpdateTimeslotRequest) (err error) {
+func (c *UpdateTimeslotHandler) Execute(ctx context.Context, m UpdateTimeslotRequest) (err error) {
 	if m.Event == 0 {
 		return ErrInvalidEventId
 	}
 	if m.Room == 0 {
 		return ErrInvalidRoomId
 	}
+	user, _ := user.IdentityFrom(ctx)
+	userId := user.User
 
 	_, err = c.DB.Exec(`
 UPDATE raumzeitalpaka.timeslots
@@ -43,7 +47,9 @@ SET
     room = $6,
     role = $7,
     duration = ($8 * interval '1 second'),
-	rank = $10
-WHERE id = $9`, m.Event, m.Title, m.Note, m.Day, m.Timeslot, m.Room, m.Role, int(m.Duration.Seconds()), m.TimeslotID, m.Rank)
+	rank = $10,
+	modified_by = $11,
+	modified_at = $12
+WHERE id = $9`, m.Event, m.Title, m.Note, m.Day, m.Timeslot, m.Room, m.Role, int(m.Duration.Seconds()), m.TimeslotID, m.Rank, userId, time.Now())
 	return err
 }

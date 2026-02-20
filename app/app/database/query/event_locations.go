@@ -1,6 +1,7 @@
 package query
 
 import (
+	"context"
 	"raumzeitalpaka/app/database/model"
 )
 
@@ -14,7 +15,7 @@ type GetEventLocationsHandler struct {
 	DB Database
 }
 
-func (q *GetEventLocationsHandler) Query(request GetEventLocationsRequest) (ls []model.EventLocationModel, err error) {
+func (q *GetEventLocationsHandler) Query(ctx context.Context, request GetEventLocationsRequest) (ls []model.EventLocationModel, err error) {
 	eventId := request.EventId
 	rows, err := q.DB.Query(`
 SELECT l.id, l.name, l.file, l.osm_id, ehl.name as relationship, ehl.id as relationship_id, ehl.note as relationship_note, ehl.visible as visible

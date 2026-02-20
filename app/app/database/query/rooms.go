@@ -1,6 +1,7 @@
 package query
 
 import (
+	"context"
 	"raumzeitalpaka/app/database/model"
 )
 
@@ -20,7 +21,7 @@ type GetRoomsHandler struct {
 	DB Database
 }
 
-func (q *GetRoomsHandler) Query(request GetRoomsRequest) (res GetRoomsResponse, err error) {
+func (q *GetRoomsHandler) Query(ctx context.Context, request GetRoomsRequest) (res GetRoomsResponse, err error) {
 	offset := request.Offset
 	limit := request.Limit
 	var total int

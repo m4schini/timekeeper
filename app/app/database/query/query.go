@@ -1,11 +1,12 @@
 package query
 
 import (
+	"context"
 	"database/sql"
 )
 
 type Handler[R, T any] interface {
-	Query(request R) (T, error)
+	Query(ctx context.Context, request R) (T, error)
 }
 
 type Queries struct {

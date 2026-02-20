@@ -1,5 +1,7 @@
 package command
 
+import "context"
+
 type CreateLocation InsertHandler[CreateLocationRequest, int]
 
 type CreateLocationRequest struct {
@@ -12,7 +14,7 @@ type CreateLocationHandler struct {
 	DB Database
 }
 
-func (c *CreateLocationHandler) Execute(m CreateLocationRequest) (id int, err error) {
+func (c *CreateLocationHandler) Execute(ctx context.Context, m CreateLocationRequest) (id int, err error) {
 	row := c.DB.QueryRow(`
 INSERT INTO raumzeitalpaka.locations (name, file, osm_id) 
 VALUES ($1, $2, $3)

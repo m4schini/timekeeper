@@ -1,6 +1,7 @@
 package query
 
 import (
+	"context"
 	"raumzeitalpaka/app/database/model"
 )
 
@@ -23,7 +24,7 @@ type UserHasEventRoleHandler struct {
 	DB Database
 }
 
-func (q *UserHasEventRoleHandler) Query(request UserHasEventRoleRequest) (UserHasEventRoleResponse, error) {
+func (q *UserHasEventRoleHandler) Query(ctx context.Context, request UserHasEventRoleRequest) (UserHasEventRoleResponse, error) {
 	//TODO
 	row := q.DB.QueryRow(`SELECT role FROM raumzeitalpaka.group_has_user WHERE user_id = $1 AND group_id = $2`,
 		request.UserId, request.EventId)

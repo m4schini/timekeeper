@@ -1,5 +1,7 @@
 package command
 
+import "context"
+
 type AddLocationToEvent InsertHandler[AddLocationToEventRequest, int]
 
 type AddLocationToEventRequest struct {
@@ -13,7 +15,7 @@ type AddLocationToEventHandler struct {
 	DB Database
 }
 
-func (c *AddLocationToEventHandler) Execute(m AddLocationToEventRequest) (id int, err error) {
+func (c *AddLocationToEventHandler) Execute(ctx context.Context, m AddLocationToEventRequest) (id int, err error) {
 	row := c.DB.QueryRow(`
 INSERT INTO raumzeitalpaka.event_has_location (name, event, location, note) 
 VALUES ($1, $2, $3, $4)

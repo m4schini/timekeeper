@@ -71,8 +71,9 @@ func (l *UserHeaderWidgetRoute) Pattern() string {
 func (l *UserHeaderWidgetRoute) Handler() http.Handler {
 	loggedOut := UserWidgetLoggedOut()
 	return http.HandlerFunc(func(writer http.ResponseWriter, request *http.Request) {
+		ctx := request.Context()
 		userId, _ := auth.UserFrom(request)
-		user, err := l.User.Query(query.GetUserRequest{ID: userId})
+		user, err := l.User.Query(ctx, query.GetUserRequest{ID: userId})
 		if err != nil {
 			loggedOut.Render(writer)
 			return

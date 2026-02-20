@@ -1,6 +1,7 @@
 package command
 
 import (
+	"context"
 	"raumzeitalpaka/app/database/model"
 )
 
@@ -16,7 +17,7 @@ type GroupAddUserHandler struct {
 	DB Database
 }
 
-func (c *GroupAddUserHandler) Execute(m GroupAddUserRequest) error {
+func (c *GroupAddUserHandler) Execute(ctx context.Context, m GroupAddUserRequest) error {
 	_, err := c.DB.Exec(`
 INSERT INTO raumzeitalpaka.group_has_user (user_id, group_id, role) 
 VALUES ($1, $2, $3)

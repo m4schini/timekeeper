@@ -1,5 +1,7 @@
 package command
 
+import "context"
+
 type UpdateLocation Handler[UpdateLocationRequest]
 
 type UpdateLocationRequest struct {
@@ -13,7 +15,7 @@ type UpdateLocationHandler struct {
 	DB Database
 }
 
-func (c *UpdateLocationHandler) Execute(m UpdateLocationRequest) (err error) {
+func (c *UpdateLocationHandler) Execute(ctx context.Context, m UpdateLocationRequest) (err error) {
 	_, err = c.DB.Exec(`
 UPDATE raumzeitalpaka.locations
 SET

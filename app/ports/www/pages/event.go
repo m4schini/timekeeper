@@ -151,28 +151,31 @@ func (l *EventPageRoute) Pattern() string {
 func (l *EventPageRoute) Handler() http.Handler {
 	log := components.Logger(l)
 	return http.HandlerFunc(func(writer http.ResponseWriter, request *http.Request) {
-		isOrganizer := middleware.IsOrganizer(request, l.Authz)
-		eventParam := chi.URLParam(request, "event")
-		eventId, err := strconv.ParseInt(eventParam, 10, 64)
+		var (
+			ctx          = request.Context()
+			isOrganizer  = middleware.IsOrganizer(request, l.Authz)
+			eventParam   = chi.URLParam(request, "event")
+			eventId, err = strconv.ParseInt(eventParam, 10, 64)
+		)
 		if err != nil {
 			render.Error(log, writer, http.StatusBadRequest, "invalid event id", err)
 			return
 		}
 
-		event, err := l.GetEvent.Query(query.GetEventRequest{EventId: int(eventId)})
+		event, err := l.GetEvent.Query(ctx, query.GetEventRequest{EventId: int(eventId)})
 		if err != nil {
 			render.Error(log, writer, http.StatusInternalServerError, "failed to get event", err)
 			return
 		}
 
-		eventLocations, err := l.GetEventLocations.Query(query.GetEventLocationsRequest{EventId: int(eventId)})
+		eventLocations, err := l.GetEventLocations.Query(ctx, query.GetEventLocationsRequest{EventId: int(eventId)})
 		if err != nil {
 			log.Warn("failed to get event locations", zap.Error(err))
 			eventLocations = make([]model.EventLocationModel, 0)
 		}
 
 		for i, location := range eventLocations {
-			resp, err := l.Nominatim.Lookup(request.Context(), location.OsmId)
+			resp, err := l.Nominatim.Lookup(ctx, location.OsmId)
 			if err != nil {
 				log.Warn("failed to lookup osm data", zap.Error(err), zap.String("osm_id", location.OsmId))
 				continue
@@ -184,7 +187,7 @@ func (l *EventPageRoute) Handler() http.Handler {
 
 		var page Node
 		if isOrganizer {
-			locations, err := l.GetLocations.Query(query.GetLocationsRequest{
+			locations, err := l.GetLocations.Query(ctx, query.GetLocationsRequest{
 				Offset: 0,
 				Limit:  100,
 			})

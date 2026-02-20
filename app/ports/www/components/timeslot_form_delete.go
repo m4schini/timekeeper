@@ -28,6 +28,7 @@ func (l *DeleteTimeslotRoute) Pattern() string {
 func (l *DeleteTimeslotRoute) Handler() http.Handler {
 	log := Logger(l)
 	return http.HandlerFunc(func(writer http.ResponseWriter, request *http.Request) {
+		ctx := request.Context()
 		if !middleware.IsOrganizer(request, l.Authz) {
 			render.Error(log, writer, http.StatusUnauthorized, "unauthorized request detected", nil)
 			return
@@ -42,7 +43,7 @@ func (l *DeleteTimeslotRoute) Handler() http.Handler {
 			return
 		}
 
-		err = l.DeleteTimeslot.Execute(command.DeleteTimeslotRequest{TimeslotID: int(timeslot)})
+		err = l.DeleteTimeslot.Execute(ctx, command.DeleteTimeslotRequest{TimeslotID: int(timeslot)})
 		if err != nil {
 			render.Error(log, writer, http.StatusInternalServerError, "failed to delete timeslot", err)
 			return

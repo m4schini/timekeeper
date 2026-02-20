@@ -51,6 +51,7 @@ func (l *UpdateLocationPageRoute) Pattern() string {
 func (l *UpdateLocationPageRoute) Handler() http.Handler {
 	log := components.Logger(l)
 	return http.HandlerFunc(func(writer http.ResponseWriter, request *http.Request) {
+		ctx := request.Context()
 		isOrganizer := middleware.IsOrganizer(request, l.Authz)
 		if !isOrganizer {
 			render.Error(log, writer, http.StatusUnauthorized, "user is not authorized", nil)
@@ -65,14 +66,14 @@ func (l *UpdateLocationPageRoute) Handler() http.Handler {
 			return
 		}
 
-		location, err := l.GetLocation.Query(query.GetLocationRequest{LocationId: int(locationId)})
+		location, err := l.GetLocation.Query(ctx, query.GetLocationRequest{LocationId: int(locationId)})
 		if err != nil {
 			render.Error(log, writer, http.StatusInternalServerError, "failed to get location", err)
 			return
 		}
 		log.Debug("retrieved location", zap.Any("model", location))
 
-		rooms, err := l.GetRoomsOfLocation.Query(query.GetRoomsOfLocationRequest{
+		rooms, err := l.GetRoomsOfLocation.Query(ctx, query.GetRoomsOfLocationRequest{
 			LocationId: location.ID,
 			Offset:     0,
 			Limit:      100,

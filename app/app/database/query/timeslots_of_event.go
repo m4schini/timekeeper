@@ -1,6 +1,7 @@
 package query
 
 import (
+	"context"
 	"database/sql"
 	"raumzeitalpaka/app/database/model"
 	"raumzeitalpaka/config"
@@ -28,7 +29,7 @@ type GetTimeslotsOfEventHandler struct {
 	DB Database
 }
 
-func (q *GetTimeslotsOfEventHandler) Query(request GetTimeslotsOfEventRequest) (GetTimeslotsOfEventResponse, error) {
+func (q *GetTimeslotsOfEventHandler) Query(ctx context.Context, request GetTimeslotsOfEventRequest) (GetTimeslotsOfEventResponse, error) {
 	var (
 		total  int
 		event  = request.EventId

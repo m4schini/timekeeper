@@ -127,6 +127,7 @@ func (l *CreateTimeslotRoute) Pattern() string {
 func (l *CreateTimeslotRoute) Handler() http.Handler {
 	log := Logger(l)
 	return http.HandlerFunc(func(writer http.ResponseWriter, request *http.Request) {
+		ctx := request.Context()
 		if !middleware.IsOrganizer(request, l.Authz) {
 			render.Error(log, writer, http.StatusUnauthorized, "unauthorized request detected", nil)
 			return
@@ -157,7 +158,7 @@ func (l *CreateTimeslotRoute) Handler() http.Handler {
 		}
 		log.Debug("parsed create timeslot form", zap.Any("model", model))
 
-		id, err := l.CreateTimeslot.Execute(model)
+		id, err := l.CreateTimeslot.Execute(ctx, model)
 		if err != nil {
 			render.Error(log, writer, http.StatusInternalServerError, "failed to create timeslot", err)
 			return

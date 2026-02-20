@@ -1,6 +1,7 @@
 package query
 
 import (
+	"context"
 	"raumzeitalpaka/app/database/model"
 )
 
@@ -15,7 +16,7 @@ type GetLocationsHandler struct {
 	DB Database
 }
 
-func (q *GetLocationsHandler) Query(request GetLocationsRequest) (ls []model.LocationModel, err error) {
+func (q *GetLocationsHandler) Query(ctx context.Context, request GetLocationsRequest) (ls []model.LocationModel, err error) {
 	limit := request.Limit
 	offset := request.Offset
 	rows, err := q.DB.Query(`

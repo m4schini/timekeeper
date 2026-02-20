@@ -1,6 +1,7 @@
 package authz
 
 import (
+	"context"
 	"raumzeitalpaka/app/database"
 	"raumzeitalpaka/app/database/model"
 	"raumzeitalpaka/app/database/query"
@@ -29,7 +30,7 @@ func NewDatabaseAuthz(database *database.Database) *DatabaseAuthz {
 }
 
 func (d *DatabaseAuthz) HasRole(userId int, role model.Role) bool {
-	resp, err := d.UserHasRole.Query(query.UserHasRoleRequest{UserId: userId, Role: role})
+	resp, err := d.UserHasRole.Query(context.TODO(), query.UserHasRoleRequest{UserId: userId, Role: role})
 	if err != nil {
 		return false
 	}
@@ -50,7 +51,7 @@ func (d *DatabaseAuthz) HasGroup(userId, groupId int) bool {
 }
 
 func (d *DatabaseAuthz) HasGroupRole(userId, groupId int, role model.Role) (hasGroup, hasRole bool) {
-	resp, err := d.UserHasRole.Query(query.UserHasRoleRequest{
+	resp, err := d.UserHasRole.Query(context.TODO(), query.UserHasRoleRequest{
 		UserId: userId,
 		Role:   role,
 	})
@@ -61,7 +62,7 @@ func (d *DatabaseAuthz) HasGroupRole(userId, groupId int, role model.Role) (hasG
 }
 
 func (d *DatabaseAuthz) HasEventRole(userId, eventId int, role model.Role) (hasGroup, hasRole bool) {
-	resp, err := d.UserHasRole.Query(query.UserHasRoleRequest{
+	resp, err := d.UserHasRole.Query(context.TODO(), query.UserHasRoleRequest{
 		UserId: userId,
 		Role:   role,
 	})

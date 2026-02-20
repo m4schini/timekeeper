@@ -1,6 +1,7 @@
 package query
 
 import (
+	"context"
 	"raumzeitalpaka/app/database/model"
 )
 
@@ -21,7 +22,7 @@ type GetRoomsOfLocationHandler struct {
 	DB Database
 }
 
-func (q *GetRoomsOfLocationHandler) Query(request GetRoomsOfLocationRequest) (res GetRoomsOfLocationResponse, err error) {
+func (q *GetRoomsOfLocationHandler) Query(ctx context.Context, request GetRoomsOfLocationRequest) (res GetRoomsOfLocationResponse, err error) {
 	var total int
 	row := q.DB.QueryRow(`SELECT COUNT(id) FROM raumzeitalpaka.rooms WHERE location = $1`, request.LocationId)
 	if err = row.Err(); err != nil {

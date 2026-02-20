@@ -130,6 +130,7 @@ func (l *LocationPageRoute) Handler() http.Handler {
 	log := components.Logger(l)
 	osm := l.Nominatim
 	return http.HandlerFunc(func(writer http.ResponseWriter, request *http.Request) {
+		ctx := request.Context()
 		eventId, err := strconv.ParseInt(chi.URLParam(request, "event"), 10, 64)
 		if err != nil {
 			render.Error(log, writer, http.StatusBadRequest, "invalid eventId", err)
@@ -141,13 +142,13 @@ func (l *LocationPageRoute) Handler() http.Handler {
 			return
 		}
 
-		event, err := l.GetEvent.Query(query.GetEventRequest{EventId: int(eventId)})
+		event, err := l.GetEvent.Query(ctx, query.GetEventRequest{EventId: int(eventId)})
 		if err != nil {
 			render.Error(log, writer, http.StatusInternalServerError, "failed to get event", err)
 			return
 		}
 
-		location, err := l.GetEventLocation.Query(query.GetEventLocationRequest{
+		location, err := l.GetEventLocation.Query(ctx, query.GetEventLocationRequest{
 			EventId:    int(eventId),
 			LocationId: int(locationId),
 		})
@@ -162,7 +163,7 @@ func (l *LocationPageRoute) Handler() http.Handler {
 			locationOsmData = &resp
 		}
 
-		rooms, err := l.GetRoomsOfLocation.Query(query.GetRoomsOfLocationRequest{
+		rooms, err := l.GetRoomsOfLocation.Query(ctx, query.GetRoomsOfLocationRequest{
 			LocationId: int(locationId),
 			Offset:     0,
 			Limit:      100,

@@ -1,6 +1,7 @@
 package command
 
 import (
+	"context"
 	"raumzeitalpaka/app/database/model"
 
 	"go.uber.org/zap"
@@ -22,7 +23,7 @@ type UpdateManagedGroupsAssignmentsHandler struct {
 	DB Database
 }
 
-func (c *UpdateManagedGroupsAssignmentsHandler) Execute(m UpdateManagedGroupsAssignmentsRequest) error {
+func (c *UpdateManagedGroupsAssignmentsHandler) Execute(ctx context.Context, m UpdateManagedGroupsAssignmentsRequest) error {
 	log := zap.L().Named("command")
 	tx, err := c.DB.Begin()
 	if err != nil {

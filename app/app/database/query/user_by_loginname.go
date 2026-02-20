@@ -1,6 +1,7 @@
 package query
 
 import (
+	"context"
 	"database/sql"
 	"raumzeitalpaka/app/database/model"
 )
@@ -15,7 +16,7 @@ type GetUserByLoginNameHandler struct {
 	DB Database
 }
 
-func (q *GetUserByLoginNameHandler) Query(request GetUserByLoginNameRequest) (u model.UserModel, err error) {
+func (q *GetUserByLoginNameHandler) Query(ctx context.Context, request GetUserByLoginNameRequest) (u model.UserModel, err error) {
 	loginName := request.LoginName
 	row := q.DB.QueryRow(`SELECT id, login_name, display_name, password, last_login FROM raumzeitalpaka.users WHERE login_name = $1`, loginName)
 	if err = row.Err(); err != nil {

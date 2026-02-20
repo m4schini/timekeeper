@@ -51,6 +51,7 @@ func (l *UpdateEventLocationRoute) Pattern() string {
 func (l *UpdateEventLocationRoute) Handler() http.Handler {
 	log := Logger(l)
 	return http.HandlerFunc(func(writer http.ResponseWriter, request *http.Request) {
+		ctx := request.Context()
 		userId, authenticated := auth.UserFrom(request)
 		if !authenticated {
 			render.Error(log, writer, http.StatusUnauthorized, "unauthorized request detected", nil)
@@ -82,7 +83,7 @@ func (l *UpdateEventLocationRoute) Handler() http.Handler {
 			return
 		}
 
-		err = l.UpdateLocationFromEvent.Execute(dbmodel)
+		err = l.UpdateLocationFromEvent.Execute(ctx, dbmodel)
 		if err != nil {
 			render.Error(log, writer, http.StatusInternalServerError, "failed to update event location", err)
 			return

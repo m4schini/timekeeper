@@ -43,12 +43,13 @@ func (l *LandingPageRoute) Pattern() string {
 func (l *LandingPageRoute) Handler() http.Handler {
 	log := components.Logger(l)
 	return http.HandlerFunc(func(writer http.ResponseWriter, request *http.Request) {
+		ctx := request.Context()
 		//if !middleware.IsOrganizer(request) {
 		//	http.Redirect(writer, request, "/login", http.StatusTemporaryRedirect)
 		//	return
 		//}
 
-		events, err := l.GetEvents.Query(query.GetEventsRequest{
+		events, err := l.GetEvents.Query(ctx, query.GetEventsRequest{
 			Offset: 0,
 			Limit:  1000,
 		})

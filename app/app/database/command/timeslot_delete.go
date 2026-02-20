@@ -1,5 +1,7 @@
 package command
 
+import "context"
+
 type DeleteTimeslot Handler[DeleteTimeslotRequest]
 
 type DeleteTimeslotRequest struct {
@@ -10,7 +12,7 @@ type DeleteTimeslotHandler struct {
 	DB Database
 }
 
-func (c *DeleteTimeslotHandler) Execute(request DeleteTimeslotRequest) (err error) {
+func (c *DeleteTimeslotHandler) Execute(ctx context.Context, request DeleteTimeslotRequest) (err error) {
 	_, err = c.DB.Exec(`
 DELETE FROM  raumzeitalpaka.timeslots
 WHERE id = $1`, request.TimeslotID)

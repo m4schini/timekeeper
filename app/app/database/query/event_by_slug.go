@@ -1,5 +1,7 @@
 package query
 
+import "context"
+
 type GetEventBySlug Handler[GetEventBySlugRequest, int]
 
 type GetEventBySlugRequest struct {
@@ -10,7 +12,7 @@ type GetEventBySlugHandler struct {
 	DB Database
 }
 
-func (q *GetEventBySlugHandler) Query(request GetEventBySlugRequest) (id int, err error) {
+func (q *GetEventBySlugHandler) Query(ctx context.Context, request GetEventBySlugRequest) (id int, err error) {
 	row := q.DB.QueryRow(`SELECT id FROM raumzeitalpaka.events WHERE slug = $1`, request.Slug)
 	if err = row.Err(); err != nil {
 		return -1, err

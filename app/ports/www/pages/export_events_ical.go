@@ -23,7 +23,8 @@ func (v *EventsExportIcalRoute) Pattern() string {
 func (v *EventsExportIcalRoute) Handler() http.Handler {
 	log := components.Logger(v)
 	return http.HandlerFunc(func(writer http.ResponseWriter, request *http.Request) {
-		events, err := v.GetEvents.Query(query.GetEventsRequest{
+		ctx := request.Context()
+		events, err := v.GetEvents.Query(ctx, query.GetEventsRequest{
 			Offset: 0,
 			Limit:  1000,
 		})

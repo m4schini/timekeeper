@@ -1,6 +1,7 @@
 package query
 
 import (
+	"context"
 	"raumzeitalpaka/app/database/model"
 	"raumzeitalpaka/config"
 	"time"
@@ -16,7 +17,7 @@ type GetTimeslotHandler struct {
 	DB Database
 }
 
-func (q *GetTimeslotHandler) Query(request GetTimeslotRequest) (t model.TimeslotModel, err error) {
+func (q *GetTimeslotHandler) Query(ctx context.Context, request GetTimeslotRequest) (t model.TimeslotModel, err error) {
 	id := request.TimeslotId
 	row := q.DB.QueryRow(`
 SELECT ts.id as id,

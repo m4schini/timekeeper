@@ -41,6 +41,7 @@ func (l *UpdateEventRoute) Pattern() string {
 func (l *UpdateEventRoute) Handler() http.Handler {
 	log := Logger(l)
 	return http.HandlerFunc(func(writer http.ResponseWriter, request *http.Request) {
+		ctx := request.Context()
 		userId, authenticated := auth.UserFrom(request)
 		if !authenticated {
 			render.Error(log, writer, http.StatusUnauthorized, "unauthorized request detected", nil)
@@ -71,7 +72,7 @@ func (l *UpdateEventRoute) Handler() http.Handler {
 			return
 		}
 
-		err = l.UpdateEvent.Execute(eventModel)
+		err = l.UpdateEvent.Execute(ctx, eventModel)
 		if err != nil {
 			render.Error(log, writer, http.StatusInternalServerError, "failed to create event", err)
 			return

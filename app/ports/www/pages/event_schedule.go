@@ -95,6 +95,7 @@ func (l *SchedulePageRoute) Pattern() string {
 func (l *SchedulePageRoute) Handler() http.Handler {
 	log := components.Logger(l)
 	return http.HandlerFunc(func(writer http.ResponseWriter, request *http.Request) {
+		ctx := request.Context()
 		eventParam := chi.URLParam(request, "event")
 		eventId, err := strconv.ParseInt(eventParam, 10, 64)
 		if err != nil {
@@ -105,13 +106,13 @@ func (l *SchedulePageRoute) Handler() http.Handler {
 		isOrganizer := middleware.IsOrganizer(request, l.Authz)
 		roles, _ := ParseRolesQuery(request.URL.Query(), isOrganizer)
 
-		event, err := l.GetEvent.Query(query.GetEventRequest{EventId: int(eventId)})
+		event, err := l.GetEvent.Query(ctx, query.GetEventRequest{EventId: int(eventId)})
 		if err != nil {
 			render.Error(log, writer, http.StatusInternalServerError, "failed to get event", err)
 			return
 		}
 
-		timeslots, err := l.GetTimeslotsOfEvent.Query(query.GetTimeslotsOfEventRequest{
+		timeslots, err := l.GetTimeslotsOfEvent.Query(ctx, query.GetTimeslotsOfEventRequest{
 			EventId: int(eventId),
 			Roles:   roles,
 			Offset:  0,

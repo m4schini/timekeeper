@@ -43,6 +43,7 @@ func (l *EditTimeslotPageRoute) Pattern() string {
 func (l *EditTimeslotPageRoute) Handler() http.Handler {
 	log := components.Logger(l)
 	return http.HandlerFunc(func(writer http.ResponseWriter, request *http.Request) {
+		ctx := request.Context()
 		isOrganizer := middleware.IsOrganizer(request, l.Authz)
 		if !isOrganizer {
 			render.Error(log, writer, http.StatusUnauthorized, "user is not authorized", nil)
@@ -57,13 +58,13 @@ func (l *EditTimeslotPageRoute) Handler() http.Handler {
 			return
 		}
 
-		timeslot, err := l.GetTimeslot.Query(query.GetTimeslotRequest{TimeslotId: int(timeslotId)})
+		timeslot, err := l.GetTimeslot.Query(ctx, query.GetTimeslotRequest{TimeslotId: int(timeslotId)})
 		if err != nil {
 			render.Error(log, writer, http.StatusInternalServerError, "failed to retrieve timeslot", err)
 			return
 		}
 
-		rooms, err := l.GetRoomsOfEventLocations.Query(query.GetRoomsOfEventLocationsRequest{EventId: timeslot.Event.ID})
+		rooms, err := l.GetRoomsOfEventLocations.Query(ctx, query.GetRoomsOfEventLocationsRequest{EventId: timeslot.Event.ID})
 		if err != nil {
 			render.Error(log, writer, http.StatusInternalServerError, "failed to retrieve rooms", err)
 			return

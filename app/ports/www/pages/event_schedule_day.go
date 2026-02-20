@@ -42,6 +42,7 @@ func (l *EventScheduleDayRoute) Handler() http.Handler {
 	log := components.Logger(l)
 	return http.HandlerFunc(func(writer http.ResponseWriter, request *http.Request) {
 		var (
+			ctx         = request.Context()
 			eventParam  = strings.ToLower(chi.URLParam(request, "event"))
 			dayParam    = strings.ToLower(chi.URLParam(request, "day"))
 			isOrganizer = middleware.IsOrganizer(request, l.Authz)
@@ -59,13 +60,13 @@ func (l *EventScheduleDayRoute) Handler() http.Handler {
 			return
 		}
 
-		event, err := l.GetEvent.Query(query.GetEventRequest{EventId: int(eventId)})
+		event, err := l.GetEvent.Query(ctx, query.GetEventRequest{EventId: int(eventId)})
 		if err != nil {
 			render.Error(log, writer, http.StatusInternalServerError, "failed to get event", err)
 			return
 		}
 
-		timeslotsResponse, err := l.GetTimeslotsOfEvent.Query(query.GetTimeslotsOfEventRequest{
+		timeslotsResponse, err := l.GetTimeslotsOfEvent.Query(ctx, query.GetTimeslotsOfEventRequest{
 			EventId: int(eventId),
 			Roles:   roles,
 			Offset:  0,

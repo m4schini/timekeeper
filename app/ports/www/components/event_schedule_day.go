@@ -129,6 +129,7 @@ func (d *DayRoute) Handler() http.Handler {
 	log := Logger(d)
 	return http.HandlerFunc(func(writer http.ResponseWriter, request *http.Request) {
 		var (
+			ctx         = request.Context()
 			eventParam  = strings.ToLower(chi.URLParam(request, "eventId"))
 			dayParam    = strings.ToLower(chi.URLParam(request, "day"))
 			isOrganizer = middleware.IsOrganizer(request, d.Authz)
@@ -145,13 +146,13 @@ func (d *DayRoute) Handler() http.Handler {
 			return
 		}
 
-		event, err := d.GetEvent.Query(query.GetEventRequest{EventId: int(eventId)})
+		event, err := d.GetEvent.Query(ctx, query.GetEventRequest{EventId: int(eventId)})
 		if err != nil {
 			render.Error(log, writer, http.StatusInternalServerError, "failed to retrieve event", err)
 			return
 		}
 
-		response, err := d.GetTimeslotsOfEvent.Query(query.GetTimeslotsOfEventRequest{
+		response, err := d.GetTimeslotsOfEvent.Query(ctx, query.GetTimeslotsOfEventRequest{
 			EventId: int(eventId),
 			Roles:   []model.Role{model.RoleMentor},
 			Offset:  0,

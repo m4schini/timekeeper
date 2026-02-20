@@ -2,6 +2,7 @@ package auth
 
 import (
 	"net/http"
+	"raumzeitalpaka/app/auth/user"
 )
 
 func IsOrganizer(r *http.Request) bool {
@@ -31,7 +32,7 @@ func parseJWT(request *http.Request) *http.Request {
 		return request
 	}
 
-	ctx = WithIdentity(ctx, Identity{
+	ctx = user.WithIdentity(ctx, user.Identity{
 		User: userId,
 	})
 	return request.WithContext(ctx)
@@ -39,6 +40,6 @@ func parseJWT(request *http.Request) *http.Request {
 
 func UserFrom(r *http.Request) (userId int, isAuthenticated bool) {
 	ctx := r.Context()
-	id, isAuthenticated := IdentityFrom(ctx)
+	id, isAuthenticated := user.IdentityFrom(ctx)
 	return id.User, isAuthenticated
 }

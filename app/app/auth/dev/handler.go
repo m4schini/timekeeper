@@ -21,6 +21,7 @@ func NewHandler(upsertUser command.UpsertUser, authenticator local.Authenticator
 		render.HTML(log, writer, request, loginPage)
 	})
 	mux.Post("/login", func(writer http.ResponseWriter, request *http.Request) {
+		ctx := request.Context()
 		err = request.ParseForm()
 		if err != nil {
 			render.Error(log, writer, http.StatusBadRequest, "failed to parse form", err)
@@ -39,7 +40,7 @@ func NewHandler(upsertUser command.UpsertUser, authenticator local.Authenticator
 		}
 
 		log.Debug("authenticating user")
-		_, err = upsertUser.Execute(command.UpsertUserRequest{
+		_, err = upsertUser.Execute(ctx, command.UpsertUserRequest{
 			ID:           1,
 			LoginName:    username,
 			DisplayName:  username,

@@ -54,6 +54,7 @@ func (l *CreateLocationRoute) Pattern() string {
 func (l *CreateLocationRoute) Handler() http.Handler {
 	log := Logger(l)
 	return http.HandlerFunc(func(writer http.ResponseWriter, request *http.Request) {
+		ctx := request.Context()
 		if !middleware.IsOrganizer(request, l.Authz) {
 			render.Error(log, writer, http.StatusUnauthorized, "unauthorized request detected", nil)
 			return
@@ -77,7 +78,7 @@ func (l *CreateLocationRoute) Handler() http.Handler {
 		}
 		log.Debug("parsed create location form", zap.Any("model", model))
 
-		id, err := l.CreateLocation.Execute(model)
+		id, err := l.CreateLocation.Execute(ctx, model)
 		if err != nil {
 			render.Error(log, writer, http.StatusInternalServerError, "failed to create location", err)
 			return

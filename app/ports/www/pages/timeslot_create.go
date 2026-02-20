@@ -55,6 +55,7 @@ func (l *CreateTimeslotPageRoute) Handler() http.Handler {
 			return
 		}
 		var (
+			ctx            = request.Context()
 			eventParam     = request.URL.Query().Get("event")
 			hasParentParam = request.URL.Query().Has("parent")
 			parentParam    = request.URL.Query().Get("parent")
@@ -66,7 +67,7 @@ func (l *CreateTimeslotPageRoute) Handler() http.Handler {
 			return
 		}
 
-		event, err := l.GetEvent.Query(query.GetEventRequest{EventId: int(eventId)})
+		event, err := l.GetEvent.Query(ctx, query.GetEventRequest{EventId: int(eventId)})
 		if err != nil {
 			render.Error(log, writer, http.StatusInternalServerError, "failed to retrieve event", err)
 			return
@@ -78,7 +79,7 @@ func (l *CreateTimeslotPageRoute) Handler() http.Handler {
 				render.Error(log, writer, http.StatusBadRequest, "invalid parentId", err)
 				return
 			}
-			p, err := l.GetTimeslot.Query(query.GetTimeslotRequest{TimeslotId: int(parentId)})
+			p, err := l.GetTimeslot.Query(ctx, query.GetTimeslotRequest{TimeslotId: int(parentId)})
 			if err == nil {
 				parent = &p
 			} else {
@@ -86,7 +87,7 @@ func (l *CreateTimeslotPageRoute) Handler() http.Handler {
 			}
 		}
 
-		rooms, err := l.GetRoomsOfEventLocations.Query(query.GetRoomsOfEventLocationsRequest{EventId: event.ID})
+		rooms, err := l.GetRoomsOfEventLocations.Query(ctx, query.GetRoomsOfEventLocationsRequest{EventId: event.ID})
 		if err != nil {
 			render.Error(log, writer, http.StatusInternalServerError, "failed to retrieve rooms", err)
 			return

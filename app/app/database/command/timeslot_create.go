@@ -1,7 +1,9 @@
 package command
 
 import (
+	"context"
 	"fmt"
+	"raumzeitalpaka/app/auth/user"
 	"raumzeitalpaka/app/database/model"
 	"time"
 )
@@ -30,18 +32,19 @@ type CreateTimeslotHandler struct {
 	DB Database
 }
 
-func (c *CreateTimeslotHandler) Execute(m CreateTimeslotRequest) (id int, err error) {
+func (c *CreateTimeslotHandler) Execute(ctx context.Context, m CreateTimeslotRequest) (id int, err error) {
 	if m.Event == 0 {
 		return 0, ErrInvalidEventId
 	}
 	if m.Room == 0 {
 		return 0, ErrInvalidRoomId
 	}
+	userId, _ := user.IdentityFrom(ctx)
 
 	row := c.DB.QueryRow(`
-INSERT INTO raumzeitalpaka.timeslots (event, parent_id, title, note, day, start, room, role, duration, rank) 
-VALUES ($1, $2, $3, $4, $5, $6, $7, $8, ($9 * interval '1 second'), $10)
-RETURNING id`, m.Event, m.Parent, m.Title, m.Note, m.Day, m.Timeslot, m.Room, m.Role, int(m.Duration.Seconds()), m.Rank)
+INSERT INTO raumzeitalpaka.timeslots (event, parent_id, title, note, day, start, room, role, duration, rank, modified_by, created_by) 
+VALUES ($1, $2, $3, $4, $5, $6, $7, $8, ($9 * interval '1 second'), $10, $11, $11)
+RETURNING id`, m.Event, m.Parent, m.Title, m.Note, m.Day, m.Timeslot, m.Room, m.Role, int(m.Duration.Seconds()), m.Rank, userId)
 	if err = row.Err(); err != nil {
 		return -1, err
 	}

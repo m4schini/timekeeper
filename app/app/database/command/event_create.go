@@ -1,6 +1,9 @@
 package command
 
-import "time"
+import (
+	"context"
+	"time"
+)
 
 type CreateEvent InsertHandler[CreateEventRequest, int]
 
@@ -14,7 +17,7 @@ type CreateEventHandler struct {
 	DB Database
 }
 
-func (c *CreateEventHandler) Execute(request CreateEventRequest) (id int, err error) {
+func (c *CreateEventHandler) Execute(ctx context.Context, request CreateEventRequest) (id int, err error) {
 	row := c.DB.QueryRow(`
 INSERT INTO raumzeitalpaka.events (name, slug, start) 
 VALUES ($1, $2, $3)

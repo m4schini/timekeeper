@@ -44,6 +44,7 @@ func (l *UpdateRoomRoute) Pattern() string {
 func (l *UpdateRoomRoute) Handler() http.Handler {
 	log := Logger(l)
 	return http.HandlerFunc(func(writer http.ResponseWriter, request *http.Request) {
+		ctx := request.Context()
 		if !middleware.IsOrganizer(request, l.Authz) {
 			render.Error(log, writer, http.StatusUnauthorized, "unauthorized request detected", nil)
 			return
@@ -69,7 +70,7 @@ func (l *UpdateRoomRoute) Handler() http.Handler {
 		}
 		log.Debug("parsed update room form", zap.Any("model", model))
 
-		err = l.UpdateRoom.Execute(model)
+		err = l.UpdateRoom.Execute(ctx, model)
 		if err != nil {
 			render.Error(log, writer, http.StatusInternalServerError, "failed to update room", err)
 			return

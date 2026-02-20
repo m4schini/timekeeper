@@ -1,6 +1,9 @@
 package command
 
-import "raumzeitalpaka/app/database/model"
+import (
+	"context"
+	"raumzeitalpaka/app/database/model"
+)
 
 type UpsertUser InsertHandler[UpsertUserRequest, int]
 
@@ -16,7 +19,7 @@ type UpsertUserHandler struct {
 	DB Database
 }
 
-func (c *UpsertUserHandler) Execute(m UpsertUserRequest) (id int, err error) {
+func (c *UpsertUserHandler) Execute(ctx context.Context, m UpsertUserRequest) (id int, err error) {
 	row := c.DB.QueryRow(`
 INSERT INTO raumzeitalpaka.users (id, login_name, display_name, password, role) 
 VALUES ($1, $2, $3, $4, $5)

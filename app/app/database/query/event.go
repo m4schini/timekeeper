@@ -1,6 +1,7 @@
 package query
 
 import (
+	"context"
 	"database/sql"
 	"raumzeitalpaka/app/database/model"
 )
@@ -19,7 +20,7 @@ func NewGetEventHandler(db *sql.DB) *GetEventHandler {
 	return &GetEventHandler{DB: db}
 }
 
-func (q *GetEventHandler) Query(request GetEventRequest) (e model.EventModel, err error) {
+func (q *GetEventHandler) Query(ctx context.Context, request GetEventRequest) (e model.EventModel, err error) {
 	id := request.EventId
 	row := q.DB.QueryRow(`SELECT id, name, start, slug, guid FROM raumzeitalpaka.events WHERE id = $1`, id)
 	if err = row.Err(); err != nil {

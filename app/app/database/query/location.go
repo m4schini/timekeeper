@@ -1,6 +1,7 @@
 package query
 
 import (
+	"context"
 	"raumzeitalpaka/app/database/model"
 )
 
@@ -14,7 +15,7 @@ type GetLocationHandler struct {
 	DB Database
 }
 
-func (q *GetLocationHandler) Query(request GetLocationRequest) (l model.LocationModel, err error) {
+func (q *GetLocationHandler) Query(ctx context.Context, request GetLocationRequest) (l model.LocationModel, err error) {
 	id := request.LocationId
 	row := q.DB.QueryRow(`SELECT id, name, file, osm_id FROM raumzeitalpaka.locations WHERE id = $1`, id)
 	if err = row.Err(); err != nil {

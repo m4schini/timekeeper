@@ -43,6 +43,7 @@ func (l *CreateRoomRoute) Pattern() string {
 func (l *CreateRoomRoute) Handler() http.Handler {
 	log := Logger(l)
 	return http.HandlerFunc(func(writer http.ResponseWriter, request *http.Request) {
+		ctx := request.Context()
 		if !middleware.IsOrganizer(request, l.Authz) {
 			render.Error(log, writer, http.StatusUnauthorized, "unauthorized request detected", nil)
 			return
@@ -65,7 +66,7 @@ func (l *CreateRoomRoute) Handler() http.Handler {
 		}
 		log.Debug("parsed create room form", zap.Any("model", model))
 
-		id, err := l.CreateRoom.Execute(model)
+		id, err := l.CreateRoom.Execute(ctx, model)
 		if err != nil {
 			render.Error(log, writer, http.StatusInternalServerError, "failed to create room", err)
 			return

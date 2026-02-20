@@ -1,5 +1,7 @@
 package command
 
+import "context"
+
 type DeleteRoom Handler[DeleteRoomRequest]
 
 type DeleteRoomRequest struct {
@@ -10,7 +12,7 @@ type DeleteRoomHandler struct {
 	DB Database
 }
 
-func (c *DeleteRoomHandler) Execute(request DeleteRoomRequest) (err error) {
+func (c *DeleteRoomHandler) Execute(ctx context.Context, request DeleteRoomRequest) (err error) {
 	_, err = c.DB.Exec(`
 DELETE FROM raumzeitalpaka.rooms
 WHERE id = $1`, request.RoomID)

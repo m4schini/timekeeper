@@ -1,5 +1,7 @@
 package command
 
+import "context"
+
 type DeleteEvent Handler[DeleteEventRequest]
 
 type DeleteEventRequest struct {
@@ -10,7 +12,7 @@ type DeleteEventHandler struct {
 	DB Database
 }
 
-func (c *DeleteEventHandler) Execute(request DeleteEventRequest) (err error) {
+func (c *DeleteEventHandler) Execute(ctx context.Context, request DeleteEventRequest) (err error) {
 	_, err = c.DB.Exec(`
 DELETE FROM  raumzeitalpaka.events
 WHERE id = $1`, request.EventID)

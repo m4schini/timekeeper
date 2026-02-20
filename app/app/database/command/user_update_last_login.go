@@ -1,6 +1,7 @@
 package command
 
 import (
+	"context"
 	"time"
 )
 
@@ -15,7 +16,7 @@ type UpdateLastLoginHandler struct {
 	DB Database
 }
 
-func (c *UpdateLastLoginHandler) Execute(m UpdateLastLoginRequest) (err error) {
+func (c *UpdateLastLoginHandler) Execute(ctx context.Context, m UpdateLastLoginRequest) (err error) {
 	row := c.DB.QueryRow(`
 UPDATE raumzeitalpaka.users
 SET

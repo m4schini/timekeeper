@@ -1,6 +1,7 @@
 package query
 
 import (
+	"context"
 	"raumzeitalpaka/app/database/model"
 )
 
@@ -14,7 +15,7 @@ type GetRoomHandler struct {
 	DB Database
 }
 
-func (q *GetRoomHandler) Query(request GetRoomRequest) (r model.RoomModel, err error) {
+func (q *GetRoomHandler) Query(ctx context.Context, request GetRoomRequest) (r model.RoomModel, err error) {
 	id := request.RoomId
 	row := q.DB.QueryRow(`
 SELECT r.id as id,

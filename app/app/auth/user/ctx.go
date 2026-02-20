@@ -1,4 +1,4 @@
-package auth
+package user
 
 import (
 	"context"
@@ -19,6 +19,9 @@ func WithIdentity(ctx context.Context, identity Identity) context.Context {
 func IdentityFrom(ctx context.Context) (identity Identity, isAuthenticated bool) {
 	fallbackIdentity := Identity{
 		User: -1,
+	}
+	if ctx == nil {
+		return fallbackIdentity, false
 	}
 
 	// get user

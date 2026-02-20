@@ -1,6 +1,9 @@
 package command
 
-import "time"
+import (
+	"context"
+	"time"
+)
 
 type UpdateEvent Handler[UpdateEventRequest]
 
@@ -15,7 +18,7 @@ type UpdateEventHandler struct {
 	DB Database
 }
 
-func (c *UpdateEventHandler) Execute(request UpdateEventRequest) (err error) {
+func (c *UpdateEventHandler) Execute(ctx context.Context, request UpdateEventRequest) (err error) {
 	_, err = c.DB.Exec(`
 UPDATE raumzeitalpaka.events
 SET

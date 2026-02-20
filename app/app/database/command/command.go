@@ -1,13 +1,16 @@
 package command
 
-import "database/sql"
+import (
+	"context"
+	"database/sql"
+)
 
 type InsertHandler[R, T any] interface {
-	Execute(request R) (T, error)
+	Execute(ctx context.Context, request R) (T, error)
 }
 
 type Handler[R any] interface {
-	Execute(request R) error
+	Execute(ctx context.Context, request R) error
 }
 
 type Commands struct {

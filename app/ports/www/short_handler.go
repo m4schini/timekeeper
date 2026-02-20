@@ -66,9 +66,10 @@ func (s *ShortEventScheduleMHandler) Handler() http.Handler {
 
 func permanentRedirectHandler(log *zap.Logger, getEventBySlug query.GetEventBySlug, urltemplate string) http.Handler {
 	return http.HandlerFunc(func(writer http.ResponseWriter, request *http.Request) {
+		ctx := request.Context()
 		slug := chi.URLParam(request, "slug")
 
-		id, err := getEventBySlug.Query(query.GetEventBySlugRequest{Slug: slug})
+		id, err := getEventBySlug.Query(ctx, query.GetEventBySlugRequest{Slug: slug})
 		if err != nil {
 			render.Error(log, writer, http.StatusNotFound, "failed to get event by slug", err)
 			return

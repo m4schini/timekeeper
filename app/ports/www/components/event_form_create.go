@@ -33,6 +33,7 @@ func (l *CreateEventRoute) Pattern() string {
 func (l *CreateEventRoute) Handler() http.Handler {
 	log := zap.L().Named(l.Pattern())
 	return http.HandlerFunc(func(writer http.ResponseWriter, request *http.Request) {
+		ctx := request.Context()
 		_, authenticated := auth.UserFrom(request)
 		if !authenticated {
 			render.Error(log, writer, http.StatusUnauthorized, "unauthorized request detected", nil)
@@ -57,7 +58,7 @@ func (l *CreateEventRoute) Handler() http.Handler {
 		}
 		log.Debug("parsed create event form", zap.Any("model", model))
 
-		id, err := l.CreateEvent.Execute(model)
+		id, err := l.CreateEvent.Execute(ctx, model)
 		if err != nil {
 			render.Error(log, writer, http.StatusInternalServerError, "failed to create event", err)
 			return
