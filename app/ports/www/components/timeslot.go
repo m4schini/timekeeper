@@ -82,8 +82,8 @@ func CompactTimeSlot(t model.TimeslotModel, active, disabled bool) Node {
 		timeslotRoom(t.Event.ID, t.Room.Location.ID, t.Room),
 		Div(Class("timeslot-roles"), RoleTag(t.Role)),
 		Div(Class("timeslot-info"),
-			Div(Class("timeslot-info-title"), Text(t.Title)),
-			Div(Class("timeslot-info-notes"), Text(t.Note)),
+			Div(Class("timeslot-info-title"), Text2(t.Title, 21)),
+			Div(Class("timeslot-info-notes"), Text2(t.Note, 14)),
 		),
 		Div(Class("timeslot-map")), //LocationCrop(t.Location.X, t.Location.Y, t.Location.Width, t.Location.Height, 100),
 	)
