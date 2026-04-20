@@ -1,7 +1,6 @@
 package www
 
 import (
-	"net"
 	"net/http"
 	"raumzeitalpaka/app/auth"
 	"raumzeitalpaka/config"
@@ -13,11 +12,11 @@ import (
 	"go.uber.org/zap"
 )
 
-func Serve(listener net.Listener, authHandler chi.Router, pages []Route, components []Route) error {
+func NewRouter(authHandler chi.Router, pages []Route, components []Route) (http.Handler, error) {
 	r := chi.NewRouter()
 	r.Use(
 		http.NewCrossOriginProtection().Handler,
-		auth.UseJWT(), //TODO userQuery
+		auth.UseSessionCookie(), //TODO userQuery
 		middleware.Log,
 		func(handler http.Handler) http.Handler {
 			return http.HandlerFunc(func(writer http.ResponseWriter, request *http.Request) {
@@ -43,7 +42,7 @@ func Serve(listener net.Listener, authHandler chi.Router, pages []Route, compone
 	zap.L().Named("auth").Info("mounted auth handlers on /")
 	r.Mount("/", authHandler)
 
-	return http.Serve(listener, r)
+	return r, nil
 }
 
 func EnableMetricsEndpoint(r chi.Router) {

@@ -6,6 +6,7 @@ import (
 	"raumzeitalpaka/app/database"
 	c "raumzeitalpaka/ports/www/components"
 	p "raumzeitalpaka/ports/www/pages"
+	r "raumzeitalpaka/ports/www/routes"
 )
 
 func NewWWWPort(
@@ -21,8 +22,10 @@ func NewWWWPort(
 	pages = []Route{
 		&p.LandingPageRoute{GetEvents: q.Events, Authz: az},
 
-		&p.CreateEventPageRoute{Authz: az},
-		&p.EditEventPageRoute{GetEvent: q.Event, Authz: az},
+		r.EventCreateFormHandler(q.Event, cmd.CreateEvent),
+		r.EventUpdateFormHandler(q.Event, q.UserHasRole, cmd.UpdateEvent),
+		//&p.CreateEventPageRoute{Authz: az},
+		//&p.EditEventPageRoute{GetEvent: q.Event, Authz: az},
 		&p.EventPageRoute{
 			GetEvent:          q.Event,
 			GetEventLocations: q.EventLocations,
@@ -100,10 +103,6 @@ func NewWWWPort(
 	}
 	c.SetAvailablePixelHackIcons(pixelHack)
 	components = []Route{
-		&c.CreateEventRoute{CreateEvent: db.Commands.CreateEvent,
-			Authz: az},
-		&c.UpdateEventRoute{UpdateEvent: db.Commands.UpdateEvent,
-			Authz: az},
 		&c.DayRoute{
 			GetEvent:            q.Event,
 			GetTimeslotsOfEvent: q.TimeslotsOfEvent,

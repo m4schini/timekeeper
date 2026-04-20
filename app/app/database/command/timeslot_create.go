@@ -39,12 +39,12 @@ func (c *CreateTimeslotHandler) Execute(ctx context.Context, m CreateTimeslotReq
 	if m.Room == 0 {
 		return 0, ErrInvalidRoomId
 	}
-	userId, _ := user.IdentityFrom(ctx)
+	user, _ := user.IdentityFrom(ctx)
 
 	row := c.DB.QueryRow(`
 INSERT INTO raumzeitalpaka.timeslots (event, parent_id, title, note, day, start, room, role, duration, rank, modified_by, created_by) 
 VALUES ($1, $2, $3, $4, $5, $6, $7, $8, ($9 * interval '1 second'), $10, $11, $11)
-RETURNING id`, m.Event, m.Parent, m.Title, m.Note, m.Day, m.Timeslot, m.Room, m.Role, int(m.Duration.Seconds()), m.Rank, userId)
+RETURNING id`, m.Event, m.Parent, m.Title, m.Note, m.Day, m.Timeslot, m.Room, m.Role, int(m.Duration.Seconds()), m.Rank, user.User)
 	if err = row.Err(); err != nil {
 		return -1, err
 	}

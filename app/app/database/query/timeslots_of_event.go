@@ -63,7 +63,8 @@ SELECT ts.id as id,
        e.id as event_id,
        e.guid as event_guid,
        e.name as event_name,
-       e.start as event_start,
+       e.event_start as event_start,
+       e.event_end as event_end,
 
        r.id as room_id,
        r.guid as room_guid,
@@ -101,7 +102,7 @@ WHERE e.id = $1 AND ts.role = ANY($4) ORDER BY ts.start, ts.parent_id NULLS FIRS
 		var durationInSeconds int
 		err = rows.Scan(
 			&t.ID, &parentId, &t.GUID, &t.Title, &t.Note, &t.Day, &t.Start, &t.Role, &durationInSeconds,
-			&e.ID, &e.GUID, &e.Name, &e.Start,
+			&e.ID, &e.GUID, &e.Name, &e.Start, &e.End,
 			&r.ID, &r.GUID, &r.Name, &r.LocationX, &r.LocationY, &r.LocationW, &r.LocationH, &r.Description,
 			&l.ID, &l.GUID, &l.Name, &l.File)
 		if err != nil {

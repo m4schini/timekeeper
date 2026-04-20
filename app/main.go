@@ -2,17 +2,12 @@ package main
 
 import (
 	"context"
-	"net"
 	"raumzeitalpaka/adapters"
 	"raumzeitalpaka/adapters/nominatim"
-	"raumzeitalpaka/app/auth/dev"
-	"raumzeitalpaka/app/auth/local"
-	"raumzeitalpaka/app/auth/oidc"
 	"raumzeitalpaka/app/database"
 	"raumzeitalpaka/config"
-	"raumzeitalpaka/ports/www"
+	"raumzeitalpaka/ports"
 
-	"github.com/go-chi/chi/v5"
 	"go.uber.org/zap"
 )
 
@@ -35,53 +30,18 @@ func main() {
 	defer dbAdapter.Close()
 
 	// init app
-	_, err = database.InitSchema(dbAdapter)
+	_, err = database.InitSchema(dbAdapter, database.LatestSchema)
 	if err != nil {
 		logger.Fatal("failed to initiate database schema", zap.Error(err))
 	}
 	db := database.New(dbAdapter)
-	//authy := local.NewAuthenticator(db)
 	if err != nil {
 		logger.Fatal("failed to initiate login server")
 	}
 
-	// auth
-	logger.Debug("initiating auth provider")
-	var authHandler chi.Router
-	oidcCfg, oidcEnabled := config.OIDCProviderConfig()
-	switch {
-	case config.DevAuthEnabled():
-		logger.Info("using dev auth provider")
-		authy := local.NewAuthenticator(db)
-		authHandler, err = dev.NewHandler(db.Commands.InsertUser, authy)
-		break
-	case oidcEnabled:
-		logger.Info("using oidc auth provider", zap.Any("issuer", oidcCfg.IssuerURL), zap.String("callbackPath", oidc.CallbackPath))
-		syncer := oidc.NewAlpakaSyncer(db)
-		authHandler, err = oidc.NewHandler(ctx, oidcCfg, syncer, db.Commands.UpdateLastLogin)
-		break
-	default:
-		logger.Info("using local auth provider")
-		authy := local.NewAuthenticator(db)
-		authHandler, err = local.NewHandler(authy)
-	}
-	if err != nil {
-		logger.Fatal("failed to initiate auth", zap.Error(err), zap.Bool("oidc", oidcEnabled))
-	}
-
 	port := config.Port()
-	pages, components := www.NewWWWPort(db, nominatimClient)
-	logger.Info("serving raumzeitalpaka", zap.String("port", port), zap.Int("pages", len(pages)), zap.Int("components", len(components)))
-
-	l, err := net.Listen("tcp", ":"+port)
-	if err != nil {
-		logger.Fatal("failed to listen", zap.Error(err))
-	}
-
-	err = www.Serve(l, authHandler, pages, components)
-	if err != nil {
-		logger.Warn("failed to serve www", zap.Error(err))
-	}
+	err = ports.Serve(ctx, port, db, nominatimClient)
+	logger.Error("serving raumzeitalpaka", zap.String("port", port))
 }
 
 func NewLogger() *zap.Logger {

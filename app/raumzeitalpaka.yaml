@@ -10,3 +10,10 @@ jwt:
     key: password123password123password123password123password123password123
 
 dev: true
+
+#oidc:
+#  enabled: true
+#  issuer: https://iam.nopasa.run/application/o/raumzeitalpaka/
+#  client:
+#    id: kR4vPzxtKUdlId62uKxXAcIJ35dE0gLJql2Qe5CO
+#    secret: Rxscplcrh8GzbtZoZFxIUysw53eyvtM8QS8r50QlQXErqgssFf34S9nhCu4efrBV9fj0dBbxXlJxd20CVDTeHZVDh7kEEz8LF9IQpeGvO6XQzJOhpVArDBp9BZgyAK4Y

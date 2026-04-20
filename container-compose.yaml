@@ -20,25 +20,25 @@ services:
     networks:
       - raumzeitalpaka-network
 
-  app:
-    image: codeberg.org/aur0ra/raumzeitalpaka:latest
-    container_name: raumzeitalpaka-app
-    build:
-      context: ./app
-      dockerfile: Containerfile
-    depends_on:
-      postgres:
-        condition: service_healthy
-    environment:
-      RZA_DEV: true
-      RZA_BASE_URL: "http://localhost:8080"
-      RZA_DATABASE_CONNECTIONSTRING: "postgres://postgres:postgres@postgres:5432/raumzeitalpaka?sslmode=disable"
-      RZA_JWT_SECRET_KEY: password123password123password123password123password123password123
-      RZA_PORT: "8080"
-    ports:
-      - "8080:8080"
-    networks:
-      - raumzeitalpaka-network
+ #  app:
+#    image: codeberg.org/aur0ra/raumzeitalpaka:latest
+#    container_name: raumzeitalpaka-app
+#    build:
+#      context: ./app
+#      dockerfile: Containerfile
+#    depends_on:
+#      postgres:
+#        condition: service_healthy
+#    environment:
+#      RZA_DEV: true
+#      RZA_BASE_URL: "http://localhost:8080"
+#      RZA_DATABASE_CONNECTIONSTRING: "postgres://postgres:postgres@postgres:5432/raumzeitalpaka?sslmode=disable"
+#      RZA_JWT_SECRET_KEY: password123password123password123password123password123password123
+#      RZA_PORT: "8080"
+#    ports:
+#      - "8080:8080"
+#    networks:
+#      - raumzeitalpaka-network
 
 volumes:
   postgres_data:

@@ -97,9 +97,11 @@ func NewHandler(ctx context.Context, cfg config.Config, syncer Syncer, updateLas
 			return
 		}
 
-		jwt, err := auth.NewJWT(auth.Claims{
-			UserId: int(userId),
-		})
+		jwt, err := auth.NewJWT(auth.Claims{UserId: int(userId)}, 24*7*time.Hour)
+		if err != nil {
+			render.Error(log, w, http.StatusInternalServerError, "failed to create jwt", err)
+			return
+		}
 		auth.SetSessionCookie(w, jwt)
 		http.Redirect(w, r, "/", http.StatusFound)
 		go updateLastLogin.Execute(context.TODO(), command.UpdateLastLoginRequest{

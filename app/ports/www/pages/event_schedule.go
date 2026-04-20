@@ -13,6 +13,7 @@ import (
 	"raumzeitalpaka/ports/www/render"
 	"strconv"
 	"strings"
+	"time"
 
 	"github.com/go-chi/chi/v5"
 	. "maragu.dev/gomponents"
@@ -112,6 +113,8 @@ func (l *SchedulePageRoute) Handler() http.Handler {
 			return
 		}
 
+		eventDuration := DaysBetween(event.Start, event.End)
+
 		timeslots, err := l.GetTimeslotsOfEvent.Query(ctx, query.GetTimeslotsOfEventRequest{
 			EventId: int(eventId),
 			Roles:   roles,
@@ -124,7 +127,7 @@ func (l *SchedulePageRoute) Handler() http.Handler {
 		}
 
 		eventDays := model.MapTimeslotsToDays(timeslots.Timeslots)
-		renderData := make([][]model.TimeslotModel, len(eventDays))
+		renderData := make([][]model.TimeslotModel, eventDuration)
 		for day, timeslotsOfDay := range eventDays {
 			renderData[day] = timeslotsOfDay
 		}
@@ -135,4 +138,10 @@ func (l *SchedulePageRoute) Handler() http.Handler {
 			render.HTML(log, writer, request, SchedulePage(event, isOrganizer, renderData, roles))
 		}
 	})
+}
+
+func DaysBetween(a, b time.Time) int {
+	a = a.Truncate(24 * time.Hour)
+	b = b.Truncate(24 * time.Hour)
+	return int(b.Sub(a).Hours()/24) + 1
 }

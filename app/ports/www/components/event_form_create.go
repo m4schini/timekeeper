@@ -10,12 +10,7 @@ import (
 	"time"
 
 	"go.uber.org/zap"
-	"maragu.dev/gomponents"
 )
-
-func EventCreateForm() gomponents.Node {
-	return eventForm(nil, "POST", "/_/event", "Create")
-}
 
 type CreateEventRoute struct {
 	CreateEvent command.CreateEvent
@@ -27,7 +22,7 @@ func (l *CreateEventRoute) Method() string {
 }
 
 func (l *CreateEventRoute) Pattern() string {
-	return "/event"
+	return "/new/event"
 }
 
 func (l *CreateEventRoute) Handler() http.Handler {
@@ -40,25 +35,19 @@ func (l *CreateEventRoute) Handler() http.Handler {
 			return
 		}
 
-		err := request.ParseForm()
+		form, err := DecodeEventForm(request, false)
 		if err != nil {
-			render.Error(log, writer, http.StatusBadRequest, "failed to parse form", err)
+			render.Error(log, writer, http.StatusBadRequest, "failed to decode form", err)
 			return
 		}
+		zap.L().Debug("decoded event form", zap.Any("form", form))
 
-		var (
-			nameParam  = request.PostFormValue("name")
-			startParam = request.PostFormValue("start")
-			slugParam  = request.PostFormValue("slug")
-		)
-		model, err := ParseCreateEventModel(nameParam, startParam, slugParam)
-		if err != nil {
-			render.Error(log, writer, http.StatusBadRequest, "failed to parse form", err)
-			return
-		}
-		log.Debug("parsed create event form", zap.Any("model", model))
-
-		id, err := l.CreateEvent.Execute(ctx, model)
+		id, err := l.CreateEvent.Execute(ctx, command.CreateEventRequest{
+			Name:  form.Name,
+			Slug:  form.Slug,
+			Start: time.Time(form.Start),
+			End:   time.Time(form.End),
+		})
 		if err != nil {
 			render.Error(log, writer, http.StatusInternalServerError, "failed to create event", err)
 			return
@@ -67,21 +56,4 @@ func (l *CreateEventRoute) Handler() http.Handler {
 
 		http.Redirect(writer, request, fmt.Sprintf("/event/%v", id), http.StatusSeeOther)
 	})
-}
-
-func ParseCreateEventModel(name, start, slug string) (command.CreateEventRequest, error) {
-	startDate, err := time.Parse("02.01.2006", start)
-	if err != nil {
-		return command.CreateEventRequest{}, err
-	}
-
-	if !EventSlugRegex.MatchString(slug) {
-		return command.CreateEventRequest{}, fmt.Errorf("invalid slug")
-	}
-
-	return command.CreateEventRequest{
-		Name:  name,
-		Start: startDate,
-		Slug:  slug,
-	}, nil
 }

@@ -22,8 +22,10 @@ func (q *GetEventsHandler) Query(ctx context.Context, request GetEventsRequest) 
 	rows, err := q.DB.Query(`
 	SELECT 
 		e.id, 
+		e.guid,
 		e.name, 
-		e.start, 
+		e.event_start, 
+		e.event_end,
 		e.slug,
 		COUNT(DISTINCT t.day) AS total_days
 	FROM 
@@ -33,7 +35,7 @@ func (q *GetEventsHandler) Query(ctx context.Context, request GetEventsRequest) 
 	ON 
 		e.id = t.event
 	GROUP BY 
-		e.id, e.name, e.start
+		e.id, e.name, e.event_start
 	OFFSET $1 LIMIT $2 
 `, offset, limit)
 	if err != nil {
@@ -43,11 +45,12 @@ func (q *GetEventsHandler) Query(ctx context.Context, request GetEventsRequest) 
 	es = make([]model.EventModel, 0)
 	for rows.Next() {
 		var r model.EventModel
-		err := rows.Scan(&r.ID, &r.Name, &r.Start, &r.Slug, &r.TotalDays)
+		err := rows.Scan(&r.ID, &r.GUID, &r.Name, &r.Start, &r.End, &r.Slug, &r.TotalDays)
 		if err != nil {
 			return nil, err
 		}
 
+		r.CalculateTotalDays()
 		es = append(es, r)
 	}
 	return es, nil

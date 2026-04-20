@@ -11,21 +11,16 @@ import (
 )
 
 type Claims struct {
-	UserId any    `json:"userId"`
-	Issuer string `json:"issuer"`
+	UserId any `json:"userId"`
 }
 
-func NewJWT(claims Claims) (string, error) {
-	expiresAt := time.Now().Add(24 * 7 * time.Hour)
+func NewJWT(claims Claims, ttl time.Duration) (string, error) {
+	expiresAt := time.Now().Add(ttl)
 	jwtId := time.Now().Unix()
-
-	if claims.Issuer == "" {
-		claims.Issuer = "local"
-	}
 
 	// just completely beating registered claims to my usecase because im too lazy to look up how to do this correctly
 	t := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.RegisteredClaims{
-		Issuer:    fmt.Sprintf("raumzeitalpaka/%v", claims.Issuer),
+		Issuer:    config.BaseUrl(),
 		Subject:   fmt.Sprintf("%v", claims.UserId),
 		ExpiresAt: jwt.NewNumericDate(expiresAt),
 		NotBefore: nil,

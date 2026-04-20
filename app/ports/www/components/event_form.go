@@ -2,8 +2,13 @@ package components
 
 import (
 	"fmt"
+	"net/http"
 	"raumzeitalpaka/app/database/model"
+	"raumzeitalpaka/app/schema"
 	"regexp"
+	"time"
+
+	"codeberg.org/aur0ra/form"
 
 	. "maragu.dev/gomponents"
 	. "maragu.dev/gomponents/html"
@@ -11,11 +16,41 @@ import (
 
 const (
 	EventSlugPattern = `(?i)^[a-z0-9-]+$` // (?i) makes it case-insensitive
+	EventDateLayout  = "02.01.2006"
 )
 
 var (
-	EventSlugRegex = regexp.MustCompile(EventSlugPattern)
+	eventSlugRegex   = regexp.MustCompile(EventSlugPattern)
+	eventFormDecoder = form.MustNewDecoder[EventFormSchema]()
 )
+
+func EventUpdateForm(event model.EventModel) Node {
+	return eventForm(&event, "POST", fmt.Sprintf("/event/%v/edit", event.ID), "Update")
+}
+
+func EventCreateForm() Node {
+	return eventForm(nil, "POST", "/event/new", "Create")
+}
+
+type EventFormSchema struct {
+	Event int    `form:"event"`
+	Name  string `form:"name,required"`
+	Slug  string `form:"slug,required"`
+	Start Date   `form:"start,required"`
+	End   Date   `form:"end,required"`
+}
+
+func (s EventFormSchema) Validate(requireEventId bool) error {
+	if requireEventId && s.Event <= 0 {
+		return schema.InvalidFieldValueErr("event")
+	}
+
+	if !eventSlugRegex.MatchString(s.Slug) {
+		return schema.InvalidFieldValueErr("slug")
+	}
+
+	return nil
+}
 
 func eventForm(event *model.EventModel, method, action, actionText string) Node {
 	hasModel := event != nil
@@ -50,6 +85,37 @@ func eventForm(event *model.EventModel, method, action, actionText string) Node 
 				})),
 		),
 
+		Div(Class("param"),
+			Label(For("end"), Text("Letzter Tag")),
+			Input(Type("text"), Name("end"),
+				Placeholder("42.12.2161"),
+				Pattern(`^(0[1-9]|[12][0-9]|3[01])\.(0[1-9]|1[0-2])\.(\d{4})$`),
+				Required(), Iff(hasModel, func() Node {
+					return Value(event.End.Format("02.01.2006"))
+				})),
+		),
+
 		Input(Type("submit"), Value(actionText)),
 	)
+}
+
+func DecodeEventForm(r *http.Request, requireEventId bool) (EventFormSchema, error) {
+	err := r.ParseForm()
+	if err != nil {
+		return EventFormSchema{}, err
+	}
+
+	form, err := eventFormDecoder.Decode(r.Form)
+	if err != nil {
+		return EventFormSchema{}, err
+	}
+
+	return form, form.Validate(requireEventId)
+}
+
+type Date time.Time
+
+func (Date) ParseForm(field string) (any, error) {
+	t, err := time.Parse(EventDateLayout, field)
+	return Date(t), err
 }

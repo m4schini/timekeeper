@@ -1,0 +1,12 @@
+### POST Create new event
+POST http://localhost:8080/api/event
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJyYXVtemVpdGFscGFrYSIsInN1YiI6IjEiLCJleHAiOjE3NzIwNDA2MjQsImlhdCI6MTc3MTc4MTQyNCwianRpIjoiMTc3MTc4MTQyNCJ9.ZgQ2zR_6tvJmFptkP3a-GPD_vzK2rLiHPRr_EOXtNKM
+Content-Type: application/json
+
+{
+  "name": "Test Event 10",
+  "slug": "test-event-10",
+  "start": "2000-03-22T00:00:00Z"
+}
+
+###

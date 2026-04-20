@@ -7,12 +7,13 @@ import (
 )
 
 type EventModel struct {
-	ID        int
-	GUID      string
-	Slug      string
-	Name      string
-	TotalDays int
-	Start     time.Time
+	ID        int       `json:"id"`
+	GUID      string    `json:"guid"`
+	Slug      string    `json:"slug"`
+	Name      string    `json:"name"`
+	TotalDays int       `json:"totalDays"`
+	Start     time.Time `json:"start"`
+	End       time.Time `json:"end"`
 }
 
 func (e EventModel) EventURL() string {
@@ -25,6 +26,11 @@ func (e EventModel) ScheduleURL() string {
 
 func (e EventModel) Day(day int) time.Time {
 	return e.Start.AddDate(0, 0, day)
+}
+
+func (e *EventModel) CalculateTotalDays() int {
+	e.TotalDays = (int(e.End.Sub(e.Start).Hours()) / 24) + 1
+	return e.TotalDays
 }
 
 type CreateEventModel struct {

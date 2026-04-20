@@ -8,10 +8,11 @@ import (
 type UpdateEvent Handler[UpdateEventRequest]
 
 type UpdateEventRequest struct {
-	ID    int
-	Name  string
-	Slug  string
-	Start time.Time
+	ID    int       `json:"id"`
+	Name  string    `json:"name"`
+	Slug  string    `json:"slug"`
+	Start time.Time `json:"start"`
+	End   time.Time `json:"end"`
 }
 
 type UpdateEventHandler struct {
@@ -23,8 +24,9 @@ func (c *UpdateEventHandler) Execute(ctx context.Context, request UpdateEventReq
 UPDATE raumzeitalpaka.events
 SET
     name = $1,
-    start = $2,
-    slug = $3
-WHERE id = $4`, request.Name, request.Start, request.Slug, request.ID)
+    slug = $2,
+    event_start = $3,
+    event_end = $4
+WHERE id = $5`, request.Name, request.Slug, request.Start, request.End, request.ID)
 	return err
 }

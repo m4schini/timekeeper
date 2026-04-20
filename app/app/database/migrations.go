@@ -16,8 +16,12 @@ import (
 //go:embed migrations
 var fs embed.FS
 
-func InitSchema(db *sql.DB) (bool, error) {
+const LatestSchema = uint(0)
+
+// InitSchema migrates the database to the specified version (if version = 0, migrates to latest version)
+func InitSchema(db *sql.DB, version uint) (bool, error) {
 	log := zap.L().Named("database")
+	log.Info("syncing database schema")
 
 	migrationFs, err := iofs.New(fs, "migrations")
 	if err != nil {
@@ -36,14 +40,21 @@ func InitSchema(db *sql.DB) (bool, error) {
 	if err != nil {
 		return false, err
 	}
+	v, dirty, err := m.Version()
+	log.Info("database schema version", zap.Uint("version", v), zap.Bool("dirty", dirty), zap.Error(err))
 
-	err = m.Up()
+	if version <= 0 {
+		err = m.Up()
+	} else {
+		err = m.Migrate(version)
+	}
 	if err != nil {
+		log.Warn("migration failed", zap.Error(err))
 		return false, nil
 	}
 
-	version, dirty, err := m.Version()
-	log.Info("upgraded database schema", zap.Uint("version", version), zap.Bool("dirty", dirty), zap.Error(err))
+	v, dirty, err = m.Version()
+	log.Info("migrated database schema", zap.Uint("version", v), zap.Bool("dirty", dirty), zap.Error(err))
 
 	return true, nil
 }
