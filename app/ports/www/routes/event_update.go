@@ -36,11 +36,13 @@ func eventUpdateFormHandler(log *zap.Logger, userHasRole query.UserHasRole, upda
 		}
 
 		err = domain.UpdateEvent(ctx, userHasRole, updateEvent, command.UpdateEventRequest{
-			ID:    form.Event,
-			Name:  form.Name,
-			Slug:  form.Slug,
-			Start: time.Time(form.Start),
-			End:   time.Time(form.End),
+			ID:       form.Event,
+			Name:     form.Name,
+			Slug:     form.Slug,
+			Start:    time.Time(form.Start),
+			End:      time.Time(form.End),
+			Setup:    form.Setup,
+			Teardown: form.Teardown,
 		})
 		if err != nil {
 			render.Error(log, w, http.StatusInternalServerError, "failed to update event", err)

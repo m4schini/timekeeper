@@ -14,6 +14,8 @@ type EventModel struct {
 	TotalDays int       `json:"totalDays"`
 	Start     time.Time `json:"start"`
 	End       time.Time `json:"end"`
+	Setup     int       `json:"setup"`
+	Teardown  int       `json:"teardown"`
 }
 
 func (e EventModel) EventURL() string {
@@ -28,7 +30,7 @@ func (e EventModel) Day(day int) time.Time {
 	return e.Start.AddDate(0, 0, day)
 }
 
-func (e *EventModel) CalculateTotalDays() int {
+func (e *EventModel) EventDays() int {
 	e.TotalDays = (int(e.End.Sub(e.Start).Hours()) / 24) + 1
 	return e.TotalDays
 }

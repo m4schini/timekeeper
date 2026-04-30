@@ -47,6 +47,7 @@ func (l *UpdateEventRoute) Handler() http.Handler {
 			render.Error(log, writer, http.StatusBadRequest, "failed to decode form", err)
 			return
 		}
+		log.Info("update event", zap.Any("form", form))
 
 		if _, isAuthorized := l.Authz.HasEventRole(userId, form.Event, model.RoleOrganizer); !isAuthorized {
 			render.Error(log, writer, http.StatusUnauthorized, "unauthorized request detected", nil)

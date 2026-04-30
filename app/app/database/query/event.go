@@ -17,15 +17,15 @@ type GetEventHandler struct {
 
 func (q *GetEventHandler) Query(ctx context.Context, request GetEventRequest) (e model.EventModel, err error) {
 	id := request.EventId
-	row := q.DB.QueryRow(`SELECT id, name, event_start, event_end, slug, guid FROM raumzeitalpaka.events e WHERE id = $1`, id)
+	row := q.DB.QueryRow(`SELECT id, name, event_start, event_end, slug, guid, setup, teardown FROM raumzeitalpaka.events e WHERE id = $1`, id)
 	if err = row.Err(); err != nil {
 		return model.EventModel{}, nil
 	}
 
-	err = row.Scan(&e.ID, &e.Name, &e.Start, &e.End, &e.Slug, &e.GUID)
+	err = row.Scan(&e.ID, &e.Name, &e.Start, &e.End, &e.Slug, &e.GUID, &e.Setup, &e.Teardown)
 	if err != nil {
 		return e, err
 	}
-	e.CalculateTotalDays()
+	e.EventDays()
 	return e, nil
 }

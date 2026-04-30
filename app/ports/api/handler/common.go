@@ -4,6 +4,9 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"net/url"
+	"raumzeitalpaka/app/database/model"
+	"strings"
 
 	"go.uber.org/zap"
 )
@@ -28,4 +31,24 @@ func Encode(w http.ResponseWriter, response any) {
 	if err != nil {
 		zap.L().Error("failed to encode response", zap.Error(err))
 	}
+}
+
+func ParseRolesQuery(query url.Values, userIsOrganizer bool) (roles []model.Role, hasRoles bool) {
+	hasRoles = query.Has("role")
+	rolesStrs := strings.Split(query.Get("role"), ",")
+
+	if !hasRoles {
+		if userIsOrganizer {
+			rolesStrs = []string{string(model.RoleOrganizer), string(model.RoleMentor), string(model.RoleParticipant)}
+		} else {
+			rolesStrs = []string{string(model.RoleParticipant)}
+		}
+	}
+
+	roles = make([]model.Role, len(rolesStrs))
+	for i, role := range rolesStrs {
+		roles[i] = model.RoleFrom(role)
+	}
+
+	return roles, hasRoles
 }

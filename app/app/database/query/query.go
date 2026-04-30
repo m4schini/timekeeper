@@ -27,12 +27,12 @@ type Queries struct {
 	Timeslot         GetTimeslot
 	TimeslotsOfEvent GetTimeslotsOfEvent
 
-	User             GetUser
-	UserByLoginName  GetUserByLoginName
-	UserHasRole      UserHasRole
-	UserHasGroupRole UserHasGroupRole
-	UserHasEventRole UserHasEventRole
-	GroupBySlug      GetGroupBySlug
+	User                    GetUser
+	UserByLoginName         GetUserByLoginName
+	UserHasRole             UserHasRole
+	UserHasOrganisationRole UserHasOrganisationRole
+	UserHasEventRole        UserHasEventRole
+	GroupBySlug             GetOrganisationBySlug
 }
 
 func NewQueries(db Database) Queries {
@@ -54,11 +54,11 @@ func NewQueries(db Database) Queries {
 		Timeslot:         &GetTimeslotHandler{DB: db},
 		TimeslotsOfEvent: &GetTimeslotsOfEventHandler{DB: db},
 
-		User:             &GetUserHandler{DB: db},
-		UserByLoginName:  &GetUserByLoginNameHandler{DB: db},
-		UserHasRole:      &UserHasRoleHandler{DB: db},
-		UserHasGroupRole: &UserHasGroupRoleHandler{DB: db},
-		UserHasEventRole: &UserHasEventRoleHandler{DB: db},
+		User:                    &GetUserHandler{DB: db},
+		UserByLoginName:         &GetUserByLoginNameHandler{DB: db},
+		UserHasRole:             &UserHasRoleHandler{DB: db},
+		UserHasOrganisationRole: &UserHasOrganisationRoleHandler{DB: db},
+		UserHasEventRole:        &UserHasEventRoleHandler{DB: db},
 	}
 }
 

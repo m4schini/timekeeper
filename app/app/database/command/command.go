@@ -33,12 +33,12 @@ type Commands struct {
 	UpdateTimeslot UpdateTimeslot
 	DeleteTimeslot DeleteTimeslot
 
-	InsertUser                     UpsertUser
-	CreateUser                     CreateUser
-	UpdateLastLogin                UpdateLastLogin
-	CreateGroup                    CreateGroup
-	GroupAddUser                   GroupAddUser
-	UpdateManagedGroupsAssignments UpdateManagedGroupsAssignments
+	InsertUser                           UpsertUser
+	CreateUser                           CreateUser
+	UpdateLastLogin                      UpdateLastLogin
+	CreateOrganisation                   CreateOrganisation
+	OrganisationAddUser                  OrganisationAddUser
+	UpdateManagedOrganisationAssignments UpdateManagedOrganisationAssignments
 }
 
 func NewCommands(db Database) Commands {
@@ -62,12 +62,12 @@ func NewCommands(db Database) Commands {
 		UpdateTimeslot: &UpdateTimeslotHandler{DB: db},
 		DeleteTimeslot: &DeleteTimeslotHandler{DB: db},
 
-		InsertUser:      &UpsertUserHandler{DB: db},
-		CreateUser:      &CreateUserHandler{DB: db},
-		UpdateLastLogin: &UpdateLastLoginHandler{DB: db},
-		CreateGroup:     &CreateGroupHandler{DB: db},
-		GroupAddUser:    &GroupAddUserHandler{DB: db},
-		UpdateManagedGroupsAssignments: &UpdateManagedGroupsAssignmentsHandler{
+		InsertUser:          &UpsertUserHandler{DB: db},
+		CreateUser:          &CreateUserHandler{DB: db},
+		UpdateLastLogin:     &UpdateLastLoginHandler{DB: db},
+		CreateOrganisation:  &CreateOrganisationHandler{DB: db},
+		OrganisationAddUser: &OrganisationAddUserHandler{DB: db},
+		UpdateManagedOrganisationAssignments: &UpdateManagedOrganisationAssignmentsHandler{
 			DB: db,
 		},
 	}

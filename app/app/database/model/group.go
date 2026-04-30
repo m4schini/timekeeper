@@ -1,6 +1,6 @@
 package model
 
-type GroupModel struct {
+type OrganisationModel struct {
 	ID   int
 	Slug string
 	Name string

@@ -33,11 +33,13 @@ func EventCreateForm() Node {
 }
 
 type EventFormSchema struct {
-	Event int    `form:"event"`
-	Name  string `form:"name,required"`
-	Slug  string `form:"slug,required"`
-	Start Date   `form:"start,required"`
-	End   Date   `form:"end,required"`
+	Event    int    `form:"event"`
+	Name     string `form:"name,required"`
+	Slug     string `form:"slug,required"`
+	Start    Date   `form:"start,required"`
+	End      Date   `form:"end,required"`
+	Setup    int    `form:"setup,required"`
+	Teardown int    `form:"teardown,required"`
 }
 
 func (s EventFormSchema) Validate(requireEventId bool) error {
@@ -92,6 +94,24 @@ func eventForm(event *model.EventModel, method, action, actionText string) Node 
 				Pattern(`^(0[1-9]|[12][0-9]|3[01])\.(0[1-9]|1[0-2])\.(\d{4})$`),
 				Required(), Iff(hasModel, func() Node {
 					return Value(event.End.Format("02.01.2006"))
+				})),
+		),
+
+		Div(Class("param"),
+			Label(For("setup"), Text("Aufbau (0 = Aufbau am ersten Tag, 1 = Ein Tag vor dem Event, ...)")),
+			Input(Type("text"), Name("setup"),
+				Placeholder("0"),
+				Required(), Iff(hasModel, func() Node {
+					return Value(fmt.Sprintf("%v", event.Setup))
+				})),
+		),
+
+		Div(Class("param"),
+			Label(For("teardown"), Text("Abbau (0 = Abbau am letzten Tag, 1 = Ein Tag nach dem Event, ...)")),
+			Input(Type("text"), Name("teardown"),
+				Placeholder("0"),
+				Required(), Iff(hasModel, func() Node {
+					return Value(fmt.Sprintf("%v", event.Teardown))
 				})),
 		),
 

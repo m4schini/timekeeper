@@ -18,17 +18,17 @@ type Syncer interface {
 
 type AlpakaSyncer struct {
 	insertUser                     command.UpsertUser
-	createGroup                    command.CreateGroup
-	getGroupBySlug                 query.GetGroupBySlug
-	updateManagedGroupsAssignments command.UpdateManagedGroupsAssignments
+	createGroup                    command.CreateOrganisation
+	getGroupBySlug                 query.GetOrganisationBySlug
+	updateManagedGroupsAssignments command.UpdateManagedOrganisationAssignments
 }
 
 func NewAlpakaSyncer(db *database.Database) *AlpakaSyncer {
 	return &AlpakaSyncer{
 		insertUser:                     db.Commands.InsertUser,
-		createGroup:                    db.Commands.CreateGroup,
+		createGroup:                    db.Commands.CreateOrganisation,
 		getGroupBySlug:                 db.Queries.GroupBySlug,
-		updateManagedGroupsAssignments: db.Commands.UpdateManagedGroupsAssignments,
+		updateManagedGroupsAssignments: db.Commands.UpdateManagedOrganisationAssignments,
 	}
 }
 
@@ -147,11 +147,11 @@ func parseGroup(oidcGroup string, roleMapper map[string]model.Role) (groupName s
 	//return groupName, role, model.ValidRole(role)
 }
 
-func createGroupIfNew(createGroup command.CreateGroup, getGroupBySlug query.GetGroupBySlug, request command.CreateGroupRequest) (groupId int, err error) {
+func createGroupIfNew(createGroup command.CreateOrganisation, getGroupBySlug query.GetOrganisationBySlug, request command.CreateOrganisationRequest) (groupId int, err error) {
 	groupId, err = createGroup.Execute(context.TODO(), request)
 	if err != nil {
 		if strings.Contains(err.Error(), "duplicate key") {
-			group, err2 := getGroupBySlug.Query(context.TODO(), query.GetGroupBySlugRequest{Slug: request.Slug})
+			group, err2 := getGroupBySlug.Query(context.TODO(), query.GetOrganisationBySlugRequest{Slug: request.Slug})
 			if err2 != nil {
 				return -1, err
 			}
@@ -163,12 +163,12 @@ func createGroupIfNew(createGroup command.CreateGroup, getGroupBySlug query.GetG
 	return groupId, nil
 }
 
-func groupAssignmentsFrom(r map[int]model.Role) []command.GroupAssignment {
-	assignments := make([]command.GroupAssignment, 0, len(r))
+func groupAssignmentsFrom(r map[int]model.Role) []command.OrganisationAssignment {
+	assignments := make([]command.OrganisationAssignment, 0, len(r))
 	for i, role := range r {
-		assignments = append(assignments, command.GroupAssignment{
-			GroupId: i,
-			Role:    role,
+		assignments = append(assignments, command.OrganisationAssignment{
+			OrganisationId: i,
+			Role:           role,
 		})
 	}
 	return assignments

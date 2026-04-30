@@ -8,11 +8,13 @@ import (
 type UpdateEvent Handler[UpdateEventRequest]
 
 type UpdateEventRequest struct {
-	ID    int       `json:"id"`
-	Name  string    `json:"name"`
-	Slug  string    `json:"slug"`
-	Start time.Time `json:"start"`
-	End   time.Time `json:"end"`
+	ID       int       `json:"id"`
+	Name     string    `json:"name"`
+	Slug     string    `json:"slug"`
+	Start    time.Time `json:"start"`
+	End      time.Time `json:"end"`
+	Setup    int       `json:"setup"`
+	Teardown int       `json:"teardown"`
 }
 
 type UpdateEventHandler struct {
@@ -26,7 +28,9 @@ SET
     name = $1,
     slug = $2,
     event_start = $3,
-    event_end = $4
-WHERE id = $5`, request.Name, request.Slug, request.Start, request.End, request.ID)
+    event_end = $4,
+    setup = $5,
+    teardown = $6
+WHERE id = $7`, request.Name, request.Slug, request.Start, request.End, request.Setup, request.Teardown, request.ID)
 	return err
 }

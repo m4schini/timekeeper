@@ -16,14 +16,14 @@ type Authorizer interface {
 }
 
 type DatabaseAuthz struct {
-	UserHasGroupRole query.UserHasGroupRole
+	UserHasGroupRole query.UserHasOrganisationRole
 	UserHasEventRole query.UserHasEventRole
 	UserHasRole      query.UserHasRole
 }
 
 func NewDatabaseAuthz(database *database.Database) *DatabaseAuthz {
 	return &DatabaseAuthz{
-		UserHasGroupRole: database.Queries.UserHasGroupRole,
+		UserHasGroupRole: database.Queries.UserHasOrganisationRole,
 		UserHasEventRole: database.Queries.UserHasEventRole,
 		UserHasRole:      database.Queries.UserHasRole,
 	}

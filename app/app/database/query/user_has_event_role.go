@@ -26,7 +26,7 @@ type UserHasEventRoleHandler struct {
 
 func (q *UserHasEventRoleHandler) Query(ctx context.Context, request UserHasEventRoleRequest) (UserHasEventRoleResponse, error) {
 	//TODO
-	row := q.DB.QueryRow(`SELECT role FROM raumzeitalpaka.group_has_user WHERE user_id = $1 AND group_id = $2`,
+	row := q.DB.QueryRow(`SELECT role FROM raumzeitalpaka.organisation_has_user WHERE user_id = $1 AND organisation_id = $2`,
 		request.UserId, request.EventId)
 	if err := row.Err(); err != nil {
 		return UserHasEventRoleResponse{}, err

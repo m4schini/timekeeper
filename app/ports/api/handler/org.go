@@ -5,7 +5,7 @@ import (
 	"raumzeitalpaka/app/database/command"
 )
 
-func CreateOrg(create command.CreateGroup) http.HandlerFunc {
+func CreateOrg(create command.CreateOrganisation) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		ctx := r.Context()
 		err := requireAuthentication(ctx)

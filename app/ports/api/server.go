@@ -14,11 +14,11 @@ func NewRouter(db *database.Database) chi.Router {
 
 	mux := chi.NewMux()
 	mux.Use(auth.UseBearerToken())
-	mux.Get("/schedule", handler.GetEventsSchedule())
+	mux.Get("/schedule", handler.GetEventsSchedule(q.Events))
 	mux.Route("/org", func(r chi.Router) {
 		r.Get("/schedule", handler.GetOrgSchedule())
 
-		r.Post("/", handler.CreateOrg(c.CreateGroup))
+		r.Post("/", handler.CreateOrg(c.CreateOrganisation))
 		r.Route("/{org}", func(r chi.Router) {
 			r.Get("/", handler.GetOrg())
 			r.Put("/", handler.UpdateOrg())
@@ -28,10 +28,10 @@ func NewRouter(db *database.Database) chi.Router {
 
 	mux.Get("/events", handler.GetEvents(q.Events))
 	mux.Route("/event", func(r chi.Router) {
-		r.Get("/schedule", handler.GetSchedule())
 
 		r.Post("/", handler.CreateEvent(c.CreateEvent))
 		r.Route("/{eventID}", func(r chi.Router) {
+			r.Get("/schedule", handler.GetSchedule(q.TimeslotsOfEvent))
 			r.Get("/", handler.GetEvent(q.Event))
 			r.Put("/", handler.UpdateEvent(c.UpdateEvent, q.UserHasRole))
 			//r.Delete("/", DeleteEvent)

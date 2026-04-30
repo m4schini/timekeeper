@@ -51,7 +51,7 @@ func UserWidgetLoggedOut() Node {
 
 func UserWidgetLoggedIn(user model.UserModel) Node {
 	return Div(Class("last-change"),
-		P(Text("Signed in as "), Strong(Text(user.DisplayName))),
+		P(Text("Signed in as "), Strong(A(Href(fmt.Sprintf("/user/%v", user.ID)), Text(user.DisplayName)))),
 		A(Href("/logout"), Text("Logout")),
 	)
 }

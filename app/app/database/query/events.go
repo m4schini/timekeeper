@@ -50,7 +50,7 @@ func (q *GetEventsHandler) Query(ctx context.Context, request GetEventsRequest) 
 			return nil, err
 		}
 
-		r.CalculateTotalDays()
+		r.EventDays()
 		es = append(es, r)
 	}
 	return es, nil

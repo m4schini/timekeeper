@@ -43,10 +43,12 @@ func (l *CreateEventRoute) Handler() http.Handler {
 		zap.L().Debug("decoded event form", zap.Any("form", form))
 
 		id, err := l.CreateEvent.Execute(ctx, command.CreateEventRequest{
-			Name:  form.Name,
-			Slug:  form.Slug,
-			Start: time.Time(form.Start),
-			End:   time.Time(form.End),
+			Name:     form.Name,
+			Slug:     form.Slug,
+			Start:    time.Time(form.Start),
+			End:      time.Time(form.End),
+			Setup:    form.Setup,
+			Teardown: form.Teardown,
 		})
 		if err != nil {
 			render.Error(log, writer, http.StatusInternalServerError, "failed to create event", err)
