@@ -15,10 +15,11 @@ import (
 	. "maragu.dev/gomponents/html"
 )
 
-func UserAccountPage(user model.UserModel) Node {
+func UserAccountPage(user model.UserModel, memberships []model.UserOrganisationMembership) Node {
 	return components.Shell("",
 		components.PageHeader(model.EventModel{}),
 		Main(
+			H1(Textf("User")),
 			Div(
 				Ul(
 					Li(Textf("ID: %v", user.ID)),
@@ -27,12 +28,21 @@ func UserAccountPage(user model.UserModel) Node {
 					Li(Textf("Last Login: %v", user.LastLogin)),
 				),
 			),
+			H1(Textf("Groups")),
+			Div(
+				Ul(
+					Map(memberships, func(membership model.UserOrganisationMembership) Node {
+						return Li(Textf("%v: %v", membership.Name, membership.Role))
+					}),
+				),
+			),
 		),
 	)
 }
 
 type UserAccountPageRoute struct {
-	GetUser query.GetUser
+	GetUser        query.GetUser
+	GetMemberships query.GetUserOrganisations
 }
 
 func (l *UserAccountPageRoute) Method() string {
@@ -62,7 +72,13 @@ func (l *UserAccountPageRoute) Handler() http.Handler {
 			return
 		}
 
-		page := UserAccountPage(user)
+		memberships, err := l.GetMemberships.Query(ctx, query.GetUserOrganisationsRequest{UserID: int(userID)})
+		if err != nil {
+			render.Error(log, writer, http.StatusInternalServerError, "failed to get memberships", err)
+			return
+		}
+
+		page := UserAccountPage(user, memberships)
 
 		render.HTML(log, writer, request, page)
 	})

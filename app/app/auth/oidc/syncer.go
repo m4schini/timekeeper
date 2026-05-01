@@ -7,7 +7,7 @@ import (
 	"raumzeitalpaka/app/database/model"
 	"raumzeitalpaka/app/database/query"
 	"regexp"
-	"strings"
+	"sync"
 
 	"go.uber.org/zap"
 )
@@ -27,7 +27,7 @@ func NewAlpakaSyncer(db *database.Database) *AlpakaSyncer {
 	return &AlpakaSyncer{
 		insertUser:                     db.Commands.InsertUser,
 		createGroup:                    db.Commands.CreateOrganisation,
-		getGroupBySlug:                 db.Queries.GroupBySlug,
+		getGroupBySlug:                 db.Queries.OrganisationBySlug,
 		updateManagedGroupsAssignments: db.Commands.UpdateManagedOrganisationAssignments,
 	}
 }
@@ -35,42 +35,49 @@ func NewAlpakaSyncer(db *database.Database) *AlpakaSyncer {
 func (s *AlpakaSyncer) Sync(userId int, userName, displayName string, groups []string) error {
 	log := zap.L()
 	log.Info("syncing user", zap.Int("user", userId), zap.Strings("groups", groups))
-	//groupAssignments := make(map[int]model.Role)
+	ctx := context.TODO()
+	groupAssignments := make(map[int]model.Role)
 	var isOrganizer = false
 	var isMenti = false
 
 	for _, oidcGroupStr := range groups {
-		_, r, valid := parseGroup(oidcGroupStr, AlpakaRoleMapper)
+		group, r, valid := parseGroup(oidcGroupStr, AlpakaRoleMapper)
 		if !valid {
 			log.Debug("user claims contained invalid group", zap.String("group", oidcGroupStr))
 			continue
 		}
 
-		if r == model.RoleOrganizer {
-			isOrganizer = true
-			break
+		groupID, err := getOrCreateGroup(ctx, s.createGroup, s.getGroupBySlug, command.CreateOrganisationRequest{
+			Name: group,
+			Slug: group,
+		})
+		if err != nil {
+			return err
 		}
-		if !isMenti && r == model.RoleMentor {
-			isMenti = true
-		}
+		log.Info("found group assignment", zap.String("group", group), zap.Int("groupID", groupID), zap.Any("role", r), zap.Bool("valid", valid))
 
-		//groupId, err := createGroupIfNew(s.createGroup, s.getGroupBySlug, command.CreateGroupRequest{
-		//	Name: g,
-		//	Slug: g,
-		//})
-		//if err != nil {
-		//	log.Error("failed to create group", zap.Error(err))
-		//	continue
-		//}
-		//
-		//log.Info("user group parsed", zap.Int("id", groupId), zap.String("group", g), zap.Any("role", r))
-		//
-		//role, exists := groupAssignments[groupId]
-		//if !exists {
-		//	groupAssignments[groupId] = r
-		//} else {
-		//	groupAssignments[groupId] = model.HigherRole(role, r)
-		//}
+		groupRole, exists := groupAssignments[groupID]
+		if !exists || groupRole != model.RoleOrganizer {
+			isOrganizer = true
+
+			groupAssignments[groupID] = r
+		}
+	}
+
+	orgs := make([]command.OrganisationAssignment, 0, len(groupAssignments))
+	for groupID, role := range groupAssignments {
+		orgs = append(orgs, command.OrganisationAssignment{
+			OrganisationId: groupID,
+			Role:           role,
+		})
+	}
+
+	err := s.updateManagedGroupsAssignments.Execute(ctx, command.UpdateManagedOrganisationAssignmentsRequest{
+		UserId:      userId,
+		Assignments: orgs,
+	})
+	if err != nil {
+		return err
 	}
 
 	var role = model.RoleParticipant
@@ -82,7 +89,7 @@ func (s *AlpakaSyncer) Sync(userId int, userName, displayName string, groups []s
 	}
 
 	log.Info("upserting user", zap.Int("user", userId), zap.Any("role", role))
-	_, err := s.insertUser.Execute(context.TODO(), command.UpsertUserRequest{
+	_, err = s.insertUser.Execute(context.TODO(), command.UpsertUserRequest{
 		ID:           userId,
 		LoginName:    userName,
 		DisplayName:  displayName,
@@ -114,18 +121,45 @@ func (s *AlpakaSyncer) Sync(userId int, userName, displayName string, groups []s
 
 var groupParserRx = regexp.MustCompile(`Event:([^:]+):(?:[0-9]+:)?([^:]+)$`)
 var isOrgaRx = regexp.MustCompile(`org_event_([a-z]+)$`)
+var isMentiRx = regexp.MustCompile(`org_event_([a-z]+)_mentorinnen$`)
 
-func isOrga(group string) bool {
-	return isOrgaRx.MatchString(group)
+func isOrga(group string) (string, bool) {
+	match := isOrgaRx.MatchString(group)
+	if !match {
+		return "", false
+	}
+
+	matches := isOrgaRx.FindStringSubmatch(group)
+	return matches[1], true
+}
+
+func isMenti(group string) (string, bool) {
+	match := isMentiRx.MatchString(group)
+	if !match {
+		return "", false
+	}
+
+	matches := isMentiRx.FindStringSubmatch(group)
+	return matches[1], true
 }
 
 func parseGroup(oidcGroup string, roleMapper map[string]model.Role) (groupName string, role model.Role, valid bool) {
 	//oidcGroup = strings.ToLower(oidcGroup)
-	if isOrga(oidcGroup) {
-		return "unknown", model.RoleOrganizer, true
-	} else {
-		return "unknown", model.RoleParticipant, false
+	//if isOrga(oidcGroup) {
+	//	return "unknown", model.RoleOrganizer, true
+	//} else {
+	//	return "unknown", model.RoleParticipant, false
+	//}
+
+	groupName, isO := isOrga(oidcGroup)
+	if isO {
+		return groupName, model.RoleOrganizer, true
 	}
+	groupName, isM := isMenti(oidcGroup)
+	if isM {
+		return groupName, model.RoleMentor, true
+	}
+	return "unknown", model.RoleParticipant, false
 
 	//valid = groupParserRx.MatchString(oidcGroup)
 	//if !valid {
@@ -147,17 +181,19 @@ func parseGroup(oidcGroup string, roleMapper map[string]model.Role) (groupName s
 	//return groupName, role, model.ValidRole(role)
 }
 
-func createGroupIfNew(createGroup command.CreateOrganisation, getGroupBySlug query.GetOrganisationBySlug, request command.CreateOrganisationRequest) (groupId int, err error) {
-	groupId, err = createGroup.Execute(context.TODO(), request)
-	if err != nil {
-		if strings.Contains(err.Error(), "duplicate key") {
-			group, err2 := getGroupBySlug.Query(context.TODO(), query.GetOrganisationBySlugRequest{Slug: request.Slug})
-			if err2 != nil {
-				return -1, err
-			}
+var groupSyncMutex sync.Mutex
 
-			return group.ID, nil
-		}
+func getOrCreateGroup(ctx context.Context, createGroup command.CreateOrganisation, getGroupBySlug query.GetOrganisationBySlug, request command.CreateOrganisationRequest) (groupId int, err error) {
+	groupSyncMutex.Lock()
+	defer groupSyncMutex.Unlock()
+	group, err2 := getGroupBySlug.Query(ctx, query.GetOrganisationBySlugRequest{Slug: request.Slug})
+	if err2 == nil {
+		return group.ID, err
+	}
+
+	groupId, err = createGroup.Execute(ctx, request)
+	if err != nil {
+		return -1, err
 	}
 
 	return groupId, nil

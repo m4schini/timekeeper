@@ -1,0 +1,711 @@
+openapi: 3.0.3
+info:
+  title: Raumzeitalpaka API
+  version: 1.0.0
+  description: API for managing events, organisations, locations, and scheduling
+
+servers:
+  - url: /api
+
+security:
+  - bearerAuth: []
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+
+  schemas:
+    Organisation:
+      type: object
+      properties:
+        id:
+          type: string
+        slug:
+          type: string
+        name:
+          type: string
+
+    OrganisationDetail:
+      allOf:
+        - $ref: '#/components/schemas/Organisation'
+        - type: object
+          properties:
+            members:
+              type: array
+              items:
+                $ref: '#/components/schemas/Member'
+            events:
+              type: array
+              items:
+                $ref: '#/components/schemas/Event'
+
+    Member:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        role:
+          type: string
+
+    Event:
+      type: object
+      properties:
+        id:
+          type: string
+        title:
+          type: string
+        description:
+          type: string
+        organisationId:
+          type: string
+
+    Timeslot:
+      type: object
+      properties:
+        id:
+          type: string
+        eventId:
+          type: string
+        start:
+          type: string
+          format: date-time
+        end:
+          type: string
+          format: date-time
+        roomId:
+          type: string
+
+    ScheduleEntry:
+      type: object
+      properties:
+        eventId:
+          type: string
+        timeslotId:
+          type: string
+        start:
+          type: string
+          format: date-time
+        end:
+          type: string
+          format: date-time
+        room:
+          $ref: '#/components/schemas/Room'
+
+    Location:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        address:
+          type: string
+
+    Room:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        locationId:
+          type: string
+        capacity:
+          type: integer
+
+    Error:
+      type: object
+      properties:
+        error:
+          type: string
+        message:
+          type: string
+        code:
+          type: integer
+
+  responses:
+    BadRequest:
+      description: Bad request – the provided ID or request body is invalid
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    InternalServerError:
+      description: Internal server error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+
+paths:
+
+  /org:
+    post:
+      summary: Create an organisation
+      operationId: createOrg
+      tags: [Organisations]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Organisation'
+      responses:
+        '201':
+          description: Organisation created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Organisation'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  /org/{org}:
+    parameters:
+      - name: org
+        in: path
+        required: true
+        description: Organisation ID or slug
+        schema:
+          type: integer
+
+    get:
+      summary: Get organisation details
+      operationId: getOrg
+      tags: [Organisations]
+      responses:
+        '200':
+          description: Organisation details including members and events
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OrganisationDetail'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+    put:
+      summary: Update an organisation
+      operationId: updateOrg
+      tags: [Organisations]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Organisation'
+      responses:
+        '200':
+          description: Organisation updated
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+    delete:
+      summary: Delete an organisation
+      operationId: deleteOrg
+      tags: [Organisations]
+      responses:
+        '204':
+          description: Organisation deleted
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  /org/{org}/events:
+    parameters:
+      - name: org
+        in: path
+        required: true
+        schema:
+          type: integer
+    get:
+      summary: Get events for an organisation
+      operationId: getOrgEvents
+      tags: [Organisations]
+      responses:
+        '200':
+          description: List of events
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Event'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  /org/{org}/members:
+    parameters:
+      - name: org
+        in: path
+        required: true
+        schema:
+          type: integer
+    get:
+      summary: Get members of an organisation
+      operationId: getOrgMembers
+      tags: [Organisations]
+      responses:
+        '200':
+          description: List of members
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Member'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  /events:
+    get:
+      summary: List all events
+      operationId: getEvents
+      tags: [Events]
+      responses:
+        '200':
+          description: List of events
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Event'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  /event:
+    post:
+      summary: Create an event
+      operationId: createEvent
+      tags: [Events]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Event'
+      responses:
+        '201':
+          description: Event created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Event'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  /event/{eventID}:
+    parameters:
+      - name: eventID
+        in: path
+        required: true
+        schema:
+          type: integer
+
+    get:
+      summary: Get event details
+      operationId: getEvent
+      tags: [Events]
+      responses:
+        '200':
+          description: Event details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Event'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+    put:
+      summary: Update an event
+      operationId: updateEvent
+      tags: [Events]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Event'
+      responses:
+        '200':
+          description: Event updated
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  /event/{eventID}/schedule:
+    parameters:
+      - name: eventID
+        in: path
+        required: true
+        schema:
+          type: integer
+    get:
+      summary: Get schedule for an event
+      operationId: getEventSchedule
+      tags: [Events, Schedule]
+      responses:
+        '200':
+          description: Event schedule (timeslots)
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ScheduleEntry'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  /event/{eventID}/timeslot:
+    parameters:
+      - name: eventID
+        in: path
+        required: true
+        schema:
+          type: integer
+    post:
+      summary: Create a timeslot for an event
+      operationId: createTimeslot
+      tags: [Timeslots]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Timeslot'
+      responses:
+        '201':
+          description: Timeslot created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Timeslot'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  /event/{eventID}/timeslot/{timeslotID}:
+    parameters:
+      - name: eventID
+        in: path
+        required: true
+        schema:
+          type: integer
+      - name: timeslotID
+        in: path
+        required: true
+        schema:
+          type: integer
+
+    get:
+      summary: Get a timeslot
+      operationId: getTimeslot
+      tags: [Timeslots]
+      responses:
+        '200':
+          description: Timeslot details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Timeslot'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+    put:
+      summary: Update a timeslot
+      operationId: updateTimeslot
+      tags: [Timeslots]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Timeslot'
+      responses:
+        '200':
+          description: Timeslot updated
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  /event/{eventID}/room/{roomID}/schedule:
+    parameters:
+      - name: eventID
+        in: path
+        required: true
+        schema:
+          type: number
+      - name: roomID
+        in: path
+        required: true
+        schema:
+          type: number
+    get:
+      summary: Get room schedule for an event
+      operationId: getEventRoomSchedule
+      tags: [Events, Schedule]
+      responses:
+        '200':
+          description: Room schedule
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ScheduleEntry'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  /event/{eventID}/user/{userID}/schedule:
+    parameters:
+      - name: eventID
+        in: path
+        required: true
+        schema:
+          type: number
+      - name: userID
+        in: path
+        required: true
+        schema:
+          type: number
+    get:
+      summary: Get user schedule for an event
+      operationId: getEventUserSchedule
+      tags: [Events, Schedule]
+      responses:
+        '200':
+          description: User schedule
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ScheduleEntry'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  /event/location/{locationID}:
+    parameters:
+      - name: locationID
+        in: path
+        required: true
+        schema:
+          type: integer
+
+    put:
+      summary: Add a location to an event
+      operationId: addEventLocation
+      tags: [Events]
+      responses:
+        '200':
+          description: Location added to event
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+    delete:
+      summary: Remove a location from an event
+      operationId: removeEventLocation
+      tags: [Events]
+      responses:
+        '204':
+          description: Location removed from event
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  /locations:
+    get:
+      summary: Get Locations
+      operationId: getLocations
+      tags: [Locations]
+      responses:
+        '200':
+          description: Locations
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Location'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  /location:
+    post:
+      summary: Create a location
+      operationId: createLocation
+      tags: [Locations]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Location'
+      responses:
+        '201':
+          description: Location created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Location'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  /location/{locationID}:
+    parameters:
+      - name: locationID
+        in: path
+        required: true
+        schema:
+          type: integer
+
+    get:
+      summary: Get a location
+      operationId: getLocation
+      tags: [Locations]
+      responses:
+        '200':
+          description: Location details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Location'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+    put:
+      summary: Update a location
+      operationId: updateLocation
+      tags: [Locations]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Location'
+      responses:
+        '200':
+          description: Location updated
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  /location/{locationID}/room:
+    parameters:
+      - name: locationID
+        in: path
+        required: true
+        schema:
+          type: number
+    post:
+      summary: Create a room
+      operationId: createRoom
+      tags: [Rooms]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Room'
+      responses:
+        '201':
+          description: Room created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Room'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  /location/{locationID}/room/{roomID}:
+    parameters:
+      - name: locationID
+        in: path
+        required: true
+        schema:
+          type: number
+      - name: roomID
+        in: path
+        required: true
+        schema:
+          type: number
+
+    get:
+      summary: Get a room
+      operationId: getRoom
+      tags: [Rooms]
+      responses:
+        '200':
+          description: Room details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Room'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+    put:
+      summary: Update a room
+      operationId: updateRoom
+      tags: [Rooms]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Room'
+      responses:
+        '200':
+          description: Room updated
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+    delete:
+      summary: Delete a room
+      operationId: deleteRoom
+      tags: [Rooms]
+      responses:
+        '204':
+          description: Room deleted
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '500':
+          $ref: '#/components/responses/InternalServerError'

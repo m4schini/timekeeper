@@ -32,7 +32,7 @@ RETURNING id`, m.slug(), m.Name)
 	}
 
 	_, err = c.DB.Exec(`
-INSERT INTO raumzeitalpaka.organisations_roles (organisation, id, name, required) 
+INSERT INTO raumzeitalpaka.organisation_roles (organisation, id, name, required) 
 VALUES ($1, $2, $3, true)
 RETURNING id`, id, "participant", "Teilnehmer*in")
 	if err != nil {
@@ -40,7 +40,7 @@ RETURNING id`, id, "participant", "Teilnehmer*in")
 	}
 
 	_, err = c.DB.Exec(`
-INSERT INTO raumzeitalpaka.organisations_roles (organisation, id, name, required) 
+INSERT INTO raumzeitalpaka.organisation_roles (organisation, id, name, required) 
 VALUES ($1, $2, $3, true)
 RETURNING id`, id, "mentor", "Mentor*in")
 	if err != nil {
@@ -48,7 +48,7 @@ RETURNING id`, id, "mentor", "Mentor*in")
 	}
 
 	_, err = c.DB.Exec(`
-INSERT INTO raumzeitalpaka.organisations_roles (organisation, id, name, required) 
+INSERT INTO raumzeitalpaka.organisation_roles (organisation, id, name, required) 
 VALUES ($1, $2, $3, true)
 RETURNING id`, id, "organizer", "Orga")
 	if err != nil {

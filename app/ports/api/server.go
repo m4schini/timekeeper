@@ -1,75 +1,168 @@
 package api
 
 import (
-	"raumzeitalpaka/app/auth"
+	"encoding/json"
+	"net/http"
 	"raumzeitalpaka/app/database"
-	"raumzeitalpaka/ports/api/handler"
-
-	"github.com/go-chi/chi/v5"
+	"raumzeitalpaka/app/database/command"
+	"raumzeitalpaka/app/database/query"
 )
 
-func NewRouter(db *database.Database) chi.Router {
+func NewRouter(db *database.Database) http.Handler {
 	c := db.Commands
 	q := db.Queries
 
-	mux := chi.NewMux()
-	mux.Use(auth.UseBearerToken())
-	mux.Get("/schedule", handler.GetEventsSchedule(q.Events))
-	mux.Route("/org", func(r chi.Router) {
-		r.Get("/schedule", handler.GetOrgSchedule())
+	return HandlerWithOptions(&apiServer{
+		c: c,
+		q: q,
+	}, ChiServerOptions{})
+}
 
-		r.Post("/", handler.CreateOrg(c.CreateOrganisation))
-		r.Route("/{org}", func(r chi.Router) {
-			r.Get("/", handler.GetOrg())
-			r.Put("/", handler.UpdateOrg())
-			r.Delete("/", handler.DeleteOrg())
-		})
-	})
+type apiServer struct {
+	c command.Commands
+	q query.Queries
+}
 
-	mux.Get("/events", handler.GetEvents(q.Events))
-	mux.Route("/event", func(r chi.Router) {
+func (a *apiServer) CreateEvent(w http.ResponseWriter, r *http.Request) {
+	//TODO implement me
+	panic("implement me")
+}
 
-		r.Post("/", handler.CreateEvent(c.CreateEvent))
-		r.Route("/{eventID}", func(r chi.Router) {
-			r.Get("/schedule", handler.GetSchedule(q.TimeslotsOfEvent))
-			r.Get("/", handler.GetEvent(q.Event))
-			r.Put("/", handler.UpdateEvent(c.UpdateEvent, q.UserHasRole))
-			//r.Delete("/", DeleteEvent)
+func (a *apiServer) RemoveEventLocation(w http.ResponseWriter, r *http.Request, locationID int) {
+	//TODO implement me
+	panic("implement me")
+}
 
-			r.Route("/timeslot", func(r chi.Router) {
-				r.Post("/", handler.CreateTimeslot(c.CreateTimeslot))
-				mux.Route("/{timeslotID}", func(r chi.Router) {
-					r.Get("/", handler.GetTimeslot(q.Timeslot))
-					r.Put("/", handler.UpdateTimeslot(c.UpdateTimeslot))
-				})
-			})
-		})
+func (a *apiServer) AddEventLocation(w http.ResponseWriter, r *http.Request, locationID int) {
+	//TODO implement me
+	panic("implement me")
+}
 
-		r.Route("/location/{locationID}", func(r chi.Router) {
-			r.Put("/", handler.AddEventLocation())
-			r.Delete("/", handler.RemoveEventLocation())
-		})
-	})
+func (a *apiServer) GetEvent(w http.ResponseWriter, r *http.Request, eventID int) {
+	event, err := a.q.Event.Query(r.Context(), query.GetEventRequest{EventId: eventID})
+	if err != nil {
+		internalServerError(w, err)
+		return
+	}
 
-	mux.Route("/location", func(r chi.Router) {
-		r.Post("/", handler.CreateLocation())
-		r.Route("/{locationID}", func(r chi.Router) {
-			r.Get("/", handler.GetLocation())
-			r.Put("/", handler.UpdateLocation())
-		})
-	})
+	encode(w, event)
+}
 
-	mux.Route("/room", func(r chi.Router) {
-		r.Get("/schedule", handler.GetRoomSchedule())
+func (a *apiServer) UpdateEvent(w http.ResponseWriter, r *http.Request, eventID int) {
+	//TODO implement me
+	panic("implement me")
+}
 
-		r.Post("/", handler.CreateRoom())
-		r.Route("/{roomID}", func(r chi.Router) {
-			r.Get("/", handler.GetRoom())
-			r.Put("/", handler.UpdateRoom())
-			r.Delete("/", handler.DeleteRoom())
-		})
+func (a *apiServer) GetEventRoomSchedule(w http.ResponseWriter, r *http.Request, eventID float32, roomID float32) {
+	//TODO implement me
+	panic("implement me")
+}
 
-	})
+func (a *apiServer) GetEventSchedule(w http.ResponseWriter, r *http.Request, eventID int) {
+	//TODO implement me
+	panic("implement me")
+}
 
-	return mux
+func (a *apiServer) CreateTimeslot(w http.ResponseWriter, r *http.Request, eventID int) {
+	//TODO implement me
+	panic("implement me")
+}
+
+func (a *apiServer) GetTimeslot(w http.ResponseWriter, r *http.Request, eventID int, timeslotID int) {
+	//TODO implement me
+	panic("implement me")
+}
+
+func (a *apiServer) UpdateTimeslot(w http.ResponseWriter, r *http.Request, eventID int, timeslotID int) {
+	//TODO implement me
+	panic("implement me")
+}
+
+func (a *apiServer) GetEventUserSchedule(w http.ResponseWriter, r *http.Request, eventID float32, userID float32) {
+	//TODO implement me
+	panic("implement me")
+}
+
+func (a *apiServer) GetEvents(w http.ResponseWriter, r *http.Request) {
+	//TODO implement me
+	panic("implement me")
+}
+
+func (a *apiServer) CreateLocation(w http.ResponseWriter, r *http.Request) {
+	//TODO implement me
+	panic("implement me")
+}
+
+func (a *apiServer) GetLocation(w http.ResponseWriter, r *http.Request, locationID int) {
+	//TODO implement me
+	panic("implement me")
+}
+
+func (a *apiServer) UpdateLocation(w http.ResponseWriter, r *http.Request, locationID int) {
+	//TODO implement me
+	panic("implement me")
+}
+
+func (a *apiServer) CreateRoom(w http.ResponseWriter, r *http.Request, locationID float32) {
+	//TODO implement me
+	panic("implement me")
+}
+
+func (a *apiServer) DeleteRoom(w http.ResponseWriter, r *http.Request, locationID float32, roomID float32) {
+	//TODO implement me
+	panic("implement me")
+}
+
+func (a *apiServer) GetRoom(w http.ResponseWriter, r *http.Request, locationID float32, roomID float32) {
+	//TODO implement me
+	panic("implement me")
+}
+
+func (a *apiServer) UpdateRoom(w http.ResponseWriter, r *http.Request, locationID float32, roomID float32) {
+	//TODO implement me
+	panic("implement me")
+}
+
+func (a *apiServer) GetLocations(w http.ResponseWriter, r *http.Request) {
+	//TODO implement me
+	panic("implement me")
+}
+
+func (a *apiServer) CreateOrg(w http.ResponseWriter, r *http.Request) {
+	//TODO implement me
+	panic("implement me")
+}
+
+func (a *apiServer) DeleteOrg(w http.ResponseWriter, r *http.Request, org int) {
+	//TODO implement me
+	panic("implement me")
+}
+
+func (a *apiServer) GetOrg(w http.ResponseWriter, r *http.Request, org int) {
+	//TODO implement me
+	panic("implement me")
+}
+
+func (a *apiServer) UpdateOrg(w http.ResponseWriter, r *http.Request, org int) {
+	//TODO implement me
+	panic("implement me")
+}
+
+func (a *apiServer) GetOrgEvents(w http.ResponseWriter, r *http.Request, org int) {
+	//TODO implement me
+	panic("implement me")
+}
+
+func (a *apiServer) GetOrgMembers(w http.ResponseWriter, r *http.Request, org int) {
+	//TODO implement me
+	panic("implement me")
+}
+
+func encode(w http.ResponseWriter, response any) {
+	w.Header().Set("Content-Type", "application/json; charset=utf-8")
+	_ = json.NewEncoder(w).Encode(response)
+}
+
+func internalServerError(w http.ResponseWriter, err error) {
+	http.Error(w, "Internal Server Error", http.StatusInternalServerError)
 }

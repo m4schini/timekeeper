@@ -42,9 +42,47 @@ func GetRoomSchedule() http.HandlerFunc {
 	}
 }
 
-func GetOrgSchedule() http.HandlerFunc {
-	return func(writer http.ResponseWriter, request *http.Request) {
+func GetOrgEvents(events query.GetEventsByOrganisation) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		ctx := r.Context()
+		orgParam := chi.URLParam(r, "org")
+		orgID, err := strconv.ParseInt(orgParam, 10, 64)
+		if err != nil {
+			http.Error(w, "invalid org id", http.StatusBadRequest)
+			return
+		}
 
+		events, err := events.Query(ctx, query.GetEventsByOrganisationRequest{
+			OrganisationID: int(orgID),
+		})
+		if err != nil {
+			http.Error(w, "failed to get data", http.StatusInternalServerError)
+			return
+		}
+
+		Encode(w, events)
+	}
+}
+
+func GetOrgMembers(members query.GetOrganisationMembers) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		ctx := r.Context()
+		orgParam := chi.URLParam(r, "org")
+		orgID, err := strconv.ParseInt(orgParam, 10, 64)
+		if err != nil {
+			http.Error(w, "invalid org id", http.StatusBadRequest)
+			return
+		}
+
+		members, err := members.Query(ctx, query.GetOrganisationMembersRequest{
+			OrganisationID: int(orgID),
+		})
+		if err != nil {
+			http.Error(w, "failed to get data", http.StatusInternalServerError)
+			return
+		}
+
+		Encode(w, members)
 	}
 }
 

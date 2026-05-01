@@ -175,9 +175,13 @@ func (l *EventPageRoute) Handler() http.Handler {
 		}
 
 		for i, location := range eventLocations {
-			resp, err := l.Nominatim.Lookup(ctx, location.OsmId)
+			resp, match, err := l.Nominatim.Lookup(ctx, location.OsmId)
 			if err != nil {
-				log.Warn("failed to lookup osm data", zap.Error(err), zap.String("osm_id", location.OsmId))
+				log.Warn("failed to lookup osm data", zap.Error(err), zap.String("name", location.Name), zap.String("osm_id", location.OsmId))
+				continue
+			}
+			if !match {
+				log.Debug("no osm match", zap.String("name", location.Name))
 				continue
 			}
 

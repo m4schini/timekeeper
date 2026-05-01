@@ -79,20 +79,20 @@ func (n *Client) get(ctx context.Context, url string) (resp *http.Response, err 
 	return n.client.Do(r)
 }
 
-func (n *Client) Lookup(ctx context.Context, osmId string) (response LookupResponse, err error) {
+func (n *Client) Lookup(ctx context.Context, osmId string) (response LookupResponse, match bool, err error) {
 	if osmId == "" {
-		return response, fmt.Errorf("invalid osmId")
+		return response, false, nil
 	}
 
 	response, exists := n.lookupCache[osmId]
 	if exists {
 		n.log.Debug("using cached lookup response", zap.String("osmId", osmId))
-		return response, nil
+		return response, true, nil
 	}
 
 	resp, err := n.get(ctx, fmt.Sprintf(`https://nominatim.openstreetmap.org/lookup?osm_ids=%v&format=json`, osmId))
 	if err != nil {
-		return response, err
+		return response, false, err
 	}
 	defer resp.Body.Close()
 
@@ -100,5 +100,5 @@ func (n *Client) Lookup(ctx context.Context, osmId string) (response LookupRespo
 	err = json.NewDecoder(resp.Body).Decode(&allResponses)
 	response = allResponses[0]
 	n.lookupCache[osmId] = response
-	return response, err
+	return response, true, err
 }

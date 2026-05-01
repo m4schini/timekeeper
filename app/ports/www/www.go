@@ -89,7 +89,7 @@ func NewWWWPort(
 		},
 
 		&p.CreateUserPageRoute{Authz: az},
-		&p.UserAccountPageRoute{GetUser: q.User},
+		&p.UserAccountPageRoute{GetUser: q.User, GetMemberships: q.UserOrgs},
 		&p.MeAccountPageRoute{},
 
 		&p.PixelHackPageRoute{},

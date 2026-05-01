@@ -10,6 +10,13 @@ type UserModel struct {
 	LastLogin    time.Time
 }
 
+type UserOrganisationMembership struct {
+	OrganisationID int
+	Slug           string
+	Name           string
+	Role           string
+}
+
 type CreateUserModel struct {
 	LoginName    string
 	PasswordHash string

@@ -10,11 +10,12 @@ type Handler[R, T any] interface {
 }
 
 type Queries struct {
-	Event          GetEvent
-	Events         GetEvents
-	EventBySlug    GetEventBySlug
-	EventLocation  GetEventLocation
-	EventLocations GetEventLocations
+	Event                GetEvent
+	Events               GetEvents
+	EventsByOrganisation GetEventsByOrganisation
+	EventBySlug          GetEventBySlug
+	EventLocation        GetEventLocation
+	EventLocations       GetEventLocations
 
 	Location  GetLocation
 	Locations GetLocations
@@ -32,16 +33,21 @@ type Queries struct {
 	UserHasRole             UserHasRole
 	UserHasOrganisationRole UserHasOrganisationRole
 	UserHasEventRole        UserHasEventRole
-	GroupBySlug             GetOrganisationBySlug
+	UserOrgs                GetUserOrganisations
+
+	Organisation        GetOrganisation
+	OrganisationMembers GetOrganisationMembers
+	OrganisationBySlug  GetOrganisationBySlug
 }
 
 func NewQueries(db Database) Queries {
 	return Queries{
-		Event:          &GetEventHandler{DB: db},
-		Events:         &GetEventsHandler{DB: db},
-		EventBySlug:    &GetEventBySlugHandler{DB: db},
-		EventLocation:  &GetEventLocationHandler{DB: db},
-		EventLocations: &GetEventLocationsHandler{DB: db},
+		Event:                &GetEventHandler{DB: db},
+		Events:               &GetEventsHandler{DB: db},
+		EventsByOrganisation: &GetEventsByOrganisationHandler{DB: db},
+		EventBySlug:          &GetEventBySlugHandler{DB: db},
+		EventLocation:        &GetEventLocationHandler{DB: db},
+		EventLocations:       &GetEventLocationsHandler{DB: db},
 
 		Location:  &GetLocationHandler{DB: db},
 		Locations: &GetLocationsHandler{DB: db},
@@ -59,6 +65,11 @@ func NewQueries(db Database) Queries {
 		UserHasRole:             &UserHasRoleHandler{DB: db},
 		UserHasOrganisationRole: &UserHasOrganisationRoleHandler{DB: db},
 		UserHasEventRole:        &UserHasEventRoleHandler{DB: db},
+		UserOrgs:                &GetUserOrganisationsHandler{DB: db},
+
+		Organisation:        &GetOrganisationHandler{DB: db},
+		OrganisationMembers: &GetOrganisationMembersHandler{DB: db},
+		OrganisationBySlug:  &GetOrganisationBySlugHandler{DB: db},
 	}
 }
 

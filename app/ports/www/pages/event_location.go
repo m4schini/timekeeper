@@ -11,6 +11,7 @@ import (
 	"strconv"
 
 	"github.com/go-chi/chi/v5"
+	"go.uber.org/zap"
 	. "maragu.dev/gomponents"
 	. "maragu.dev/gomponents/html"
 )
@@ -158,8 +159,11 @@ func (l *LocationPageRoute) Handler() http.Handler {
 		}
 
 		var locationOsmData *nominatim.LookupResponse
-		resp, err := osm.Lookup(request.Context(), location.OsmId)
-		if err == nil {
+		resp, match, err := osm.Lookup(request.Context(), location.OsmId)
+		if err != nil {
+			log.Warn("failed to lookup location", zap.Error(err))
+		}
+		if match {
 			locationOsmData = &resp
 		}
 
